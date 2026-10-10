@@ -12,6 +12,8 @@ import { FakeUrlTester } from './components/FakeUrlTester';
 import { BrandProfileManager } from './components/BrandProfileManager';
 import { AppStoreMonitoring } from './components/AppStoreMonitoring';
 import { IncidentReportsView } from './components/IncidentReportsView';
+import { CyberThreatGlobe3D } from './components/3d/CyberThreatGlobe3D';
+import { TiltCard3D } from './components/3d/TiltCard3D';
 import { EvidenceModal } from './components/EvidenceModal';
 import { AddBrandModal } from './components/AddBrandModal';
 import { EditBrandModal } from './components/EditBrandModal';
@@ -161,13 +163,15 @@ export function App() {
           {/* TAB 1: DASHBOARD */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
-              {/* Brand Hero Card */}
-              <BrandHeroCard
-                currentBrand={activeBrandObj}
-                onEditProfile={() => setIsEditBrandOpen(true)}
-                onRunScan={handleRunScanAll}
-                isScanning={isScanningAll}
-              />
+              {/* Brand Hero Card with 3D Interactive Tilt */}
+              <TiltCard3D maxTilt={6}>
+                <BrandHeroCard
+                  currentBrand={activeBrandObj}
+                  onEditProfile={() => setIsEditBrandOpen(true)}
+                  onRunScan={handleRunScanAll}
+                  isScanning={isScanningAll}
+                />
+              </TiltCard3D>
 
               {/* 5 Counter Stat Cards */}
               <BrandShieldStats summary={summary} />
@@ -192,6 +196,13 @@ export function App() {
 
               {/* Bottom Analytics Row: Risk Distribution + Top Risk + Recent Activity + Pro Tip */}
               <BottomAnalyticsRow />
+            </div>
+          )}
+
+          {/* TAB: 3D INTERACTIVE THREAT GLOBE */}
+          {activeTab === 'globe_3d' && (
+            <div className="space-y-6">
+              <CyberThreatGlobe3D />
             </div>
           )}
 

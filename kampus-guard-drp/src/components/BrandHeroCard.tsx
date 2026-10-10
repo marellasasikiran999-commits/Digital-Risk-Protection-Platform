@@ -1,11 +1,12 @@
 import React from 'react';
 import { 
-  Shield, Globe, Smartphone, User, Play, Edit3, CheckCircle, ExternalLink
+  Globe, Smartphone, User, Play, Edit3, CheckCircle, ExternalLink
 } from 'lucide-react';
 import type { Brand } from '../utils/api';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import { HologramShield3D } from './3d/HologramShield3D';
 
 interface BrandHeroCardProps {
   currentBrand: Brand | null;
@@ -32,11 +33,11 @@ export const BrandHeroCard: React.FC<BrandHeroCardProps> = ({
       <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
-        {/* Left Side: Brand Details & Verified Badge */}
+        {/* Left Side: Brand Details & Verified Badge with 3D Hologram Shield */}
         <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 p-0.5 flex items-center justify-center shadow-lg shadow-blue-500/25 shrink-0">
-            <div className="w-full h-full bg-[#0a1020] rounded-[14px] flex items-center justify-center">
-              <Shield className="w-7 h-7 text-blue-400" />
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 p-0.5 flex items-center justify-center shadow-lg shadow-blue-500/25 shrink-0 overflow-hidden">
+            <div className="w-full h-full bg-[#0a1020] rounded-[14px] flex items-center justify-center relative">
+              <HologramShield3D size={52} />
             </div>
           </div>
 

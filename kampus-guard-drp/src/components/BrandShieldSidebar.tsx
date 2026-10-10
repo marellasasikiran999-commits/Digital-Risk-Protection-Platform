@@ -18,6 +18,7 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
       title: 'COMMAND CENTER',
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'globe_3d', label: '3D Threat Globe', icon: Globe, badge: '3D LIVE' },
         { id: 'brands', label: 'Brands & Assets', icon: Building2 },
         { id: 'findings', label: 'Threat Findings', icon: Search }
       ]
