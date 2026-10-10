@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Globe, AlertTriangle, ShieldCheck, RefreshCw, Copy, CheckCircle, FileText, Send, Sparkles } from 'lucide-react';
+import type { Brand } from '../utils/api';
 
 interface UrlAnalysisResult {
   url: string;
@@ -15,7 +16,11 @@ interface UrlAnalysisResult {
   reasons: string[];
 }
 
-export const FakeUrlTester: React.FC = () => {
+interface FakeUrlTesterProps {
+  activeBrand?: Brand;
+}
+
+export const FakeUrlTester: React.FC<FakeUrlTesterProps> = ({ activeBrand }) => {
   const [targetUrl, setTargetUrl] = useState('https://drp-platform-login-claim.com/verify-account');
   const [isScanning, setIsScanning] = useState(false);
   const [result, setResult] = useState<UrlAnalysisResult | null>(null);
@@ -23,11 +28,16 @@ export const FakeUrlTester: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
+  const brandName = activeBrand?.brand_name || 'Digital Risk Protection Platform';
+  const officialDomain = activeBrand?.official_website ? activeBrand.official_website.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split('/')[0] : 'digitalriskprotection.com';
+
   const presets = [
     { label: 'Phishing Credential Harvester', url: 'https://drp-platform-login-claim.com/verify-account' },
     { label: 'Cyrillic Homoglyph Look-alike', url: 'http://digitаlriskprotection.com/secure-portal' },
-    { label: 'Fake Rewards Typosquat', url: 'https://drp-rewards-bonus.net/claim' },
-    { label: 'Official Legitimate Website', url: 'https://www.digitalriskprotection.com' },
+    { label: 'PayPal Typosquat Scam', url: 'https://paypa1-security-verification.com/login' },
+    { label: 'Apple ID Credential Stealer', url: 'http://appӏe-id-icloud-secure.com/auth' },
+    { label: 'Netflix Billing Renewal Scam', url: 'https://netflix-billing-update.org/renew' },
+    { label: `Official Legitimate (${brandName})`, url: `https://www.${officialDomain}` },
   ];
 
   const handleScan = async (urlToScan = targetUrl) => {
@@ -39,7 +49,7 @@ export const FakeUrlTester: React.FC = () => {
       const res = await fetch('http://127.0.0.1:8000/api/url/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: urlToScan, brand_domain: 'digitalriskprotection.com' })
+        body: JSON.stringify({ url: urlToScan, brand_domain: officialDomain })
       });
 
       if (res.ok) {
@@ -57,7 +67,7 @@ export const FakeUrlTester: React.FC = () => {
 
   const runClientHeuristic = (urlStr: string) => {
     let clean = urlStr.replace(/^https?:\/\//i, '').split('/')[0].toLowerCase();
-    const isOfficial = clean === 'www.digitalriskprotection.com' || clean === 'digitalriskprotection.com';
+    const isOfficial = clean === `www.${officialDomain.toLowerCase()}` || clean === officialDomain.toLowerCase();
     const isHomoglyph = /[\u0400-\u04FF]/.test(urlStr);
     const keywords = ['login', 'verify', 'claim', 'bonus', 'rewards', 'portal', 'account'].filter(k => urlStr.toLowerCase().includes(k));
     const isNoHttps = urlStr.startsWith('http://');
@@ -137,17 +147,17 @@ export const FakeUrlTester: React.FC = () => {
 To: Domain Registrar Abuse Desk / Hosting Provider (Cloudflare / Namecheap / GoDaddy)
 From: Digital Risk Protection Platform Cyber Response Unit
 Date: ${new Date().toLocaleDateString()}
-Subject: Immediate Suspension Request - Phishing Domain Masquerading as Digital Risk Protection Platform
+Subject: Immediate Suspension Request - Phishing Domain Masquerading as ${brandName}
 
 Dear Trust & Safety Team,
 
-We represent Digital Risk Protection Platform, owner of the trademark and domain 'digitalriskprotection.com'.
+We represent ${brandName}, owner of the trademark and domain '${officialDomain}'.
 We have identified an unauthorized, malicious site hosted under your infrastructure:
 
 Target URL: ${result?.url}
 Target Domain: ${result?.domain}
 Detection Timestamp: ${new Date().toISOString()}
-Primary Infringement: Phishing & Credential Harvester Impersonating Digital Risk Protection Platform
+Primary Infringement: Phishing & Credential Harvester Impersonating ${brandName}
 Risk Score: ${result?.risk_score}/100 (${result?.risk_level})
 
 Technical Findings:
@@ -161,7 +171,7 @@ We request that you:
 Sincerely,
 Digital Risk Protection Platform Security Team
 abuse-response@digitalriskprotection.com
-https://www.digitalriskprotection.com`;
+https://${officialDomain}`;
   };
 
   return (

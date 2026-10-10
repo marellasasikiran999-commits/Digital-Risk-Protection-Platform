@@ -291,7 +291,7 @@ export function App() {
           {/* TAB 7: FAKE URL / PHISHING DOMAIN INSPECTOR */}
           {activeTab === 'url_tester' && (
             <div className="space-y-6">
-              <FakeUrlTester />
+              <FakeUrlTester activeBrand={brands.find(b => b.brand_name === currentBrandName) || brands[0]} />
             </div>
           )}
 
