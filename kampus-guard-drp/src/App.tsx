@@ -261,15 +261,23 @@ export function App() {
           {/* TAB 3: SOCIAL MEDIA MONITORING & TESTER */}
           {activeTab === 'social' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between bg-[#0f172a] border border-slate-800 p-5 rounded-2xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#091021]/80 border border-slate-800/80 p-6 rounded-2xl shadow-xl backdrop-blur-xl card-glow-top hud-bracket">
                 <div>
-                  <h2 className="text-lg font-bold text-white">Social Media Threat Monitor &amp; Account Tester</h2>
-                  <p className="text-xs text-slate-400">Detect typosquatting, Cyrillic look-alike letters, and impersonating accounts.</p>
+                  <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold tracking-widest uppercase mb-1">
+                    <span className="w-6 h-px bg-cyan-400" />
+                    <span>03 // SURVEILLANCE MATRIX</span>
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display">
+                    Social Surface Surveillance &amp; Impersonation Triage
+                  </h1>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+                    Multi-network heuristics detecting Cyrillic confusable homoglyphs, deceptive affixes, and unauthorized brand handles.
+                  </p>
                 </div>
                 <button
                   onClick={handleRunSocialScan}
                   disabled={isScanningSocial}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-blue-600/20"
+                  className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-blue-600/25 shrink-0 btn-shimmer"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${isScanningSocial ? 'animate-spin' : ''}`} />
                   {isScanningSocial ? 'Scanning Platforms...' : 'Run Live Social Scan'}
@@ -294,14 +302,22 @@ export function App() {
           {/* TAB 5: ALL FINDINGS */}
           {activeTab === 'findings' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between bg-[#0f172a] border border-slate-800 p-5 rounded-2xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#091021]/80 border border-slate-800/80 p-6 rounded-2xl shadow-xl backdrop-blur-xl card-glow-top hud-bracket">
                 <div>
-                  <h2 className="text-lg font-bold text-white">Consolidated Threat Findings Repository</h2>
-                  <p className="text-xs text-slate-400">All 23 detected candidates with cryptographic visual match scores &amp; publisher audits.</p>
+                  <div className="inline-flex items-center gap-2 text-xs font-mono text-blue-400 font-bold tracking-widest uppercase mb-1">
+                    <span className="w-6 h-px bg-blue-400" />
+                    <span>05 // CENTRAL INTELLIGENCE REPOSITORY</span>
+                  </div>
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display">
+                    Consolidated External Threat Repository
+                  </h1>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+                    Unified audit feed compiling mobile packages, social accounts, and phishing registrars with cryptographic match scoring.
+                  </p>
                 </div>
                 <button
                   onClick={handleExportReport}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2"
+                  className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shrink-0 btn-shimmer border border-slate-700/60"
                 >
                   <Download className="w-3.5 h-3.5" />
                   Export All (CSV)

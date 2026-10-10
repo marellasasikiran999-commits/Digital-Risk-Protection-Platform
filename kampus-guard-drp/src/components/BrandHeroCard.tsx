@@ -60,19 +60,19 @@ export const BrandHeroCard: React.FC<BrandHeroCardProps> = ({
               </div>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="text-xl lg:text-2xl font-black text-white tracking-tight group-hover:translate-x-1 transition-transform duration-300">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black text-white tracking-tight font-display group-hover:translate-x-1 transition-transform duration-300">
                   {brandName}
-                </h2>
-                <Badge variant="success" className="gap-1.5 py-0.5 px-2.5">
-                  <CheckCircle className="w-3 h-3 text-emerald-400" />
-                  <span>Verified Asset Baseline</span>
+                </h1>
+                <Badge variant="success" className="gap-1.5 py-1 px-3 text-xs font-mono">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Verified Baseline Active</span>
                 </Badge>
               </div>
 
-              <p className="text-xs text-slate-400 font-sans">
-                Autonomous Brand Defense • Whitelisted Cross-Platform Sensor Array
+              <p className="text-xs sm:text-sm text-slate-300 font-sans max-w-2xl leading-relaxed">
+                External attack surface surveillance protecting registered domains, authorized mobile applications, and official social assets from impersonation and rogue binary clones.
               </p>
 
               {/* Social Icons row */}

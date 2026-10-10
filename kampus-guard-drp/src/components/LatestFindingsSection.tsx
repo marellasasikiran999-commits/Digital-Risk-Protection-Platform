@@ -117,10 +117,20 @@ const dossier = await generateDossier({
 
   return (
     <div className="space-y-2">
-      {/* Optimus Section Header Label */}
-      <div className="inline-flex items-center gap-3 text-[11px] font-mono text-cyan-400 tracking-wider">
-        <span className="w-8 h-px bg-cyan-400/50" />
-        <span>04 // ACTIVE THREAT REPOSITORY &amp; PIPELINE ENGINE</span>
+      {/* Big Section Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pt-4 pb-1">
+        <div>
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold tracking-widest uppercase mb-1">
+            <span className="w-6 h-px bg-cyan-400" />
+            <span>04 // INCIDENT REPOSITORY &amp; TAKEDOWN QUEUE</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display">
+            Active Threat Candidates &amp; Multi-Channel Triage
+          </h2>
+        </div>
+        <p className="text-xs text-slate-400 max-w-sm font-sans hidden md:block text-right">
+          Cryptographically hashed evidence dossiers with 1-click Cease &amp; Desist notice generators.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-start">
@@ -130,8 +140,8 @@ const dossier = await generateDossier({
             <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 group glass-panel-hover hud-bracket card-glow-top">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-sm font-bold text-white mr-2 group-hover:translate-x-1 transition-transform">
-                    Latest Findings
+                  <h3 className="text-base font-bold text-white mr-2 group-hover:translate-x-1 transition-transform font-display">
+                    Threat Triage Feed
                   </h3>
                   <button
                     onClick={() => setFilter('all')}

@@ -121,14 +121,20 @@ export const BrandProfileManager: React.FC<BrandProfileManagerProps> = ({
             <Building2 className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              Brand Profile &amp; Asset Whitelist
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
-                0% False Positive Baseline
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold tracking-widest uppercase mb-1">
+              <span className="w-6 h-px bg-cyan-400" />
+              <span>CORPORATE ASSET REGISTRATION</span>
+            </div>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-display tracking-tight">
+                Brand Perimeter &amp; Allowlist Baseline
+              </h1>
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold font-mono">
+                Exclusion Baseline Active
               </span>
-            </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Verified corporate assets for <strong className="text-white">{currentAsset.brandName}</strong>. Any candidates matching these items are excluded from alerts.
+            </div>
+            <p className="text-xs sm:text-sm text-slate-300 mt-1">
+              Authorized digital assets for <strong className="text-white font-semibold">{currentAsset.brandName}</strong>. Cryptographically whitelisted to prevent false alerts.
             </p>
           </div>
         </div>

@@ -350,14 +350,16 @@ Action Demanded: Immediate removal, certificate revocation, and global hash blac
       <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-purple-950/40 via-[#0a1020] to-[#070b16] border-purple-500/20 card-glow-top">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
           <div>
-            <Badge variant="cyber">
-              Android Security Sandbox
-            </Badge>
-            <h2 className="text-xl font-black text-white mt-1.5 tracking-tight font-sans">
-              Malicious APK &amp; Rogue App Sandbox
-            </h2>
-            <p className="text-xs text-slate-300 mt-0.5">
-              Drop any Android <span className="font-cyber text-purple-300">.apk</span> binary file to decompile manifests, detect banking overlays, analyze dangerous permissions, and confirm verdicts in real-time.
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-purple-400 font-bold tracking-widest uppercase mb-1">
+              <span className="w-6 h-px bg-purple-400" />
+              <span>06 // STATIC BINARY DISSECTION</span>
+              <Badge variant="cyber" className="ml-2 font-mono text-[10px]">Active Sandbox</Badge>
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display mt-0.5">
+              Android APK Malware &amp; Reverse Engineering Sandbox
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+              Inspect Android bytecode, decompile <span className="font-cyber text-purple-300 font-bold">AndroidManifest.xml</span>, verify publisher certificate signatures, and analyze trojan permission abuse.
             </p>
           </div>
 

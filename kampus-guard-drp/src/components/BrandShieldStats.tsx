@@ -129,11 +129,22 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
   ];
 
   return (
-    <div className="space-y-2">
-      {/* Optimus Section Header Label */}
-      <div className="inline-flex items-center gap-3 text-[11px] font-mono text-cyan-400 tracking-wider">
-        <span className="w-8 h-px bg-cyan-400/50" />
-        <span>02 // EXECUTIVE TELEMETRY &amp; METRICS</span>
+    <div className="space-y-4">
+      {/* Big Section Heading */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 pt-2 pb-1">
+        <div>
+          <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold tracking-widest uppercase mb-1">
+            <span className="w-6 h-px bg-cyan-400" />
+            <span>02 // SURVEILLANCE TELEMETRY</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-display">
+            Live Threat Surface &amp; Perimeter Metrics
+          </h2>
+        </div>
+        <div className="flex items-center gap-2 text-xs font-mono text-slate-400 pb-1">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Real-time Event Stream Active</span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -155,10 +166,10 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
                 </div>
 
                 <div className="flex items-baseline justify-between pt-1">
-                  <span className="text-2xl font-black text-white tracking-tight font-cyber group-hover:translate-x-0.5 transition-transform">
+                  <span className="text-3xl lg:text-4xl font-black text-white tracking-tight font-display group-hover:translate-x-0.5 transition-transform">
                     {card.count}
                   </span>
-                  <Badge variant={card.badgeVariant} className="text-[9px] py-0 px-2 font-mono">
+                  <Badge variant={card.badgeVariant} className="text-[10px] py-0.5 px-2 font-mono">
                     {card.growth}
                   </Badge>
                 </div>

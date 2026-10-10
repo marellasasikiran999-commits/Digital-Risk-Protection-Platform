@@ -267,16 +267,16 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
                 </div>
               </div>
               <div>
-                <div className="flex items-center gap-2.5">
-                  <h2 className="text-xl font-bold text-white font-display">
-                    App Store &amp; Repository Monitor
-                  </h2>
-                  <Badge variant="cyber" className="font-cyber font-bold text-[10px]">
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-display tracking-tight">
+                    App Store &amp; Rogue APK Repository Monitor
+                  </h1>
+                  <Badge variant="cyber" className="font-cyber font-bold text-xs py-1 px-2.5">
                     {filtered.length} APKS MONITORED
                   </Badge>
                 </div>
-                <p className="text-xs text-slate-400 font-sans mt-0.5">
-                  Continuous crawler scanning Google Play, Apple App Store, and APKPure mirror repositories.
+                <p className="text-xs sm:text-sm text-slate-300 font-sans mt-1">
+                  Continuous crawler scanning Google Play, Apple App Store, and APKPure mirror repositories for developer mismatches and malicious repackaging.
                 </p>
               </div>
             </div>

@@ -53,7 +53,7 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
             </div>
           </div>
           <div>
-            <h1 className="text-xs font-black text-white tracking-tight uppercase leading-tight font-sans">
+            <h1 className="text-xs font-black text-white tracking-wider uppercase leading-tight font-display">
               Digital Risk Protection
             </h1>
             <div className="flex items-center gap-1.5 mt-0.5">
@@ -115,8 +115,8 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
             ACTIVE
           </span>
         </div>
-        <h4 className="text-xs font-bold text-white leading-tight">Autonomous Defense</h4>
-        <p className="text-[10px] text-slate-400 mt-0.5 font-sans">Real-time homoglyph &amp; counterfeit detection.</p>
+        <h4 className="text-xs font-bold text-white leading-tight font-display">Perimeter Surveillance</h4>
+        <p className="text-[10px] text-slate-400 mt-0.5 font-sans">Correlating external domains, packages &amp; social assets.</p>
       </div>
     </aside>
   );

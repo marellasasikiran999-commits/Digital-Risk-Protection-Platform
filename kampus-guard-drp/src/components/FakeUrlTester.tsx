@@ -188,16 +188,20 @@ https://${officialDomain}`;
               <Globe className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-white tracking-tight font-sans">
-                  Fake URL &amp; Phishing Domain Inspector
+              <div className="inline-flex items-center gap-2 text-xs font-mono text-purple-400 font-bold tracking-widest uppercase mb-1">
+                <span className="w-6 h-px bg-purple-400" />
+                <span>07 // REGISTRAR &amp; DNS AUDITOR</span>
+              </div>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display">
+                  Phishing Domain &amp; Typosquatting Threat Inspector
                 </h1>
-                <Badge variant="cyber">
-                  Live Scanner
+                <Badge variant="cyber" className="font-mono text-xs">
+                  Active Resolver
                 </Badge>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Real-time typosquatting detection, homoglyph audits, SSL inspection, and automated registrar takedowns.
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+                Real-time typosquatting heuristics, Cyrillic look-alike detection, TLS certificate verification, and automated registrar Cease &amp; Desist filing.
               </p>
             </div>
           </div>
