@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { Globe, AlertTriangle, ShieldCheck, RefreshCw, Copy, CheckCircle, FileText, Send, Sparkles } from 'lucide-react';
 import type { Brand } from '../utils/api';
+import { Card } from './ui/card';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 interface UrlAnalysisResult {
   url: string;
@@ -77,14 +81,14 @@ export const FakeUrlTester: React.FC<FakeUrlTesterProps> = ({ activeBrand }) => 
 
     if (isOfficial) {
       score = 4;
-      reasons.push('Verified legitimate corporate domain of Digital Risk Protection Platform.');
+      reasons.push(`Verified legitimate corporate domain of ${brandName}.`);
       reasons.push('Valid Extended Validation (EV) TLS Certificate.');
     } else {
       if (isHomoglyph) {
         score += 45;
         reasons.push('CRITICAL: Cyrillic homoglyph character detected masquerading as ASCII "a".');
       }
-      if (clean.includes('digitalrisk') || clean.includes('drp-') || clean.includes('protection')) {
+      if (clean.includes('digitalrisk') || clean.includes('drp-') || clean.includes('protection') || clean.includes('paypa') || clean.includes('appl') || clean.includes('netfli')) {
         score += 30;
         reasons.push('Brand name typosquatting / affix hijacking found in unverified host.');
       }
@@ -129,7 +133,7 @@ export const FakeUrlTester: React.FC<FakeUrlTesterProps> = ({ activeBrand }) => 
         body: JSON.stringify({
           source: 'Fake Website',
           name: result?.domain || 'Phishing Domain',
-          details: `Phishing domain impersonating Digital Risk Protection Platform: ${result?.url}`,
+          details: `Phishing domain impersonating ${brandName}: ${result?.url}`,
           risk_score: result?.risk_score || 88,
           risk_level: result?.risk_level || 'HIGH',
           url: result?.url || '',
@@ -177,85 +181,89 @@ https://${officialDomain}`;
   return (
     <div className="space-y-6">
       {/* Header banner */}
-      <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6 relative overflow-hidden">
+      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-purple-950/30 via-[#0a1020] to-[#070b16] border-purple-500/20 card-glow-top">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
-          <div>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-                <Globe className="w-5 h-5" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white flex items-center gap-2">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
+              <Globe className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-black text-white tracking-tight font-sans">
                   Fake URL &amp; Phishing Domain Inspector
-                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">
-                    Live Analyzer
-                  </span>
                 </h1>
-                <p className="text-xs text-gray-400 mt-0.5">
-                  Real-time typosquatting detection, homoglyph character audits, SSL certificate inspection, and automated registrar takedowns.
-                </p>
+                <Badge variant="cyber">
+                  Live Scanner
+                </Badge>
               </div>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Real-time typosquatting detection, homoglyph audits, SSL inspection, and automated registrar takedowns.
+              </p>
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Input & Presets Card */}
-      <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6">
-        <label className="text-xs font-semibold text-gray-300 block mb-2 uppercase tracking-wider">
+      <Card className="p-6 space-y-4 shadow-xl">
+        <label className="text-xs font-bold text-slate-300 block uppercase tracking-wider font-cyber">
           Enter Domain or URL to Inspect
         </label>
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
+            <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <Input
               type="text"
               value={targetUrl}
               onChange={(e) => setTargetUrl(e.target.value)}
               placeholder="e.g. https://drp-platform-login-claim.com/portal"
-              className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
+              className="pl-10 h-11"
             />
           </div>
-          <button
+          <Button
+            variant="cyber"
+            size="lg"
             onClick={() => handleScan()}
             disabled={isScanning || !targetUrl.trim()}
-            className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl text-sm flex items-center justify-center gap-2 transition-all shadow-lg shadow-purple-600/20 disabled:opacity-50"
+            className="px-6 h-11"
           >
             {isScanning ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {isScanning ? 'Analyzing Domain...' : 'Analyze URL'}
-          </button>
+            <span>{isScanning ? 'Analyzing Domain...' : 'Analyze URL'}</span>
+          </Button>
         </div>
 
         {/* Quick Test Presets */}
-        <div className="mt-4 pt-4 border-t border-gray-800/80">
-          <span className="text-xs text-gray-400 font-medium mr-2">Try Real-world Attack Presets:</span>
+        <div className="pt-4 border-t border-slate-800/80">
+          <span className="text-xs text-slate-400 font-bold font-cyber mr-2">Attack Presets:</span>
           <div className="flex flex-wrap gap-2 mt-2">
             {presets.map((preset, idx) => (
-              <button
+              <Button
                 key={idx}
+                variant="outline"
+                size="sm"
                 onClick={() => {
                   setTargetUrl(preset.url);
                   handleScan(preset.url);
                 }}
-                className="text-xs bg-[#0b0f19] hover:bg-purple-950/40 border border-gray-700/80 hover:border-purple-500/50 text-gray-300 hover:text-white px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5"
+                className="font-cyber text-[11px] h-8"
               >
                 <span>{preset.label}</span>
-                <span className="text-[10px] text-gray-500 font-mono">({preset.url.split('/')[2]})</span>
-              </button>
+                <span className="text-[10px] text-slate-500 font-sans">({preset.url.split('/')[2]})</span>
+              </Button>
             ))}
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Analysis Results Display */}
       {result && (
-        <div className="bg-[#111827] border border-gray-800 rounded-2xl p-6 space-y-6 animate-fadeIn">
+        <Card className="p-6 space-y-6 animate-fadeIn shadow-2xl">
           {/* Top Score Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-xl border bg-[#0b0f19]" style={{
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 rounded-2xl border bg-[#0b1222]/80" style={{
             borderColor: result.risk_level === 'CRITICAL' ? 'rgba(239, 68, 68, 0.4)' : result.risk_level === 'HIGH' ? 'rgba(249, 115, 22, 0.4)' : result.risk_level === 'MEDIUM' ? 'rgba(234, 179, 8, 0.4)' : 'rgba(34, 197, 94, 0.4)'
           }}>
             <div className="flex items-center gap-4">
-              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl border ${
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl font-cyber border ${
                 result.risk_level === 'CRITICAL' ? 'bg-red-500/10 text-red-400 border-red-500/30' :
                 result.risk_level === 'HIGH' ? 'bg-orange-500/10 text-orange-400 border-orange-500/30' :
                 result.risk_level === 'MEDIUM' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/30' :
@@ -265,45 +273,42 @@ https://${officialDomain}`;
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold uppercase ${
-                    result.risk_level === 'CRITICAL' ? 'bg-red-500/20 text-red-300 border border-red-500/40' :
-                    result.risk_level === 'HIGH' ? 'bg-orange-500/20 text-orange-300 border border-orange-500/40' :
-                    result.risk_level === 'MEDIUM' ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/40' :
-                    'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                  }`}>
+                  <Badge variant={result.risk_level === 'CRITICAL' ? 'destructive' : result.risk_level === 'HIGH' ? 'warning' : 'success'}>
                     {result.risk_level} RISK THREAT
-                  </span>
-                  <span className="text-xs text-gray-400">Score: {result.risk_score}/100</span>
+                  </Badge>
+                  <span className="text-xs text-slate-400 font-cyber">Score: {result.risk_score}/100</span>
                 </div>
-                <h3 className="text-lg font-bold text-white mt-1 break-all">
+                <h3 className="text-lg font-bold text-white mt-1 break-all font-cyber">
                   {result.domain}
                 </h3>
-                <p className="text-xs text-gray-400 font-mono break-all mt-0.5">
+                <p className="text-xs text-slate-400 font-cyber break-all mt-0.5">
                   {result.url}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <button
+              <Button
+                variant="destructive"
+                size="sm"
                 onClick={() => setShowTakedown(!showTakedown)}
-                className="px-4 py-2.5 bg-red-600/20 hover:bg-red-600/30 text-red-300 border border-red-500/40 font-semibold rounded-xl text-xs flex items-center gap-2 transition-all"
               >
                 <FileText className="w-3.5 h-3.5" />
-                {showTakedown ? 'Hide Notice' : 'Generate DMCA / Abuse Notice'}
-              </button>
-              <button
+                <span>{showTakedown ? 'Hide Notice' : 'Generate Abuse Notice'}</span>
+              </Button>
+              <Button
+                variant="cyber"
+                size="sm"
                 onClick={handleAddToBlacklist}
-                className="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl text-xs flex items-center gap-2 transition-all"
               >
                 <Send className="w-3.5 h-3.5" />
-                Add to Blacklist
-              </button>
+                <span>Add to Blacklist</span>
+              </Button>
             </div>
           </div>
 
           {actionSuccess && (
-            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center gap-2">
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-300 flex items-center gap-2 font-cyber">
               <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               <span>{actionSuccess}</span>
             </div>
@@ -311,61 +316,61 @@ https://${officialDomain}`;
 
           {/* Metric Badges Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="bg-[#0b0f19] border border-gray-800 p-4 rounded-xl">
-              <div className="text-xs text-gray-400">SSL Certificate</div>
-              <div className="mt-1 text-sm font-semibold flex items-center gap-1.5">
+            <div className="bg-[#0b1222]/80 border border-slate-800 p-4 rounded-xl">
+              <div className="text-[11px] text-slate-400 font-cyber uppercase">SSL Certificate</div>
+              <div className="mt-1 text-xs font-semibold flex items-center gap-1.5 font-cyber">
                 {result.ssl_valid ? (
                   <span className="text-emerald-400 flex items-center gap-1">
                     <ShieldCheck className="w-4 h-4" /> Valid TLS
                   </span>
                 ) : (
-                  <span className="text-red-400 flex items-center gap-1">
+                  <span className="text-rose-400 flex items-center gap-1">
                     <AlertTriangle className="w-4 h-4" /> Insecure / Untrusted
                   </span>
                 )}
               </div>
             </div>
 
-            <div className="bg-[#0b0f19] border border-gray-800 p-4 rounded-xl">
-              <div className="text-xs text-gray-400">Homoglyph Attack</div>
-              <div className="mt-1 text-sm font-semibold flex items-center gap-1.5">
+            <div className="bg-[#0b1222]/80 border border-slate-800 p-4 rounded-xl">
+              <div className="text-[11px] text-slate-400 font-cyber uppercase">Homoglyph Attack</div>
+              <div className="mt-1 text-xs font-semibold flex items-center gap-1.5 font-cyber">
                 {result.is_homoglyph ? (
-                  <span className="text-red-400 flex items-center gap-1">
+                  <span className="text-rose-400 flex items-center gap-1">
                     <AlertTriangle className="w-4 h-4" /> Cyrillic Detected
                   </span>
                 ) : (
-                  <span className="text-gray-300">Clean ASCII</span>
+                  <span className="text-slate-300">Clean ASCII</span>
                 )}
               </div>
             </div>
 
-            <div className="bg-[#0b0f19] border border-gray-800 p-4 rounded-xl">
-              <div className="text-xs text-gray-400">Estimated Domain Age</div>
-              <div className="mt-1 text-sm font-semibold text-white">
+            <div className="bg-[#0b1222]/80 border border-slate-800 p-4 rounded-xl">
+              <div className="text-[11px] text-slate-400 font-cyber uppercase">Estimated Age</div>
+              <div className="mt-1 text-xs font-semibold text-white font-cyber">
                 {result.domain_age_days} days
                 {result.domain_age_days < 30 && (
-                  <span className="text-[10px] text-red-400 ml-1.5 font-normal">(Newly Registered)</span>
+                  <span className="text-[10px] text-rose-400 ml-1.5 font-normal">(New Domain)</span>
                 )}
               </div>
             </div>
 
-            <div className="bg-[#0b0f19] border border-gray-800 p-4 rounded-xl">
-              <div className="text-xs text-gray-400">Typosquat Similarity</div>
-              <div className="mt-1 text-sm font-semibold text-purple-400">
-                {result.similarity_score}% Match
+            <div className="bg-[#0b1222]/80 border border-slate-800 p-4 rounded-xl">
+              <div className="text-[11px] text-slate-400 font-cyber uppercase">Typo Proximity</div>
+              <div className="mt-1 text-xs font-semibold text-cyan-400 font-cyber">
+                {result.similarity_score}% Similarity
               </div>
             </div>
           </div>
 
           {/* Threat Reasons Breakdown */}
-          <div className="bg-[#0b0f19] border border-gray-800 rounded-xl p-5">
-            <h4 className="text-xs font-bold text-gray-300 uppercase tracking-wider mb-3">
+          <div className="bg-[#0b1222]/80 border border-slate-800 rounded-xl p-5">
+            <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 font-cyber">
               Risk Evaluation Signals ({result.reasons.length})
             </h4>
             <div className="space-y-2">
               {result.reasons.map((reason, idx) => (
-                <div key={idx} className="flex items-start gap-2.5 text-xs text-gray-300 bg-[#111827] p-2.5 rounded-lg border border-gray-800/60">
-                  <span className="text-red-400 font-bold mt-0.5">•</span>
+                <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-300 bg-[#080d1a] p-3 rounded-lg border border-slate-800/80">
+                  <span className="text-rose-400 font-bold mt-0.5">•</span>
                   <span>{reason}</span>
                 </div>
               ))}
@@ -374,26 +379,27 @@ https://${officialDomain}`;
 
           {/* Takedown Notice View */}
           {showTakedown && (
-            <div className="bg-[#0b0f19] border border-red-500/30 rounded-xl p-5 space-y-3">
+            <div className="bg-[#0b1222]/80 border border-rose-500/30 rounded-xl p-5 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-red-400 uppercase tracking-wider flex items-center gap-2">
+                <span className="text-xs font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2 font-cyber">
                   <FileText className="w-4 h-4" />
                   Pre-drafted Registrar Abuse Notice (1-Click Takedown)
                 </span>
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={handleCopyTakedown}
-                  className="px-3 py-1 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-xs flex items-center gap-1.5"
                 >
                   {copied ? <CheckCircle className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  {copied ? 'Copied Notice' : 'Copy Notice'}
-                </button>
+                  <span>{copied ? 'Copied Notice' : 'Copy Notice'}</span>
+                </Button>
               </div>
-              <pre className="text-xs text-gray-300 font-mono bg-black/50 p-4 rounded-lg overflow-x-auto whitespace-pre-wrap leading-relaxed border border-gray-800">
+              <pre className="text-xs text-slate-300 font-cyber bg-black/60 p-4 rounded-xl overflow-x-auto whitespace-pre-wrap leading-relaxed border border-slate-800">
                 {getTakedownLetter()}
               </pre>
             </div>
           )}
-        </div>
+        </Card>
       )}
     </div>
   );

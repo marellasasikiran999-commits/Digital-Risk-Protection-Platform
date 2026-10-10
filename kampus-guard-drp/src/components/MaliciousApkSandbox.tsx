@@ -5,6 +5,9 @@ import {
   UploadCloud, FileArchive, ShieldCheck, ShieldAlert,
   Hash, Cpu, HardDrive, RefreshCw
 } from 'lucide-react';
+import { Card } from './ui/card';
+import { Badge } from './ui/badge';
+import { Button } from './ui/button';
 
 interface AnalyzedApkData {
   fileName: string;
@@ -344,31 +347,37 @@ Action Demanded: Immediate removal, certificate revocation, and global hash blac
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-purple-950/60 via-[#0f172a] to-[#0a0f1d] border border-purple-500/30 rounded-2xl p-6 shadow-2xl backdrop-blur-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40">
-            Android Security Lab
-          </span>
-          <h2 className="text-xl font-black text-white mt-1">Malicious APK &amp; Rogue App Sandbox</h2>
-          <p className="text-xs text-slate-300 mt-0.5">
-            Drop any Android `.apk` binary file to decompile manifests, detect banking overlays, analyze dangerous permissions, and confirm malware verdicts in real-time.
-          </p>
-        </div>
+      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-purple-950/40 via-[#0a1020] to-[#070b16] border-purple-500/20 card-glow-top">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+          <div>
+            <Badge variant="cyber">
+              Android Security Sandbox
+            </Badge>
+            <h2 className="text-xl font-black text-white mt-1.5 tracking-tight font-sans">
+              Malicious APK &amp; Rogue App Sandbox
+            </h2>
+            <p className="text-xs text-slate-300 mt-0.5">
+              Drop any Android <span className="font-cyber text-purple-300">.apk</span> binary file to decompile manifests, detect banking overlays, analyze dangerous permissions, and confirm verdicts in real-time.
+            </p>
+          </div>
 
-        {/* Preset sample buttons */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-slate-400 font-bold">Quick Vectors:</span>
-          {presets.map((p, i) => (
-            <button
-              key={i}
-              onClick={() => handleSelectPreset(p)}
-              className="text-xs font-bold px-3 py-1.5 rounded-xl bg-[#141e33] hover:bg-[#1a2845] border border-slate-700 text-slate-200 transition-all"
-            >
-              {p.label}
-            </button>
-          ))}
+          {/* Preset sample buttons with shadcn Button */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-slate-400 font-bold font-cyber">Quick Vectors:</span>
+            {presets.map((p, i) => (
+              <Button
+                key={i}
+                variant="outline"
+                size="sm"
+                onClick={() => handleSelectPreset(p)}
+                className="font-cyber text-[11px] h-8"
+              >
+                {p.label}
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
+      </Card>
 
       {/* DRAG AND DROP APK DROP ZONE */}
       <div
