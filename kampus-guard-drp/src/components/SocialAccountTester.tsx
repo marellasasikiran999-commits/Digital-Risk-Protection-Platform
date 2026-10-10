@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Radio, Copy, Check, ExternalLink, ShieldCheck, Sparkles } from 'lucide-react';
+import { 
+  Radio, Copy, Check, ExternalLink, ShieldCheck
+} from 'lucide-react';
 import type { Brand } from '../utils/api';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
@@ -10,12 +12,21 @@ interface SocialAccountTesterProps {
   activeBrand?: Brand;
 }
 
+const InstagramIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+  </svg>
+);
+
 export const SocialAccountTester: React.FC<SocialAccountTesterProps> = ({ activeBrand }) => {
   const [handle, setHandle] = useState('@drp_support24');
   const [platform, setPlatform] = useState('Instagram');
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showGuide, setShowGuide] = useState(true);
 
   const brandName = activeBrand?.brand_name || 'Digital Risk Protection Platform';
   const officialList = (activeBrand?.official_handles && activeBrand.official_handles.length > 0)
@@ -23,10 +34,56 @@ export const SocialAccountTester: React.FC<SocialAccountTesterProps> = ({ active
     : ['@digitalriskprotection', '@digitalriskprotection_hq'];
 
   const samples = [
-    { label: 'Deceptive Affix', handle: '@drp_support24', platform: 'Instagram' },
-    { label: 'Homoglyph Lookalike', handle: '@digitаlrisk_promo', platform: 'Twitter' },
-    { label: 'Official Brand Handle', handle: officialList[0] || '@digitalriskprotection', platform: 'Twitter' }
+    { label: 'Instagram Affix Impersonator', handle: '@drp_support24', platform: 'Instagram' },
+    { label: 'Instagram Cyrillic Homoglyph', handle: '@digitаlrisk_care', platform: 'Instagram' },
+    { label: 'Instagram Fake Support Desk', handle: '@bycom_helpdesk_official', platform: 'Instagram' },
+    { label: 'Official Whitelisted Handle', handle: officialList[0] || '@digitalriskprotection_hq', platform: 'Instagram' }
   ];
+
+  // Auto-parse full URLs if user pastes from Instagram address bar or app
+  const parseSocialInput = (input: string) => {
+    const raw = input.trim();
+    if (!raw) return { handle: '', platform: platform };
+
+    // Instagram URL: https://instagram.com/username or https://www.instagram.com/username/?igsh=...
+    const instaMatch = raw.match(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/([a-zA-Z0-9._]+)/i);
+    if (instaMatch) {
+      return { handle: `@${instaMatch[1]}`, platform: 'Instagram' };
+    }
+
+    // Twitter / X URL
+    const xMatch = raw.match(/(?:https?:\/\/)?(?:www\.)?(?:x|twitter)\.com\/([a-zA-Z0-9_]+)/i);
+    if (xMatch) {
+      return { handle: `@${xMatch[1]}`, platform: 'Twitter' };
+    }
+
+    // Facebook URL
+    const fbMatch = raw.match(/(?:https?:\/\/)?(?:www\.)?facebook\.com\/([a-zA-Z0-9._]+)/i);
+    if (fbMatch) {
+      return { handle: `@${fbMatch[1]}`, platform: 'Facebook' };
+    }
+
+    // Telegram URL
+    const tgMatch = raw.match(/(?:https?:\/\/)?(?:www\.)?t\.me\/([a-zA-Z0-9_]+)/i);
+    if (tgMatch) {
+      return { handle: `@${tgMatch[1]}`, platform: 'Telegram' };
+    }
+
+    // Plain username or @handle
+    if (!raw.startsWith('@')) {
+      return { handle: `@${raw}`, platform: platform };
+    }
+
+    return { handle: raw, platform: platform };
+  };
+
+  const handleInputChange = (val: string) => {
+    const parsed = parseSocialInput(val);
+    setHandle(parsed.handle);
+    if (parsed.platform && parsed.platform !== platform) {
+      setPlatform(parsed.platform);
+    }
+  };
 
   const getLiveProfileUrl = (candidate: string, plat: string) => {
     const raw = candidate.trim().replace(/^@/, '');
@@ -36,7 +93,7 @@ export const SocialAccountTester: React.FC<SocialAccountTesterProps> = ({ active
       case 'twitter / x':
         return `https://x.com/${raw}`;
       case 'instagram':
-        return `https://instagram.com/${raw}`;
+        return `https://www.instagram.com/${raw}/`;
       case 'facebook':
         return `https://facebook.com/${raw}`;
       case 'telegram':
@@ -60,7 +117,7 @@ export const SocialAccountTester: React.FC<SocialAccountTesterProps> = ({ active
           isOfficial: true,
           score: 0,
           level: 'Safe',
-          verdict: 'OFFICIAL WHITELISTED ACCOUNT (0% False Positive Guarantee)',
+          verdict: 'OFFICIAL WHITELISTED ASSET (0% False Positive Baseline)',
           homoglyph: 'None (Clean character set)',
           similarity: '100% (Exact Baseline Match)',
           reasons: [
@@ -74,7 +131,11 @@ export const SocialAccountTester: React.FC<SocialAccountTesterProps> = ({ active
         const cyrillicMatch = clean.match(/[\u0400-\u04FF\u0370-\u03FF]/g);
         const hasCyrillic = cyrillicMatch && cyrillicMatch.length > 0;
         
-        const suspiciousWords = ['support', 'help', 'promo', 'airdrop', 'claim', 'official', 'desk', 'bonus', 'verify', 'security'];
+        const suspiciousWords = [
+          'support', 'help', 'promo', 'airdrop', 'claim', 'official', 
+          'desk', 'bonus', 'verify', 'security', 'care', 'customer', 
+          'helpline', 'giveaway', 'win'
+        ];
         const matchedKeywords = suspiciousWords.filter(w => lower.includes(w));
         
         let score = 55;
@@ -82,9 +143,10 @@ export const SocialAccountTester: React.FC<SocialAccountTesterProps> = ({ active
         if (matchedKeywords.length > 0) score += 20;
         if (score > 98) score = 98;
 
+        const uniqueCyrillic = Array.from(new Set(cyrillicMatch || []));
         const reasons = [];
         if (hasCyrillic) {
-          reasons.push(`Unicode Homoglyph confusable characters detected: [${cyrillicMatch.join(', ')}]`);
+          reasons.push(`Unicode Homoglyph confusable characters detected: [${uniqueCyrillic.join(', ')}]`);
         }
         if (matchedKeywords.length > 0) {
           reasons.push(`Affix hijacking detected with high-risk keyword(s): "${matchedKeywords.join(', ')}"`);
@@ -92,26 +154,29 @@ export const SocialAccountTester: React.FC<SocialAccountTesterProps> = ({ active
         reasons.push(`Not listed in official registered assets for "${brandName}".`);
         reasons.push('Candidate account lacks certified organizational cryptographic attestation.');
 
+        const liveProfile = getLiveProfileUrl(clean, platform);
+
         setResult({
           isOfficial: false,
           score: score,
           level: score >= 85 ? 'Critical' : score >= 70 ? 'High' : 'Medium',
           verdict: 'SUSPICIOUS IMPERSONATION PROFILE DETECTED',
-          homoglyph: hasCyrillic ? `Cyrillic confusables detected: ${cyrillicMatch.join(', ')}` : 'Clean Latin string (Affix / Typo attack)',
+          homoglyph: hasCyrillic ? `Cyrillic confusables detected: ${uniqueCyrillic.join(', ')}` : 'Clean Latin string (Affix / Typo attack)',
           similarity: hasCyrillic ? '96%' : '84%',
           reasons: reasons,
           takedown: `FORMAL SOCIAL MEDIA ABUSE & TAKEDOWN NOTICE
 Date: ${new Date().toISOString().split('T')[0]}
 Platform: ${platform}
-Impersonating Target Handle: ${clean}
+Target Impersonator Handle: ${clean}
+Live Profile URL: ${liveProfile}
 Protected Brand: ${brandName}
 Official Verified Baseline: ${officialList.join(', ')}
-Threat Severity Score: ${score}/100
+Calculated Threat Severity Score: ${score}/100
 
 EVIDENCE OF FRAUD & POLICY VIOLATION:
-1. Unauthorized use of trademarked corporate brand identity.
-2. ${hasCyrillic ? 'Deliberate Unicode homoglyph character obfuscation to mislead consumers.' : 'Deceptive affix hijacking and impersonation.'}
-3. High probability of credential harvesting and malicious social engineering.
+1. Trademark Impersonation: Profile deceptively mimics brand identity and trademarks of "${brandName}".
+2. ${hasCyrillic ? `Unicode Homoglyph Obfuscation: Uses confusable Cyrillic glyphs [${uniqueCyrillic.join(', ')}] designed to deceive users.` : 'Deceptive Affix Hijacking: Uses high-risk keywords to impersonate official brand communication channels.'}
+3. Consumer Risk: Potential vector for credential harvesting, financial fraud, and unauthorized customer contact.
 
 ACTION REQUESTED:
 Immediate suspension and permanent takedown of handle "${clean}" pursuant to ${platform} Terms of Service and Intellectual Property Policy.
@@ -120,35 +185,36 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandName}.`
         });
       }
       setAnalyzing(false);
-    }, 500);
+    }, 450);
   };
 
   const liveUrl = getLiveProfileUrl(handle, platform);
 
   return (
     <div className="space-y-6">
-      {/* Top Banner */}
-      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-blue-950/40 via-[#0a1020] to-[#070b16] border-blue-500/20 card-glow-top">
+      {/* Top Banner with Editorial Heading */}
+      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-pink-950/20 via-[#0a1020] to-[#070b16] border-pink-500/20 card-glow-top">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
           <div>
             <div className="flex items-center gap-2">
-              <Badge variant="cyber">
-                Social Media Intelligence Lab
+              <Badge variant="cyber" className="bg-pink-500/10 text-pink-400 border-pink-500/30 flex items-center gap-1.5">
+                <InstagramIcon className="w-3.5 h-3.5 text-pink-400" />
+                <span>Instagram &amp; Social Sentinel</span>
               </Badge>
               <Badge variant="success">
-                <ShieldCheck className="w-3 h-3" /> Real Accounts Supported
+                <ShieldCheck className="w-3 h-3" /> Real Profiles &amp; URLs Supported
               </Badge>
             </div>
-            <h2 className="text-xl font-black text-white mt-1.5 tracking-tight font-sans">
-              Homoglyph &amp; Impersonation Handle Analyzer
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white mt-2 tracking-tight font-display">
+              Instagram Impersonation &amp; Homoglyph Inspector
             </h2>
-            <p className="text-xs text-slate-300 mt-0.5">
-              Audit real candidate handles for Cyrillic confusables and affix hijacking against baseline: <strong className="text-cyan-300 font-cyber">{brandName}</strong>.
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-3xl">
+              Audit live Instagram accounts, Cyrillic letter swaps, and deceptive brand affixes against your baseline: <strong className="text-cyan-300 font-cyber">{brandName}</strong>.
             </p>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-xs text-slate-400 font-bold font-cyber">Quick Presets:</span>
+            <span className="text-xs text-slate-400 font-bold font-cyber">Test Scenarios:</span>
             {samples.map((s, idx) => (
               <Button
                 key={idx}
@@ -159,15 +225,60 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandName}.`
                   setPlatform(s.platform);
                   setResult(null);
                 }}
-                className="font-cyber text-[11px] h-8"
+                className="font-cyber text-[11px] h-8 hover:border-pink-500/40"
               >
                 <span>{s.handle}</span>
-                <span className="text-[9px] text-slate-500 font-sans">({s.label})</span>
+                <span className="text-[9px] text-slate-500 font-sans ml-1">({s.label.split(' ')[1] || s.label})</span>
               </Button>
             ))}
           </div>
         </div>
       </Card>
+
+      {/* Step-by-Step Instagram Testing Guide */}
+      <div className="bg-[#0b1222]/90 border border-slate-800 rounded-2xl p-5 shadow-xl backdrop-blur-xl">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-pink-500/20 border border-pink-500/30 flex items-center justify-center">
+              <InstagramIcon className="w-4 h-4 text-pink-400" />
+            </div>
+            <h3 className="text-sm font-bold text-white font-display">
+              How to Test Any Instagram Account (Step-by-Step)
+            </h3>
+          </div>
+          <button
+            onClick={() => setShowGuide(!showGuide)}
+            className="text-[11px] text-slate-400 hover:text-white font-mono transition-colors"
+          >
+            {showGuide ? '[Hide Guide]' : '[Show Guide]'}
+          </button>
+        </div>
+
+        {showGuide && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1 text-xs">
+            <div className="bg-[#080d1a] border border-slate-800/80 rounded-xl p-3.5 space-y-1.5">
+              <span className="text-[10px] font-black uppercase font-mono text-cyan-400 block">Step 1 // Grab Handle or URL</span>
+              <p className="text-slate-300 text-[11px] leading-relaxed">
+                In Instagram, open the profile you want to audit. Copy either their username (e.g. <strong className="text-white">@username</strong>) or the URL from the browser bar (<strong className="text-slate-400">instagram.com/username</strong>).
+              </p>
+            </div>
+
+            <div className="bg-[#080d1a] border border-slate-800/80 rounded-xl p-3.5 space-y-1.5">
+              <span className="text-[10px] font-black uppercase font-mono text-pink-400 block">Step 2 // Paste &amp; Run Audit</span>
+              <p className="text-slate-300 text-[11px] leading-relaxed">
+                Paste it into the <strong className="text-white">Candidate Handle</strong> field below. The engine auto-cleans the URL, parses the handle, and checks for Cyrillic homoglyph swaps (<strong className="text-yellow-400">а</strong>, <strong className="text-yellow-400">о</strong>, <strong className="text-yellow-400">р</strong>).
+              </p>
+            </div>
+
+            <div className="bg-[#080d1a] border border-slate-800/80 rounded-xl p-3.5 space-y-1.5">
+              <span className="text-[10px] font-black uppercase font-mono text-emerald-400 block">Step 3 // Triage &amp; Legal Takedown</span>
+              <p className="text-slate-300 text-[11px] leading-relaxed">
+                Review the threat score. If fraudulent, copy the pre-drafted <strong className="text-white">Formal Meta Abuse Notice</strong> with 1-click and submit it directly to Meta / Instagram’s official reporting portal.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Form with shadcn Card & Input */}
@@ -182,7 +293,9 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandName}.`
           <div className="space-y-3.5 text-xs">
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-slate-300 font-semibold font-cyber text-[11px]">Candidate Handle</label>
+                <label className="text-slate-300 font-semibold font-cyber text-[11px]">
+                  Candidate Instagram Handle or Profile Link
+                </label>
                 {handle.trim() && (
                   <a
                     href={liveUrl}
@@ -190,7 +303,7 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandName}.`
                     rel="noreferrer"
                     className="text-[10px] text-cyan-400 hover:text-cyan-300 flex items-center gap-1 font-semibold transition-colors"
                   >
-                    <span>View Live Profile on {platform}</span>
+                    <span>Open Live on {platform}</span>
                     <ExternalLink className="w-2.5 h-2.5" />
                   </a>
                 )}
@@ -198,13 +311,19 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandName}.`
               <Input
                 type="text"
                 value={handle}
-                onChange={(e) => setHandle(e.target.value)}
-                placeholder="e.g. @digitalrisk_support24, @tesla, or any real handle"
+                onChange={(e) => handleInputChange(e.target.value)}
+                placeholder="Paste Instagram URL (e.g. instagram.com/scam_help) or @handle"
+                className="font-mono text-xs"
               />
+              <span className="text-[10px] text-slate-500 mt-1 block">
+                Accepts <code className="text-slate-400">@username</code> or full URLs like <code className="text-slate-400">https://instagram.com/profile</code>
+              </span>
             </div>
 
             <div>
-              <label className="text-slate-300 font-semibold block mb-1.5 font-cyber text-[11px]">Target Social Platform</label>
+              <label className="text-slate-300 font-semibold block mb-1.5 font-cyber text-[11px]">
+                Target Social Platform
+              </label>
               <select
                 value={platform}
                 onChange={(e) => setPlatform(e.target.value)}
@@ -233,10 +352,10 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandName}.`
               size="lg"
               onClick={handleRunTest}
               disabled={analyzing}
-              className="w-full"
+              className="w-full bg-gradient-to-r from-pink-600 to-blue-600 hover:from-pink-500 hover:to-blue-500"
             >
               <Radio className={`w-4 h-4 ${analyzing ? 'animate-bounce' : ''}`} />
-              <span>{analyzing ? 'Inspecting Unicode Points...' : 'Analyze Handle & Confusables'}</span>
+              <span>{analyzing ? 'Inspecting Unicode Points & Homoglyphs...' : 'Analyze Handle & Confusables'}</span>
             </Button>
           </div>
         </Card>
@@ -254,11 +373,13 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandName}.`
             </div>
 
             {!result && !analyzing && (
-              <div className="h-48 flex flex-col items-center justify-center text-center p-6 border border-dashed border-slate-800/80 rounded-2xl mt-4 bg-[#0a1020]/40">
-                <Sparkles className="w-8 h-8 text-cyan-400/40 mb-2" />
-                <span className="text-xs font-bold text-slate-300 font-cyber">Ready for Live Scan</span>
-                <span className="text-[11px] text-slate-500 mt-1 max-w-sm">
-                  Enter any candidate handle above or select a preset to audit Unicode homoglyphs, confusable letters, and deceptive affixes.
+              <div className="h-56 flex flex-col items-center justify-center text-center p-6 border border-dashed border-slate-800/80 rounded-2xl mt-4 bg-[#0a1020]/40">
+                <div className="w-12 h-12 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center mb-3">
+                  <InstagramIcon className="w-6 h-6 text-pink-400" />
+                </div>
+                <span className="text-xs font-bold text-slate-200 font-cyber">Ready for Instagram Audit</span>
+                <span className="text-[11px] text-slate-400 mt-1.5 max-w-sm">
+                  Enter an Instagram profile or pick one of the presets on the top right to audit Unicode homoglyphs, deceptive affixes, and whitelist status.
                 </span>
               </div>
             )}
@@ -294,21 +415,42 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandName}.`
 
           {result && !result.isOfficial && (
             <div className="pt-3 border-t border-slate-800 flex items-center justify-between flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                asChild
-              >
-                <a
-                  href={liveUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-1.5"
+              <div className="flex items-center gap-2 flex-wrap">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  asChild
                 >
-                  <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Open Profile on {platform}</span>
-                </a>
-              </Button>
+                  <a
+                    href={liveUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-1.5"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>View on {platform}</span>
+                  </a>
+                </Button>
+
+                {platform === 'Instagram' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    asChild
+                    className="border-pink-500/40 hover:bg-pink-500/10 text-pink-300"
+                  >
+                    <a
+                      href="https://help.instagram.com/contact/636276399721841"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-1.5"
+                    >
+                      <InstagramIcon className="w-3.5 h-3.5 text-pink-400" />
+                      <span>Meta Abuse Portal</span>
+                    </a>
+                  </Button>
+                )}
+              </div>
 
               <Button
                 variant="destructive"
