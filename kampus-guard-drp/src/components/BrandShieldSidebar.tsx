@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Shield, LayoutDashboard, Building2, Radio, Smartphone, 
-  Search, FileText, Settings, Bug, Globe
+  Search, FileText, Settings, Bug, Globe, Sparkles
 } from 'lucide-react';
 
 interface BrandShieldSidebarProps {
@@ -18,17 +18,19 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
       title: 'COMMAND CENTER',
       items: [
         { id: 'dashboard', label: 'Security Dashboard', icon: LayoutDashboard },
+        { id: 'globe_3d', label: '3D Threat Globe', icon: Globe, badge: '3D LIVE' },
         { id: 'brands', label: 'Brand Baseline & Assets', icon: Building2 },
         { id: 'findings', label: 'Threat Triage Feed', icon: Search }
       ]
     },
     {
-      title: 'EXTERNAL ATTACK SURFACES',
+      title: 'INTELLIGENCE & SCANNERS',
       items: [
+        { id: 'lookalike_lab', label: 'Look-alike AI Engine', icon: Sparkles, badge: 'INTERACTIVE' },
         { id: 'social', label: 'Social Media Monitor', icon: Radio },
         { id: 'appstore', label: 'App Store Monitor', icon: Smartphone },
-        { id: 'url_tester', label: 'Phishing Domain Inspector', icon: Globe },
-        { id: 'apk_tester', label: 'APK Malware Sandbox', icon: Bug }
+        { id: 'url_tester', label: 'Phishing Domain Inspector', icon: Globe, badge: 'HOMOGLYPH' },
+        { id: 'apk_tester', label: 'APK Malware Sandbox', icon: Bug, badge: 'MALWARE' }
       ]
     },
     {
@@ -88,6 +90,12 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
                         <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                         <span className="truncate">{item.label}</span>
                       </div>
+
+                      {item.badge && !isActive && (
+                        <span className="text-[8px] font-cyber font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-cyan-400 border border-blue-500/20">
+                          {item.badge}
+                        </span>
+                      )}
                     </button>
                   );
                 })}

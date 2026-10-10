@@ -108,11 +108,11 @@ export const HologramShield3D: React.FC<HologramShield3DProps> = ({
 
     // 6. Animation loop
     let animId: number;
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      const elapsed = clock.getElapsedTime();
+      const elapsed = (performance.now() - startTime) * 0.001;
 
       // Gyroscope rotation
       icosaLine.rotation.y = elapsed * 0.4;

@@ -298,11 +298,11 @@ Submitted via Digital Risk Protection Platform Autonomous Intelligence Engine.`
     scene.add(ambLight);
 
     let animId: number;
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      const elapsed = clock.getElapsedTime();
+      const elapsed = (performance.now() - startTime) * 0.001;
 
       orbitGroup.rotation.y = elapsed * 0.25;
       orbitGroup.rotation.x = Math.sin(elapsed * 0.2) * 0.15;
