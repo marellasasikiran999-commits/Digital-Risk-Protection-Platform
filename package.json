@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npm --prefix kampus-guard-drp run dev",
-    "build": "npm --prefix kampus-guard-drp run build",
+    "build": "npm --prefix kampus-guard-drp run build && node -e \"require('fs').cpSync('kampus-guard-drp/dist', 'dist', {recursive: true, force: true})\"",
     "preview": "npm --prefix kampus-guard-drp run preview"
   }
 }
