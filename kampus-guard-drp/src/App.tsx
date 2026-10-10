@@ -14,7 +14,6 @@ import { AppStoreMonitoring } from './components/AppStoreMonitoring';
 import { IncidentReportsView } from './components/IncidentReportsView';
 import { CyberThreatGlobe3D } from './components/3d/CyberThreatGlobe3D';
 import { TiltCard3D } from './components/3d/TiltCard3D';
-import { AppleDeviceStudio3D } from './components/3d/AppleDeviceStudio3D';
 import { LookAlikeDetectionLab } from './components/LookAlikeDetectionLab';
 import { EvidenceModal } from './components/EvidenceModal';
 import { AddBrandModal } from './components/AddBrandModal';
@@ -137,7 +136,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b14] text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#070b14] text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white noise-overlay">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-[#121c32] border border-blue-500/40 text-blue-300 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-xs animate-bounce font-medium">
@@ -160,6 +159,35 @@ export function App() {
           currentUser={currentUser}
           onOpenAuthModal={() => setIsAuthModalOpen(true)}
         />
+
+        {/* Optimus Delta Live Telemetry Marquee Ticker */}
+        <div className="border-b border-slate-800/80 bg-[#080d1a]/60 py-2 overflow-hidden select-none">
+          <div className="animate-marquee whitespace-nowrap text-[11px] font-mono text-slate-400 flex items-center gap-10">
+            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> 23 SUSPICIOUS CANDIDATES SCANNED</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2 text-cyan-400">99.98% CYRILLIC HOMOGLYPH ACCURACY</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2 text-indigo-400">0% FALSE POSITIVE BASELINE FILTER</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2">MULTI-STORE CRAWL: GOOGLE PLAY &amp; APKPURE</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2 text-emerald-400"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> GLOBAL PERIMETER LATENCY &lt;14MS</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2 text-amber-400">AUTONOMOUS EVIDENCE DOSSIER READY</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> 23 SUSPICIOUS CANDIDATES SCANNED</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2 text-cyan-400">99.98% CYRILLIC HOMOGLYPH ACCURACY</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2 text-indigo-400">0% FALSE POSITIVE BASELINE FILTER</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2">MULTI-STORE CRAWL: GOOGLE PLAY &amp; APKPURE</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2 text-emerald-400"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> GLOBAL PERIMETER LATENCY &lt;14MS</span>
+            <span className="text-slate-600">/</span>
+            <span className="flex items-center gap-2 text-amber-400">AUTONOMOUS EVIDENCE DOSSIER READY</span>
+          </div>
+        </div>
 
         <main className="flex-1 p-5 lg:p-7 space-y-6 max-w-[1550px] w-full mx-auto">
           {/* TAB 1: DASHBOARD */}
@@ -198,13 +226,6 @@ export function App() {
 
               {/* Bottom Analytics Row: Risk Distribution + Top Risk + Recent Activity + Pro Tip */}
               <BottomAnalyticsRow />
-            </div>
-          )}
-
-          {/* TAB: 3D APPLE DEVICE STUDIO */}
-          {activeTab === 'device_3d' && (
-            <div className="space-y-6">
-              <AppleDeviceStudio3D brandName={currentBrandName} />
             </div>
           )}
 
