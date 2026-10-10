@@ -12,6 +12,7 @@ interface AppStoreMonitoringProps {
 
 export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
   threats: initialThreats,
+  findings,
   onSelectFinding,
   onSelectThreat
 }) => {
@@ -84,7 +85,46 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
     }
   ];
 
-  const threatsList = (initialThreats && initialThreats.length > 0) ? initialThreats : defaultThreats;
+  // Map any backend findings into threats if provided
+  const backendAppThreats: AppStoreThreat[] = (findings || [])
+    .filter((f: any) => f.finding_type === 'app')
+    .map((f: any) => {
+      let perms: string[] = [];
+      if (f.factors_json) {
+        try {
+          const factors = JSON.parse(f.factors_json);
+          perms = factors.map((fact: any) => fact.factor || fact.name || '').filter(Boolean);
+        } catch {}
+      }
+      return {
+        id: f.id,
+        store: (f.detection_source?.toLowerCase().includes('apple') ? 'apple_app_store' : 'google_play') as AppStoreThreat['store'],
+        appName: f.candidate_name || f.title,
+        appId: f.package_name || f.candidate_name,
+        storeUrl: `https://play.google.com/store/apps/details?id=${f.package_name || f.candidate_name}`,
+        iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
+        publisherName: f.developer || 'Unauthorized Mirror',
+        rating: 3.5,
+        downloadsCount: '15,000+',
+        updatedDate: 'Recent',
+        descriptionSnippet: f.note || 'Publisher signature mismatch; unauthorized repository listing.',
+        riskScore: f.risk_score,
+        riskLevel: (f.risk_level?.toUpperCase() || 'HIGH') as AppStoreThreat['riskLevel'],
+        logoSimilarityScore: f.similarity_rate || 90,
+        nameSimilarityScore: f.confidence_score || 94,
+        isPublisherMismatch: true,
+        suspiciousPermissions: perms.length > 0 ? perms : ['RECEIVE_SMS', 'SYSTEM_ALERT_WINDOW'],
+        status: (f.status?.toUpperCase() || 'FLAGGED') as AppStoreThreat['status'],
+        isOfficial: false
+      };
+    });
+
+  const combinedThreats = [
+    ...backendAppThreats,
+    ...defaultThreats.filter(dt => !backendAppThreats.some(bt => bt.appId === dt.appId || bt.id === dt.id))
+  ];
+
+  const threatsList = (initialThreats && initialThreats.length > 0) ? initialThreats : combinedThreats;
 
   const filtered = threatsList.filter((t) => {
     if (storeFilter !== 'all' && t.store !== storeFilter) return false;
@@ -107,8 +147,8 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
           <div>
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
               App Store &amp; Repository Monitor
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">
-                8 Apps Monitored
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold font-mono">
+                {filtered.length} Apps Monitored
               </span>
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
@@ -195,7 +235,27 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
             <div className="pt-2 flex items-center gap-2">
               <button
                 onClick={() => {
-                  if (onSelectFinding) onSelectFinding({ id: t.id, candidate_name: t.appName, risk_score: t.riskScore, risk_level: t.riskLevel });
+                  const matchingFinding = findings?.find((f: any) => f.id === t.id || f.candidate_name === t.appId || f.package_name === t.appId || f.candidate_name === t.appName);
+                  if (onSelectFinding) {
+                    onSelectFinding(matchingFinding || {
+                      id: t.id,
+                      candidate_name: t.appName,
+                      title: t.appName,
+                      finding_type: 'app',
+                      category: 'App Store Defense › Rogue Distribution',
+                      asset: 'com.drp.platform.official',
+                      risk_score: t.riskScore,
+                      risk_level: t.riskLevel === 'CRITICAL' ? 'Critical' : (t.riskLevel === 'HIGH' ? 'High' : 'Medium'),
+                      status: t.status,
+                      confidence_score: t.nameSimilarityScore || 95,
+                      similarity_rate: t.logoSimilarityScore || 90,
+                      detection_source: 'Google Play & Mirrors',
+                      developer: t.publisherName,
+                      package_name: t.appId,
+                      note: t.descriptionSnippet || 'Publisher mismatch; suspicious permissions.',
+                      takedown_notice: `FORMAL GOOGLE PLAY ABUSE TAKEDOWN\nPackage: ${t.appId}\nApp: ${t.appName}\nPublisher: ${t.publisherName}\nFlagged Permissions: ${t.suspiciousPermissions?.join(', ') || 'SMS, OVERLAY'}\nRequest: Immediate takedown.`
+                    });
+                  }
                   if (onSelectThreat) onSelectThreat(t);
                 }}
                 className="flex-1 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-blue-600/20"

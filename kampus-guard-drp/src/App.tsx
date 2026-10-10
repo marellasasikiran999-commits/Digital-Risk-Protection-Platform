@@ -297,6 +297,7 @@ export function App() {
                 </button>
               </div>
               <AppStoreMonitoring
+                findings={findings}
                 onSelectFinding={(f) => setSelectedFindingForEvidence(f)}
               />
             </div>
