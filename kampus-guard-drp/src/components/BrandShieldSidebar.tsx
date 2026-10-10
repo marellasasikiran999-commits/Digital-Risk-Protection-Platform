@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Shield, LayoutDashboard, Building2, Radio, Smartphone, 
-  Search, FileText, Settings, Bug, Globe, Sparkles
+  Search, FileText, Settings, Bug, Globe
 } from 'lucide-react';
 
 interface BrandShieldSidebarProps {
@@ -17,27 +17,25 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
     {
       title: 'COMMAND CENTER',
       items: [
-        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'globe_3d', label: '3D Threat Globe', icon: Globe, badge: '3D LIVE' },
-        { id: 'brands', label: 'Brands & Assets', icon: Building2 },
-        { id: 'findings', label: 'Threat Findings', icon: Search }
+        { id: 'dashboard', label: 'Security Dashboard', icon: LayoutDashboard },
+        { id: 'brands', label: 'Brand Baseline & Assets', icon: Building2 },
+        { id: 'findings', label: 'Threat Triage Feed', icon: Search }
       ]
     },
     {
-      title: 'INTELLIGENCE LABS',
+      title: 'EXTERNAL ATTACK SURFACES',
       items: [
-        { id: 'lookalike_lab', label: 'Look-alike AI Engine', icon: Sparkles, badge: 'BONUS AI' },
         { id: 'social', label: 'Social Media Monitor', icon: Radio },
         { id: 'appstore', label: 'App Store Monitor', icon: Smartphone },
-        { id: 'apk_tester', label: 'APK Malware Sandbox', icon: Bug, badge: 'MALWARE' },
-        { id: 'url_tester', label: 'Fake URL Inspector', icon: Globe, badge: 'HOMOGLYPH' }
+        { id: 'url_tester', label: 'Phishing Domain Inspector', icon: Globe },
+        { id: 'apk_tester', label: 'APK Malware Sandbox', icon: Bug }
       ]
     },
     {
-      title: 'GOVERNANCE',
+      title: 'GOVERNANCE & AUDIT',
       items: [
-        { id: 'reports', label: 'Incident Reports', icon: FileText },
-        { id: 'settings', label: 'Engine Settings', icon: Settings }
+        { id: 'reports', label: 'Executive Incident Reports', icon: FileText },
+        { id: 'settings', label: 'System & Baseline Settings', icon: Settings }
       ]
     }
   ];
@@ -58,18 +56,19 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
             </h1>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider font-cyber">Platform</span>
-              <span className="text-[9px] px-1.5 py-0.2 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20 font-cyber">v2.4</span>
+              <span className="text-[9px] text-slate-500 font-mono">v3.0.0</span>
             </div>
           </div>
         </div>
 
-        {/* Grouped Navigation List */}
-        <nav className="space-y-5">
+        {/* Section Navigation */}
+        <nav className="space-y-6">
           {navSections.map((section, sIdx) => (
-            <div key={sIdx} className="space-y-1">
-              <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider px-3 block font-cyber">
+            <div key={sIdx} className="space-y-1.5">
+              <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest px-2 block">
                 {section.title}
               </span>
+
               <div className="space-y-1">
                 {section.items.map((item) => {
                   const Icon = item.icon;
@@ -89,12 +88,6 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
                         <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                         <span className="truncate">{item.label}</span>
                       </div>
-
-                      {item.badge && !isActive && (
-                        <span className="text-[8px] font-cyber font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                          {item.badge}
-                        </span>
-                      )}
                     </button>
                   );
                 })}
@@ -104,11 +97,11 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
         </nav>
       </div>
 
-      {/* Bottom Promo Card */}
+      {/* Bottom Status Card */}
       <div className="p-4 rounded-2xl bg-gradient-to-b from-[#0f172a] to-[#0a1020] border border-blue-900/30 relative overflow-hidden shadow-xl card-glow-top">
         <div className="flex items-center justify-between mb-2">
           <div className="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-cyan-400" />
+            <Shield className="w-4 h-4 text-cyan-400" />
           </div>
           <span className="text-[9px] font-cyber text-emerald-400 flex items-center gap-1 font-bold">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -116,7 +109,7 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
           </span>
         </div>
         <h4 className="text-xs font-bold text-white leading-tight font-display">Perimeter Surveillance</h4>
-        <p className="text-[10px] text-slate-400 mt-0.5 font-sans">Correlating external domains, packages &amp; social assets.</p>
+        <p className="text-[10px] text-slate-400 mt-0.5 font-sans">Continuous attack surface monitoring across registered brand assets.</p>
       </div>
     </aside>
   );

@@ -12,9 +12,6 @@ import { FakeUrlTester } from './components/FakeUrlTester';
 import { BrandProfileManager } from './components/BrandProfileManager';
 import { AppStoreMonitoring } from './components/AppStoreMonitoring';
 import { IncidentReportsView } from './components/IncidentReportsView';
-import { CyberThreatGlobe3D } from './components/3d/CyberThreatGlobe3D';
-import { TiltCard3D } from './components/3d/TiltCard3D';
-import { LookAlikeDetectionLab } from './components/LookAlikeDetectionLab';
 import { EvidenceModal } from './components/EvidenceModal';
 import { AddBrandModal } from './components/AddBrandModal';
 import { EditBrandModal } from './components/EditBrandModal';
@@ -160,48 +157,17 @@ export function App() {
           onOpenAuthModal={() => setIsAuthModalOpen(true)}
         />
 
-        {/* Optimus Delta Live Telemetry Marquee Ticker */}
-        <div className="border-b border-slate-800/80 bg-[#080d1a]/60 py-2 overflow-hidden select-none">
-          <div className="animate-marquee whitespace-nowrap text-[11px] font-mono text-slate-400 flex items-center gap-10">
-            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> 23 SUSPICIOUS CANDIDATES SCANNED</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-cyan-400">99.98% CYRILLIC HOMOGLYPH ACCURACY</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-indigo-400">0% FALSE POSITIVE BASELINE FILTER</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2">MULTI-STORE CRAWL: GOOGLE PLAY &amp; APKPURE</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-emerald-400"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> GLOBAL PERIMETER LATENCY &lt;14MS</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-amber-400">AUTONOMOUS EVIDENCE DOSSIER READY</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> 23 SUSPICIOUS CANDIDATES SCANNED</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-cyan-400">99.98% CYRILLIC HOMOGLYPH ACCURACY</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-indigo-400">0% FALSE POSITIVE BASELINE FILTER</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2">MULTI-STORE CRAWL: GOOGLE PLAY &amp; APKPURE</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-emerald-400"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> GLOBAL PERIMETER LATENCY &lt;14MS</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-amber-400">AUTONOMOUS EVIDENCE DOSSIER READY</span>
-          </div>
-        </div>
-
         <main className="flex-1 p-5 lg:p-7 space-y-6 max-w-[1550px] w-full mx-auto">
           {/* TAB 1: DASHBOARD */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
-              {/* Brand Hero Card with 3D Interactive Tilt */}
-              <TiltCard3D maxTilt={6}>
-                <BrandHeroCard
-                  currentBrand={activeBrandObj}
-                  onEditProfile={() => setIsEditBrandOpen(true)}
-                  onRunScan={handleRunScanAll}
-                  isScanning={isScanningAll}
-                />
-              </TiltCard3D>
+              {/* Brand Hero Card */}
+              <BrandHeroCard
+                currentBrand={activeBrandObj}
+                onEditProfile={() => setIsEditBrandOpen(true)}
+                onRunScan={handleRunScanAll}
+                isScanning={isScanningAll}
+              />
 
               {/* 5 Counter Stat Cards */}
               <BrandShieldStats summary={summary} />
@@ -226,23 +192,6 @@ export function App() {
 
               {/* Bottom Analytics Row: Risk Distribution + Top Risk + Recent Activity + Pro Tip */}
               <BottomAnalyticsRow />
-            </div>
-          )}
-
-          {/* TAB: 3D INTERACTIVE THREAT GLOBE */}
-          {activeTab === 'globe_3d' && (
-            <div className="space-y-6">
-              <CyberThreatGlobe3D />
-            </div>
-          )}
-
-          {/* TAB: LOOK-ALIKE AI ENGINE & EXCLUSION FILTER (Bonus Feature) */}
-          {activeTab === 'lookalike_lab' && (
-            <div className="space-y-6">
-              <LookAlikeDetectionLab 
-                brandName={currentBrandName}
-                officialHandles={brands.find(b => b.brand_name === currentBrandName)?.official_handles || ['@digitalriskprotection', '@digitalriskprotection_hq']}
-              />
             </div>
           )}
 
