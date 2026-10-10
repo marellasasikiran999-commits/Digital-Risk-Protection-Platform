@@ -1,5 +1,5 @@
-import React from 'react';
-import { Search, Bell } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Bell, Palette, Check } from 'lucide-react';
 import type { AuthUserProfile } from '../utils/firebase';
 
 interface BrandShieldHeaderProps {
@@ -15,6 +15,22 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
   currentUser,
   onOpenAuthModal
 }) => {
+  const [theme, setTheme] = useState<string>(() => {
+    return localStorage.getItem('drp-theme') || 'cyber-obsidian';
+  });
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('drp-theme', theme);
+  }, [theme]);
+
+  const themes = [
+    { id: 'cyber-obsidian', name: 'Cyber Obsidian', color: 'bg-cyan-400', desc: 'Electric Cyan & Deep Blue' },
+    { id: 'midnight-violet', name: 'Midnight Violet', color: 'bg-purple-500', desc: 'Royal Indigo & Neon Purple' },
+    { id: 'sentinel-emerald', name: 'Sentinel Emerald', color: 'bg-emerald-400', desc: 'Matrix Emerald & Teal' },
+  ];
+
   const initials = currentUser.displayName 
     ? currentUser.displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() 
     : 'SA';
@@ -49,6 +65,46 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
 
       {/* Right controls */}
       <div className="flex items-center gap-3.5">
+        {/* Dynamic Theme Preset Switcher */}
+        <div className="relative">
+          <button
+            onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
+            className="p-2.5 text-slate-300 hover:text-white rounded-xl bg-[#0d1527]/70 hover:bg-[#131d33] border border-slate-800/80 hover:border-slate-700 transition-all shadow-sm flex items-center gap-2 text-xs font-mono"
+            title="Theme Palette Presets"
+          >
+            <Palette className="w-4 h-4 text-cyan-400" />
+            <span className="hidden md:inline capitalize">{theme.replace('-', ' ')}</span>
+          </button>
+
+          {isThemeMenuOpen && (
+            <div className="absolute right-0 mt-2 w-52 bg-[#0c1324] border border-slate-800 rounded-xl shadow-2xl p-2 z-50 space-y-1 font-sans">
+              <span className="text-[10px] font-mono text-slate-400 px-2 py-1 block uppercase tracking-wider">
+                Cyber Defense Themes
+              </span>
+              {themes.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setTheme(t.id);
+                    setIsThemeMenuOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors ${
+                    theme === t.id
+                      ? 'bg-blue-600/20 text-white border border-blue-500/40'
+                      : 'text-slate-300 hover:bg-slate-800/60'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className={`w-2.5 h-2.5 rounded-full ${t.color}`} />
+                    <span>{t.name}</span>
+                  </div>
+                  {theme === t.id && <Check className="w-3.5 h-3.5 text-cyan-400" />}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Notifications with badge */}
         <div className="relative">
           <button 
