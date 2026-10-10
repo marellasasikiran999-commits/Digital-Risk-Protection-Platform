@@ -1,64 +1,49 @@
 import React from 'react';
 import { 
-  Shield, LayoutDashboard, Building2, Radio, Smartphone, Sparkles
+  Shield, LayoutDashboard, Building2, Radio, Smartphone, 
+  Search, FileText, Settings, Bug, Globe, Sparkles
 } from 'lucide-react';
 
 interface BrandShieldSidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  threatCounts?: {
-    social: number;
-    app: number;
-    total: number;
-  };
-}
-
-interface NavItem {
-  id: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  badge?: string;
-}
-
-interface NavSection {
-  title: string;
-  items: NavItem[];
 }
 
 export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
   activeTab,
-  setActiveTab,
-  threatCounts = { social: 15, app: 8, total: 23 }
+  setActiveTab
 }) => {
-  const navSections: NavSection[] = [
+  const navSections = [
     {
       title: 'COMMAND CENTER',
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-        { id: 'brands', label: 'Brands & Assets', icon: Building2 }
+        { id: 'globe_3d', label: '3D Threat Globe', icon: Globe, badge: '3D LIVE' },
+        { id: 'brands', label: 'Brands & Assets', icon: Building2 },
+        { id: 'findings', label: 'Threat Findings', icon: Search }
       ]
     },
     {
       title: 'INTELLIGENCE LABS',
       items: [
-        { 
-          id: 'social', 
-          label: 'Social Media Monitor', 
-          icon: Radio, 
-          badge: `${threatCounts.social} ALERTS` 
-        },
-        { 
-          id: 'appstore', 
-          label: 'App Store Monitor', 
-          icon: Smartphone, 
-          badge: `${threatCounts.app} APKS` 
-        }
+        { id: 'lookalike_lab', label: 'Look-alike AI Engine', icon: Sparkles, badge: 'BONUS AI' },
+        { id: 'social', label: 'Social Media Monitor', icon: Radio },
+        { id: 'appstore', label: 'App Store Monitor', icon: Smartphone },
+        { id: 'apk_tester', label: 'APK Malware Sandbox', icon: Bug, badge: 'MALWARE' },
+        { id: 'url_tester', label: 'Fake URL Inspector', icon: Globe, badge: 'HOMOGLYPH' }
+      ]
+    },
+    {
+      title: 'GOVERNANCE',
+      items: [
+        { id: 'reports', label: 'Incident Reports', icon: FileText },
+        { id: 'settings', label: 'Engine Settings', icon: Settings }
       ]
     }
   ];
 
   return (
-    <aside className="w-64 bg-[#090D16]/95 border-r border-slate-800/80 flex flex-col justify-between p-4 shrink-0 select-none z-30 min-h-screen backdrop-blur-md">
+    <aside className="w-64 bg-[#080d1a]/95 border-r border-slate-800/80 flex flex-col justify-between p-4 shrink-0 select-none z-30 min-h-screen backdrop-blur-2xl">
       <div className="space-y-6">
         {/* Digital Risk Protection Platform Logo Header */}
         <div className="flex items-center gap-3 px-2 py-2">
@@ -73,17 +58,15 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
             </h1>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider font-cyber">Platform</span>
-              <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-cyber font-bold">
-                ENTERPRISE
-              </span>
+              <span className="text-[9px] px-1.5 py-0.2 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20 font-cyber">v2.4</span>
             </div>
           </div>
         </div>
 
-        {/* Grouped Navigation List: Pristine 4-Tab Functional Architecture */}
-        <nav className="space-y-6">
+        {/* Grouped Navigation List */}
+        <nav className="space-y-5">
           {navSections.map((section, sIdx) => (
-            <div key={sIdx} className="space-y-1.5">
+            <div key={sIdx} className="space-y-1">
               <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider px-3 block font-cyber">
                 {section.title}
               </span>
@@ -96,19 +79,19 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
                     <button
                       key={item.id}
                       onClick={() => setActiveTab(item.id)}
-                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all relative group ${
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all relative ${
                         isActive
-                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold shadow-lg shadow-blue-600/30 border border-blue-400/40'
-                          : 'text-slate-400 hover:text-slate-100 hover:bg-[#111827]/70 hover:border-slate-800 border border-transparent'
+                          ? 'bg-gradient-to-r from-blue-600/90 to-indigo-600/90 text-white font-bold shadow-lg shadow-blue-600/25 border border-blue-500/30'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-[#0f172a]/70 hover:border-slate-800 border border-transparent'
                       }`}
                     >
-                      <div className="flex items-center gap-3 truncate">
-                        <Icon className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-110 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                      <div className="flex items-center gap-2.5 truncate">
+                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                         <span className="truncate">{item.label}</span>
                       </div>
 
                       {item.badge && !isActive && (
-                        <span className="text-[8px] font-cyber font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-cyan-400 border border-blue-500/20">
+                        <span className="text-[8px] font-cyber font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
                           {item.badge}
                         </span>
                       )}
@@ -121,21 +104,19 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
         </nav>
       </div>
 
-      {/* Bottom Telemetry Status Card */}
-      <div className="p-4 rounded-2xl bg-[#111827]/70 border border-slate-800/80 backdrop-blur-md relative overflow-hidden shadow-xl card-glow-top">
+      {/* Bottom Promo Card */}
+      <div className="p-4 rounded-2xl bg-gradient-to-b from-[#0f172a] to-[#0a1020] border border-blue-900/30 relative overflow-hidden shadow-xl card-glow-top">
         <div className="flex items-center justify-between mb-2">
-          <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-emerald-400" />
+          <div className="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-cyan-400" />
           </div>
           <span className="text-[9px] font-cyber text-emerald-400 flex items-center gap-1 font-bold">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            ACTIVE DEFENSE
+            ACTIVE
           </span>
         </div>
-        <h4 className="text-xs font-bold text-white leading-tight">0% False-Positive Filter</h4>
-        <p className="text-[10px] text-slate-400 mt-0.5 font-sans">
-          Whitelisted asset baseline active. Rogue candidate triage online.
-        </p>
+        <h4 className="text-xs font-bold text-white leading-tight">Autonomous Defense</h4>
+        <p className="text-[10px] text-slate-400 mt-0.5 font-sans">Real-time homoglyph &amp; counterfeit detection.</p>
       </div>
     </aside>
   );

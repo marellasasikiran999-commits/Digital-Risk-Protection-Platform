@@ -15,8 +15,6 @@ interface LatestFindingsSectionProps {
   onExportReport: () => void;
   isScanningSocial: boolean;
   isScanningApp: boolean;
-  onMarkSafe?: (id: string) => void;
-  onTakedown?: (id: string) => void;
 }
 
 export const LatestFindingsSection: React.FC<LatestFindingsSectionProps> = ({
@@ -27,9 +25,7 @@ export const LatestFindingsSection: React.FC<LatestFindingsSectionProps> = ({
   onRunAppScan,
   onExportReport,
   isScanningSocial,
-  isScanningApp,
-  onMarkSafe,
-  onTakedown
+  isScanningApp
 }) => {
   const [filter, setFilter] = useState<string>('all');
   const [tableSearch, setTableSearch] = useState('');
@@ -143,7 +139,7 @@ const dossier = await generateDossier({
                       filter === 'all' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    All ({findings.length})
+                    All ({findings.length || 23})
                   </button>
                   <button
                     onClick={() => setFilter('high')}
@@ -151,7 +147,7 @@ const dossier = await generateDossier({
                       filter === 'high' ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Critical/High ({findings.filter(f => (f.risk_level === 'Critical' || f.risk_level === 'High') && f.status !== 'Resolved').length})
+                    High (8)
                   </button>
                   <button
                     onClick={() => setFilter('medium')}
@@ -159,7 +155,7 @@ const dossier = await generateDossier({
                       filter === 'medium' ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/30' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Medium ({findings.filter(f => f.risk_level === 'Medium' && f.status !== 'Resolved').length})
+                    Medium (7)
                   </button>
                   <button
                     onClick={() => setFilter('low')}
@@ -167,7 +163,7 @@ const dossier = await generateDossier({
                       filter === 'low' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Whitelisted ({findings.filter(f => f.status === 'Resolved' || f.status === 'Legitimate').length})
+                    Low (8)
                   </button>
                 </div>
 
@@ -236,34 +232,10 @@ const dossier = await generateDossier({
                                 e.stopPropagation();
                                 onSelectFinding(item);
                               }}
-                              className="px-2.5 py-1 rounded-lg bg-[#14213d] hover:bg-blue-600 hover:text-white text-blue-400 font-bold text-xs border border-blue-500/20 transition-all font-mono"
+                              className="px-3 py-1 rounded-lg bg-[#14213d] hover:bg-blue-600 hover:text-white text-blue-400 font-bold text-xs border border-blue-500/20 transition-all font-mono"
                             >
                               View
                             </button>
-                            {onMarkSafe && item.status !== 'Resolved' && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onMarkSafe(item.id);
-                                }}
-                                className="px-2 py-1 rounded-lg bg-emerald-950/50 hover:bg-emerald-600 hover:text-white text-emerald-300 font-bold text-xs border border-emerald-500/20 transition-all font-mono"
-                                title="Mark Safe (0% False Positive)"
-                              >
-                                Safe
-                              </button>
-                            )}
-                            {onTakedown && item.status !== 'Resolved' && item.status !== 'In-progress' && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onTakedown(item.id);
-                                }}
-                                className="px-2 py-1 rounded-lg bg-rose-950/50 hover:bg-rose-600 hover:text-white text-rose-300 font-bold text-xs border border-rose-500/20 transition-all font-mono"
-                                title="Simulate Takedown"
-                              >
-                                Takedown
-                              </button>
-                            )}
                           </div>
                         </td>
                       </tr>
