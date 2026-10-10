@@ -11,20 +11,20 @@ object DetectionEngine {
     )
 
     val PRESET_BRANDS = mapOf(
-        "Kampus.VC" to OfficialBrandAsset(
-            brandName = "Kampus.VC",
-            alternateNames = listOf("KampusVC", "Kampus VC", "Kampus Studio"),
-            officialLogoUrl = "https://kampus.vc/logo.png",
-            officialWebsite = "https://kampus.vc",
+        "BrandShield" to OfficialBrandAsset(
+            brandName = "BrandShield",
+            alternateNames = listOf("BrandShield AI", "BrandShield DRP", "Brand Shield"),
+            officialLogoUrl = "https://brandshield.ai/logo.png",
+            officialWebsite = "https://www.brandshield.ai",
             officialHandles = listOf(
-                OfficialHandle("Twitter", "@kampusvc", "https://x.com/kampusvc"),
-                OfficialHandle("LinkedIn", "company/kampusvc", "https://linkedin.com/company/kampusvc"),
-                OfficialHandle("Instagram", "@kampus.vc", "https://instagram.com/kampus.vc")
+                OfficialHandle("Twitter", "@brandshield", "https://x.com/brandshield"),
+                OfficialHandle("LinkedIn", "company/brandshield", "https://linkedin.com/company/brandshield"),
+                OfficialHandle("Instagram", "@brandshield_hq", "https://instagram.com/brandshield_hq")
             ),
             officialApps = listOf(
-                OfficialApp("Google Play", "com.kampusvc.app", "Kampus VC Portal", "Kampus VC Inc.")
+                OfficialApp("Google Play", "com.brandshield.official", "BrandShield Official", "BrandShield Security Corp")
             ),
-            officialPublishers = listOf("Kampus VC Inc.", "KampusVC Studio")
+            officialPublishers = listOf("BrandShield Security Corp", "BrandShield Official")
         ),
         "Tesla" to OfficialBrandAsset(
             brandName = "Tesla",

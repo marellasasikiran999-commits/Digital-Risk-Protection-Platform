@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvThreatCount: TextView
     private lateinit var containerContent: LinearLayout
 
-    private var currentBrand: OfficialBrandAsset = DetectionEngine.PRESET_BRANDS["Kampus.VC"]!!
+    private var currentBrand: OfficialBrandAsset = DetectionEngine.PRESET_BRANDS["BrandShield"]!!
     private var socialThreats: List<SocialThreat> = emptyList()
     private var appStoreThreats: List<AppStoreThreat> = emptyList()
 
@@ -46,11 +46,11 @@ class MainActivity : AppCompatActivity() {
             runScanAnimation()
         }
 
-        loadBrandData("Kampus.VC")
+        loadBrandData("BrandShield")
     }
 
     private fun setupBrandSpinner() {
-        val brands = listOf("Kampus.VC", "Tesla", "PayPal", "Enter Custom Brand...")
+        val brands = listOf("BrandShield", "Tesla", "PayPal", "Enter Custom Brand...")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, brands)
         spinnerBrand.adapter = adapter
 
