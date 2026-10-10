@@ -35,7 +35,7 @@ RE: IMPERSONATION & BRAND INFRINGEMENT NOTICE FOR "${brandAsset.brandName}"
 1. LEGITIMATE BRAND IDENTITY:
    - Brand Name: ${brandAsset.brandName}
    - Official Website: ${brandAsset.officialWebsite}
-   - Authorized Publisher/Entity: ${brandAsset.officialPublishers[0] || 'BrandShield Security Corp'}
+   - Authorized Publisher/Entity: ${brandAsset.officialPublishers[0] || 'Digital Risk Protection Security Corp'}
 
 2. INFRINGING & IMPERSONATING TARGET ASSET:
    - Target Name/Title: ${threatTitle}
@@ -50,7 +50,7 @@ RE: IMPERSONATION & BRAND INFRINGEMENT NOTICE FOR "${brandAsset.brandName}"
 REQUEST:
 Please immediately suspend/remove the infringing account/app referenced above under relevant Terms of Service and IP Policy.
 
-Submitted via BrandShield AI (Digital Risk Protection Platform) on behalf of ${brandAsset.brandName}.
+Submitted via Digital Risk Protection Platform on behalf of ${brandAsset.brandName}.
 `.trim();
 
   const handleCopyNotice = () => {

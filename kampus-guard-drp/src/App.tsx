@@ -224,7 +224,7 @@ export function App() {
                   {isScanningSocial ? 'Scanning Platforms...' : 'Run Live Social Scan'}
                 </button>
               </div>
-              <SocialAccountTester />
+              <SocialAccountTester activeBrand={brands.find(b => b.brand_name === currentBrandName) || brands[0]} />
             </div>
           )}
 

@@ -28,7 +28,7 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
   return (
     <aside className="w-64 bg-[#0a0f1d] border-r border-slate-800/80 flex flex-col justify-between p-4 shrink-0 select-none z-30 min-h-screen">
       <div className="space-y-6">
-        {/* BrandShield AI Logo Header */}
+        {/* Digital Risk Protection Platform Logo Header */}
         <div className="flex items-center gap-3 px-2 py-2">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 p-0.5 flex items-center justify-center shadow-lg shadow-blue-500/30">
             <div className="w-full h-full bg-[#0d1424] rounded-[10px] flex items-center justify-center">
