@@ -4,8 +4,8 @@ import os
 from typing import List, Dict, Any, Optional
 
 """
-Database module for BrandShield AI (Digital Risk Protection Platform).
-Protected Brand: BrandShield (with full baseline and findings matching user's exact specification).
+Database module for Digital Risk Protection Platform.
+Protected Brand: Digital Risk Protection Platform (with full baseline and findings matching enterprise specification).
 Includes complete schema for brands, threat findings, APK audits, and risk telemetry.
 """
 
@@ -94,34 +94,34 @@ def init_db():
 def seed_findings_data(conn: sqlite3.Connection):
     cursor = conn.cursor()
 
-    # 1. Seed BrandShield (Matches BrandShield AI user screenshot)
-    cursor.execute("SELECT COUNT(*) FROM brands WHERE brand_name = 'BrandShield'")
+    # 1. Seed Digital Risk Protection Platform
+    cursor.execute("SELECT COUNT(*) FROM brands WHERE brand_name = 'Digital Risk Protection Platform'")
     if cursor.fetchone()[0] == 0:
         cursor.execute("""
             INSERT INTO brands (brand_name, official_website, official_logo_url, official_developer, official_handles_json, official_apps_json)
             VALUES (?, ?, ?, ?, ?, ?)
         """, (
-            'BrandShield',
-            'www.brandshield.ai',
+            'Digital Risk Protection Platform',
+            'www.digitalriskprotection.com',
             'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
-            'BrandShield Security Corp',
-            json.dumps(['@brandshield', '@brandshield_hq', 'company/brandshield']),
-            json.dumps(['com.brandshield.official', 'id.brandshield.ios'])
+            'Digital Risk Protection Platform',
+            json.dumps(['@digitalriskprotection', '@drp_platform', 'company/digital-risk-protection']),
+            json.dumps(['com.drp.platform.official', 'id.drp.platform.ios'])
         ))
 
-    # 2. Seed Findings (Matching the 5 rows in the user's BrandShield AI screenshot)
-    cursor.execute("SELECT COUNT(*) FROM findings WHERE brand_name = 'BrandShield'")
+    # 2. Seed Findings
+    cursor.execute("SELECT COUNT(*) FROM findings WHERE brand_name = 'Digital Risk Protection Platform'")
     if cursor.fetchone()[0] == 0:
         findings_data = [
             (
-                'FIND-BS-01',
-                'BrandShield',
+                'FIND-DRP-01',
+                'Digital Risk Protection Platform',
                 'social',
                 'Instagram',
-                '@brandshield_support24',
+                '@drp_support24',
                 'Social Media › Fake Profile',
-                '@brandshield_support24',
-                '@brandshield',
+                '@drp_support24',
+                '@digitalriskprotection',
                 92,
                 'High',
                 'Pending',
@@ -144,17 +144,17 @@ def seed_findings_data(conn: sqlite3.Connection):
                 0,
                 '2 hours ago',
                 '2 hours ago',
-                'FORMAL ABUSE TAKEDOWN: Instagram profile @brandshield_support24 fraudulently impersonates BrandShield.'
+                'FORMAL ABUSE TAKEDOWN: Instagram profile @drp_support24 fraudulently impersonates Digital Risk Protection Platform.'
             ),
             (
-                'FIND-BS-02',
-                'BrandShield',
+                'FIND-DRP-02',
+                'Digital Risk Protection Platform',
                 'app',
                 'Google Play',
-                'BrandShield Rewards',
+                'DRP Rewards Wallet',
                 'App Store › Impersonator App',
-                'com.fake.brandshield.rewards',
-                'com.brandshield.official',
+                'com.fake.drp.rewards',
+                'com.drp.platform.official',
                 88,
                 'High',
                 'Pending',
@@ -165,10 +165,10 @@ def seed_findings_data(conn: sqlite3.Connection):
                 'Extracts SMS messages and contacts disguised as user rewards wallet.',
                 None,
                 'Global Trend Mobile',
-                'com.fake.brandshield.rewards',
+                'com.fake.drp.rewards',
                 json.dumps({'Playstore': 72, 'Appstore': 0, 'ApkDl': 15, 'Apkgp': 8, 'Androidappsapk': 5, 'Total': 100}),
                 json.dumps([
-                    {'factor': 'Publisher Mismatch (Global Trend Mobile vs BrandShield Security Corp)', 'score': 40},
+                    {'factor': 'Publisher Mismatch (Global Trend Mobile vs Digital Risk Protection Platform)', 'score': 40},
                     {'factor': 'Dangerous Permission (RECEIVE_SMS, READ_CONTACTS)', 'score': 28},
                     {'factor': 'Fake Rewards Scheme', 'score': 20}
                 ]),
@@ -177,31 +177,31 @@ def seed_findings_data(conn: sqlite3.Connection):
                 0,
                 '4 hours ago',
                 '4 hours ago',
-                'PLAYSTORE TAKEDOWN: com.fake.brandshield.rewards uses BrandShield brand assets without authorization.'
+                'PLAYSTORE TAKEDOWN: com.fake.drp.rewards uses Digital Risk Protection Platform brand assets without authorization.'
             ),
             (
-                'FIND-BS-03',
-                'BrandShield',
+                'FIND-DRP-03',
+                'Digital Risk Protection Platform',
                 'social',
                 'Twitter / X',
-                '@brand_shield',
+                '@drp_official_fake',
                 'Social Media › Typo/Spacing',
-                '@brand_shield',
-                '@brandshield',
+                '@drp_official_fake',
+                '@digitalriskprotection',
                 75,
                 'Medium',
                 'In-progress',
                 88,
                 75,
                 'Twitter/X Sentinel',
-                'Spacing / Underscore variation (@brand_shield vs @brandshield)',
+                'Spacing / Underscore variation (@drp_official_fake vs @digitalriskprotection)',
                 'Monitors brand customer queries and tweets malicious phishing shortlinks.',
                 None,
                 None,
                 None,
                 None,
                 json.dumps([
-                    {'factor': 'Underscore variation (@brand_shield vs @brandshield)', 'score': 32},
+                    {'factor': 'Underscore variation impersonating verified handle', 'score': 32},
                     {'factor': 'Unverified handle soliciting direct messages', 'score': 25},
                     {'factor': 'Recent creation date (< 14 days)', 'score': 18}
                 ]),
@@ -210,28 +210,28 @@ def seed_findings_data(conn: sqlite3.Connection):
                 0,
                 '6 hours ago',
                 '6 hours ago',
-                'TWITTER TAKEDOWN: Handle @brand_shield impersonates official corporate entity.'
+                'TWITTER TAKEDOWN: Handle @drp_official_fake impersonates official corporate entity.'
             ),
             (
-                'FIND-BS-04',
-                'BrandShield',
+                'FIND-DRP-04',
+                'Digital Risk Protection Platform',
                 'app',
                 'Apple App Store',
-                'BrandShield Pro',
+                'Digital Risk Protection Pro',
                 'App Store › Suspicious Clone',
-                'id.brandshield.pro.fake',
-                'id.brandshield.ios',
+                'id.drp.pro.fake',
+                'id.drp.platform.ios',
                 68,
                 'Medium',
                 'Pending',
                 82,
                 68,
                 'Apple App Store Sentinel',
-                'Brand name affix (BrandShield Pro) under individual developer license',
+                'Brand name affix (Pro) under individual developer license',
                 'Requests camera and location without enterprise MDM certificate.',
                 None,
                 'DevApex Studio',
-                'id.brandshield.pro.fake',
+                'id.drp.pro.fake',
                 json.dumps({'Playstore': 0, 'Appstore': 85, 'ApkDl': 10, 'Apkgp': 5, 'Androidappsapk': 0, 'Total': 100}),
                 json.dumps([
                     {'factor': 'Affix Pro with Developer DevApex Studio', 'score': 30},
@@ -243,17 +243,17 @@ def seed_findings_data(conn: sqlite3.Connection):
                 0,
                 '7 hours ago',
                 '7 hours ago',
-                'APPLE APP STORE REPORT: Unauthorized listing BrandShield Pro.'
+                'APPLE APP STORE REPORT: Unauthorized listing Digital Risk Protection Pro.'
             ),
             (
-                'FIND-BS-05',
-                'BrandShield',
+                'FIND-DRP-05',
+                'Digital Risk Protection Platform',
                 'social',
                 'Facebook',
-                'BrandShield Official',
+                'Digital Risk Protection Page',
                 'Social Media › Fake Fan Page',
-                'fb.com/brandshieldofficial.page',
-                '@brandshield',
+                'fb.com/digitalriskprotection.page',
+                '@digitalriskprotection',
                 42,
                 'Low',
                 'Pending',
@@ -275,24 +275,24 @@ def seed_findings_data(conn: sqlite3.Connection):
                 0,
                 '8 hours ago',
                 '8 hours ago',
-                'META REPORT: fb.com/brandshieldofficial.page'
+                'META REPORT: fb.com/digitalriskprotection.page'
             ),
             (
-                'FIND-BS-06',
-                'BrandShield',
+                'FIND-DRP-06',
+                'Digital Risk Protection Platform',
                 'domain',
                 'Website Domain',
-                'brandshield-login-claim.com',
+                'drp-platform-login-claim.com',
                 'Domain › Credential Harvester',
-                'brandshield-login-claim.com',
-                'www.brandshield.ai',
+                'drp-platform-login-claim.com',
+                'www.digitalriskprotection.com',
                 94,
                 'High',
                 'Pending',
                 98,
                 94,
                 'Typosquatting DNS Engine',
-                'Homoglyph / Typosquatting domain targeting BrandShield users',
+                'Homoglyph / Typosquatting domain targeting users',
                 'Phishing site mimicking corporate single-sign-on portal.',
                 'Registrar: Namecheap Inc. | Privacy Shield: Enabled | Created: 3 days ago',
                 None,
@@ -308,58 +308,131 @@ def seed_findings_data(conn: sqlite3.Connection):
                 0,
                 '1 hour ago',
                 '1 hour ago',
-                'DMCA NOTICE: Immediate DNS termination for brandshield-login-claim.com'
+                'DMCA NOTICE: Immediate DNS termination for drp-platform-login-claim.com'
             )
         ]
 
         cursor.executemany("""
-            INSERT INTO findings (
-                id, brand_name, finding_type, title, candidate_name, category, asset, matched_official,
-                risk_score, risk_level, status, confidence_score, similarity_rate, detection_source,
-                threat_reason, note, whois_info, developer, package_name, market_distribution_json,
-                factors_json, dns_records_json, logo_similarity, is_official, detected_date,
-                updated_date, takedown_notice
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT OR IGNORE INTO findings (
+                id, brand_name, finding_type, title, candidate_name, category,
+                asset, matched_official, risk_score, risk_level, status,
+                confidence_score, similarity_rate, detection_source, threat_reason,
+                note, whois_info, developer, package_name, market_distribution_json,
+                factors_json, dns_records_json, logo_similarity, is_official,
+                detected_date, updated_date, takedown_notice
+            ) VALUES (
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+            )
         """, findings_data)
 
     conn.commit()
 
-def get_all_brands() -> List[Dict[str, Any]]:
+def get_brands() -> List[Dict[str, Any]]:
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM brands ORDER BY id ASC")
     rows = cursor.fetchall()
-    brands = []
+    conn.close()
+
+    result = []
     for r in rows:
-        brands.append({
+        result.append({
             "id": r["id"],
             "brand_name": r["brand_name"],
             "official_website": r["official_website"],
             "official_logo_url": r["official_logo_url"],
             "official_developer": r["official_developer"],
-            "official_handles": json.loads(r["official_handles_json"] or "[]"),
-            "official_apps": json.loads(r["official_apps_json"] or "[]")
+            "official_handles": json.loads(r["official_handles_json"]) if r["official_handles_json"] else [],
+            "official_apps": json.loads(r["official_apps_json"]) if r["official_apps_json"] else [],
+            "created_at": r["created_at"]
         })
-    conn.close()
-    return brands
+    return result
 
-def get_findings(brand_name: Optional[str] = None, finding_type: Optional[str] = None) -> List[Dict[str, Any]]:
+def add_brand(brand: Dict[str, Any]) -> int:
     conn = get_connection()
     cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO brands (brand_name, official_website, official_logo_url, official_developer, official_handles_json, official_apps_json)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        brand["brand_name"],
+        brand.get("official_website", ""),
+        brand.get("official_logo_url", ""),
+        brand.get("official_developer", ""),
+        json.dumps(brand.get("official_handles", [])),
+        json.dumps(brand.get("official_apps", []))
+    ))
+    conn.commit()
+    brand_id = cursor.lastrowid
+    conn.close()
+    return brand_id
+
+def update_brand(brand_id: int, brand: Dict[str, Any]):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE brands SET
+            brand_name = ?,
+            official_website = ?,
+            official_logo_url = ?,
+            official_developer = ?,
+            official_handles_json = ?,
+            official_apps_json = ?
+        WHERE id = ?
+    """, (
+        brand["brand_name"],
+        brand.get("official_website", ""),
+        brand.get("official_logo_url", ""),
+        brand.get("official_developer", ""),
+        json.dumps(brand.get("official_handles", [])),
+        json.dumps(brand.get("official_apps", []))
+    ))
+    conn.commit()
+    conn.close()
+
+def get_findings(
+    brand: Optional[str] = None,
+    finding_type: Optional[str] = None,
+    risk_level: Optional[str] = None,
+    status: Optional[str] = None,
+    search: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    conn = get_connection()
+    cursor = conn.cursor()
+
     query = "SELECT * FROM findings WHERE 1=1"
     params = []
-    if brand_name:
+
+    if brand and brand != "all":
         query += " AND brand_name = ?"
-        params.append(brand_name)
-    if finding_type:
+        params.append(brand)
+
+    if finding_type and finding_type != "all":
         query += " AND finding_type = ?"
         params.append(finding_type)
+
+    if risk_level and risk_level != "all":
+        query += " AND risk_level = ?"
+        params.append(risk_level)
+
+    if status and status != "all":
+        query += " AND status = ?"
+        params.append(status)
+
+    if search:
+        query += " AND (candidate_name LIKE ? OR title LIKE ? OR threat_reason LIKE ? OR asset LIKE ?)"
+        s = f"%{search}%"
+        params.extend([s, s, s, s])
+
     query += " ORDER BY risk_score DESC"
+
     cursor.execute(query, params)
     rows = cursor.fetchall()
-    results = []
+    conn.close()
+
+    result = []
     for r in rows:
-        results.append({
+        result.append({
             "id": r["id"],
             "brand_name": r["brand_name"],
             "finding_type": r["finding_type"],
@@ -379,42 +452,45 @@ def get_findings(brand_name: Optional[str] = None, finding_type: Optional[str] =
             "whois_info": r["whois_info"],
             "developer": r["developer"],
             "package_name": r["package_name"],
-            "market_distribution": json.loads(r["market_distribution_json"] or "{}"),
-            "factors": json.loads(r["factors_json"] or "[]"),
-            "dns_records": json.loads(r["dns_records_json"] or "{}"),
+            "market_distribution": json.loads(r["market_distribution_json"]) if r["market_distribution_json"] else None,
+            "factors": json.loads(r["factors_json"]) if r["factors_json"] else [],
+            "dns_records": json.loads(r["dns_records_json"]) if r["dns_records_json"] else None,
             "logo_similarity": r["logo_similarity"],
             "is_official": bool(r["is_official"]),
             "detected_date": r["detected_date"],
             "updated_date": r["updated_date"],
             "takedown_notice": r["takedown_notice"]
         })
-    conn.close()
-    return results
+    return result
 
-def update_finding_status(finding_id: str, new_status: str) -> bool:
+def update_finding_status(finding_id: str, new_status: str):
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("UPDATE findings SET status = ? WHERE id = ?", (new_status, finding_id))
+    cursor.execute("UPDATE findings SET status = ?, updated_date = 'Just now' WHERE id = ?", (new_status, finding_id))
     conn.commit()
-    updated = cursor.rowcount > 0
     conn.close()
-    return updated
 
-def add_brand(brand_data: Dict[str, Any]) -> int:
+def add_finding(f: Dict[str, Any]):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO brands (brand_name, official_website, official_logo_url, official_developer, official_handles_json, official_apps_json)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT OR REPLACE INTO findings (
+            id, brand_name, finding_type, title, candidate_name, category,
+            asset, matched_official, risk_score, risk_level, status,
+            confidence_score, similarity_rate, detection_source, threat_reason,
+            note, whois_info, developer, package_name, market_distribution_json,
+            factors_json, dns_records_json, logo_similarity, is_official,
+            detected_date, updated_date, takedown_notice
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        brand_data["brand_name"],
-        brand_data["official_website"],
-        brand_data.get("official_logo_url", ""),
-        brand_data.get("official_developer", ""),
-        json.dumps(brand_data.get("official_handles", [])),
-        json.dumps(brand_data.get("official_apps", []))
+        f["id"], f["brand_name"], f["finding_type"], f["title"], f["candidate_name"], f["category"],
+        f["asset"], f.get("matched_official", ""), f["risk_score"], f["risk_level"], f.get("status", "Pending"),
+        f.get("confidence_score", 90), f.get("similarity_rate", 85), f.get("detection_source", "Manual"),
+        f.get("threat_reason", ""), f.get("note", ""), f.get("whois_info", None), f.get("developer", None),
+        f.get("package_name", None), json.dumps(f.get("market_distribution")) if f.get("market_distribution") else None,
+        json.dumps(f.get("factors", [])), json.dumps(f.get("dns_records")) if f.get("dns_records") else None,
+        f.get("logo_similarity", 0), int(f.get("is_official", 0)), f.get("detected_date", "Just now"),
+        f.get("updated_date", "Just now"), f.get("takedown_notice", "")
     ))
     conn.commit()
-    new_id = cursor.lastrowid or 0
     conn.close()
-    return new_id

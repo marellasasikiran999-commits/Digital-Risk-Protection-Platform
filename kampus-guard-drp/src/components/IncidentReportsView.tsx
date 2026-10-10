@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FileText, Download, CheckCircle2, Printer } from 'lucide-react';
-import type { Finding } from '../utils/api';
+import { exportFindingsCSV, type Finding } from '../utils/api';
 
 interface IncidentReportsViewProps {
   currentBrand: string;
@@ -12,7 +12,7 @@ export const IncidentReportsView: React.FC<IncidentReportsViewProps> = ({ curren
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
   const handleExportCSV = () => {
-    window.open(`http://127.0.0.1:8000/api/reports/export?brand=${encodeURIComponent(currentBrand)}`, '_blank');
+    exportFindingsCSV(currentBrand, findings);
     setDownloadSuccess(true);
     setTimeout(() => setDownloadSuccess(false), 3000);
   };

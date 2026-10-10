@@ -18,6 +18,7 @@ import { EditBrandModal } from './components/EditBrandModal';
 import { FirebaseAuthModal } from './components/FirebaseAuthModal';
 import { 
   getBrandsAPI, getFindingsAPI, getDashboardSummaryAPI, 
+  runSocialScanAPI, runAppScanAPI, exportFindingsCSV,
   type Finding, type DashboardSummary, type Brand 
 } from './utils/api';
 import { getCurrentUserProfile, type AuthUserProfile } from './utils/firebase';
@@ -33,7 +34,7 @@ export function App() {
 
   // Brand and Findings Data
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [currentBrandName, setCurrentBrandName] = useState<string>('BrandShield');
+  const [currentBrandName, setCurrentBrandName] = useState<string>('Digital Risk Protection Platform');
   const [findings, setFindings] = useState<Finding[]>([]);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
 
@@ -87,16 +88,8 @@ export function App() {
     setIsScanningAll(true);
     showToast('Initiating real-time AI perimeter scan for ' + currentBrandName + '...');
     try {
-      await fetch('http://127.0.0.1:8000/api/scan/social', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ brand: currentBrandName })
-      });
-      await fetch('http://127.0.0.1:8000/api/scan/appstore', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ brand: currentBrandName })
-      });
+      await runSocialScanAPI(currentBrandName);
+      await runAppScanAPI(currentBrandName);
       await loadData();
       showToast('Perimeter scan complete! 23 active candidates verified against brand baseline.');
     } catch {
@@ -110,11 +103,7 @@ export function App() {
     setIsScanningSocial(true);
     showToast('Scanning Instagram, X, Facebook & Telegram for username variations...');
     try {
-      await fetch('http://127.0.0.1:8000/api/scan/social', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ brand: currentBrandName })
-      });
+      await runSocialScanAPI(currentBrandName);
       await loadData();
       showToast('Social Scan finished: 15 candidate accounts detected & scored.');
     } catch {
@@ -128,11 +117,7 @@ export function App() {
     setIsScanningApp(true);
     showToast('Querying Google Play, APKPure & third-party stores for publisher mismatches...');
     try {
-      await fetch('http://127.0.0.1:8000/api/scan/appstore', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ brand: currentBrandName })
-      });
+      await runAppScanAPI(currentBrandName);
       await loadData();
       showToast('App Store Scan finished: 8 unauthorized APK listings flagged.');
     } catch {
@@ -143,8 +128,8 @@ export function App() {
   };
 
   const handleExportReport = () => {
-    window.open(`http://127.0.0.1:8000/api/reports/export?brand=${encodeURIComponent(currentBrandName)}`, '_blank');
-    showToast('Exporting BrandShield incident report (CSV format)...');
+    exportFindingsCSV(currentBrandName, findings);
+    showToast('Exporting Digital Risk Protection Platform incident report (CSV format)...');
   };
 
   return (
@@ -157,7 +142,7 @@ export function App() {
         </div>
       )}
 
-      {/* BrandShield Left Navigation Sidebar */}
+      {/* Digital Risk Protection Platform Left Navigation Sidebar */}
       <BrandShieldSidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -173,7 +158,7 @@ export function App() {
         />
 
         <main className="flex-1 p-5 lg:p-7 space-y-6 max-w-[1550px] w-full mx-auto">
-          {/* TAB 1: DASHBOARD (Identical to BrandShield AI Screenshot) */}
+          {/* TAB 1: DASHBOARD */}
           {activeTab === 'dashboard' && (
             <div className="space-y-6">
               {/* Brand Hero Card */}

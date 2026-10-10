@@ -139,11 +139,11 @@ export const ChartsAndThreatsRow: React.FC<ChartsAndThreatsRowProps> = ({
 
         <div className="space-y-2 text-xs overflow-y-auto max-h-56">
           {[
-            { name: '@brandshield_support24', sub: 'Instagram • Fake profile', level: 'High', time: '2h ago', icon: Radio, color: 'text-pink-400', badge: 'bg-rose-500/20 text-rose-400 border border-rose-500/40' },
-            { name: 'BrandShield Rewards', sub: 'Google Play • Fake app', level: 'High', time: '3h ago', icon: Smartphone, color: 'text-emerald-400', badge: 'bg-rose-500/20 text-rose-400 border border-rose-500/40' },
-            { name: '@brand_shield', sub: 'X (Twitter) • Impersonation', level: 'Medium', time: '4h ago', icon: Radio, color: 'text-cyan-400', badge: 'bg-amber-500/20 text-amber-400 border border-amber-500/40' },
-            { name: 'BrandShield Pro', sub: 'App Store • Suspicious clone', level: 'Medium', time: '6h ago', icon: Smartphone, color: 'text-blue-400', badge: 'bg-amber-500/20 text-amber-400 border border-amber-500/40' },
-            { name: 'brandshield-login-claim.com', sub: 'Domain • Credential harvester', level: 'High', time: '1h ago', icon: Globe, color: 'text-rose-400', badge: 'bg-rose-500/20 text-rose-400 border border-rose-500/40' }
+            { name: '@drp_support24', sub: 'Instagram • Fake profile', level: 'High', time: '2h ago', icon: Radio, color: 'text-pink-400', badge: 'bg-rose-500/20 text-rose-400 border border-rose-500/40' },
+            { name: 'DRP Rewards Wallet', sub: 'Google Play • Fake app', level: 'High', time: '3h ago', icon: Smartphone, color: 'text-emerald-400', badge: 'bg-rose-500/20 text-rose-400 border border-rose-500/40' },
+            { name: '@drp_official_fake', sub: 'X (Twitter) • Impersonation', level: 'Medium', time: '4h ago', icon: Radio, color: 'text-cyan-400', badge: 'bg-amber-500/20 text-amber-400 border border-amber-500/40' },
+            { name: 'Digital Risk Protection Pro', sub: 'App Store • Suspicious clone', level: 'Medium', time: '6h ago', icon: Smartphone, color: 'text-blue-400', badge: 'bg-amber-500/20 text-amber-400 border border-amber-500/40' },
+            { name: 'drp-platform-login.com', sub: 'Domain • Credential harvester', level: 'High', time: '1h ago', icon: Globe, color: 'text-rose-400', badge: 'bg-rose-500/20 text-rose-400 border border-rose-500/40' }
           ].map((t, idx) => {
             const Icon = t.icon;
             const findingObj = findings.find(f => f.candidate_name.includes(t.name) || f.title.includes(t.name)) || findings[0];

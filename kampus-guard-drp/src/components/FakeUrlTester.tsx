@@ -16,7 +16,7 @@ interface UrlAnalysisResult {
 }
 
 export const FakeUrlTester: React.FC = () => {
-  const [targetUrl, setTargetUrl] = useState('https://brandshield-login-claim.com/verify-account');
+  const [targetUrl, setTargetUrl] = useState('https://drp-platform-login-claim.com/verify-account');
   const [isScanning, setIsScanning] = useState(false);
   const [result, setResult] = useState<UrlAnalysisResult | null>(null);
   const [showTakedown, setShowTakedown] = useState(false);
@@ -24,10 +24,10 @@ export const FakeUrlTester: React.FC = () => {
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
   const presets = [
-    { label: 'Phishing Credential Harvester', url: 'https://brandshield-login-claim.com/verify-account' },
-    { label: 'Cyrillic Homoglyph Look-alike', url: 'http://brаndshield.ai/secure-portal' },
-    { label: 'Fake Rewards Typosquat', url: 'https://brandshield-rewards-bonus.net/claim' },
-    { label: 'Official Legitimate Website', url: 'https://www.brandshield.ai' },
+    { label: 'Phishing Credential Harvester', url: 'https://drp-platform-login-claim.com/verify-account' },
+    { label: 'Cyrillic Homoglyph Look-alike', url: 'http://digitаlriskprotection.com/secure-portal' },
+    { label: 'Fake Rewards Typosquat', url: 'https://drp-rewards-bonus.net/claim' },
+    { label: 'Official Legitimate Website', url: 'https://www.digitalriskprotection.com' },
   ];
 
   const handleScan = async (urlToScan = targetUrl) => {
@@ -39,7 +39,7 @@ export const FakeUrlTester: React.FC = () => {
       const res = await fetch('http://127.0.0.1:8000/api/url/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: urlToScan, brand_domain: 'brandshield.ai' })
+        body: JSON.stringify({ url: urlToScan, brand_domain: 'digitalriskprotection.com' })
       });
 
       if (res.ok) {
@@ -57,7 +57,7 @@ export const FakeUrlTester: React.FC = () => {
 
   const runClientHeuristic = (urlStr: string) => {
     let clean = urlStr.replace(/^https?:\/\//i, '').split('/')[0].toLowerCase();
-    const isOfficial = clean === 'www.brandshield.ai' || clean === 'brandshield.ai';
+    const isOfficial = clean === 'www.digitalriskprotection.com' || clean === 'digitalriskprotection.com';
     const isHomoglyph = /[\u0400-\u04FF]/.test(urlStr);
     const keywords = ['login', 'verify', 'claim', 'bonus', 'rewards', 'portal', 'account'].filter(k => urlStr.toLowerCase().includes(k));
     const isNoHttps = urlStr.startsWith('http://');
@@ -67,16 +67,16 @@ export const FakeUrlTester: React.FC = () => {
 
     if (isOfficial) {
       score = 4;
-      reasons.push('Verified legitimate corporate domain of BrandShield.');
+      reasons.push('Verified legitimate corporate domain of Digital Risk Protection Platform.');
       reasons.push('Valid Extended Validation (EV) TLS Certificate.');
     } else {
       if (isHomoglyph) {
         score += 45;
         reasons.push('CRITICAL: Cyrillic homoglyph character detected masquerading as ASCII "a".');
       }
-      if (clean.includes('brandshield') || clean.includes('brand-shield')) {
+      if (clean.includes('digitalrisk') || clean.includes('drp-') || clean.includes('protection')) {
         score += 30;
-        reasons.push('Brand name typosquatting / affix hijacking ("brandshield" found in unverified host).');
+        reasons.push('Brand name typosquatting / affix hijacking found in unverified host.');
       }
       if (keywords.length > 0) {
         score += 20;
@@ -119,7 +119,7 @@ export const FakeUrlTester: React.FC = () => {
         body: JSON.stringify({
           source: 'Fake Website',
           name: result?.domain || 'Phishing Domain',
-          details: `Phishing domain impersonating BrandShield: ${result?.url}`,
+          details: `Phishing domain impersonating Digital Risk Protection Platform: ${result?.url}`,
           risk_score: result?.risk_score || 88,
           risk_level: result?.risk_level || 'HIGH',
           url: result?.url || '',
@@ -135,19 +135,19 @@ export const FakeUrlTester: React.FC = () => {
   const getTakedownLetter = () => {
     return `CEASE AND DESIST / ABUSE COMPLAINT
 To: Domain Registrar Abuse Desk / Hosting Provider (Cloudflare / Namecheap / GoDaddy)
-From: BrandShield Legal & Cybersecurity Response Unit
+From: Digital Risk Protection Platform Cyber Response Unit
 Date: ${new Date().toLocaleDateString()}
-Subject: Immediate Suspension Request - Phishing Domain Masquerading as BrandShield
+Subject: Immediate Suspension Request - Phishing Domain Masquerading as Digital Risk Protection Platform
 
 Dear Trust & Safety Team,
 
-We represent BrandShield Security Corp, owner of the trademark and domain 'brandshield.ai'.
+We represent Digital Risk Protection Platform, owner of the trademark and domain 'digitalriskprotection.com'.
 We have identified an unauthorized, malicious site hosted under your infrastructure:
 
 Target URL: ${result?.url}
 Target Domain: ${result?.domain}
 Detection Timestamp: ${new Date().toISOString()}
-Primary Infringement: Phishing & Credential Harvester Impersonating BrandShield
+Primary Infringement: Phishing & Credential Harvester Impersonating Digital Risk Protection Platform
 Risk Score: ${result?.risk_score}/100 (${result?.risk_level})
 
 Technical Findings:
@@ -159,9 +159,9 @@ We request that you:
 3. Preserve server logs for forensic investigation by law enforcement authorities.
 
 Sincerely,
-BrandShield Information Security Team
-abuse-response@brandshield.ai
-https://www.brandshield.ai`;
+Digital Risk Protection Platform Security Team
+abuse-response@digitalriskprotection.com
+https://www.digitalriskprotection.com`;
   };
 
   return (
@@ -202,7 +202,7 @@ https://www.brandshield.ai`;
               type="text"
               value={targetUrl}
               onChange={(e) => setTargetUrl(e.target.value)}
-              placeholder="e.g. https://brandshield-login-claim.com/portal"
+              placeholder="e.g. https://drp-platform-login-claim.com/portal"
               className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500"
             />
           </div>

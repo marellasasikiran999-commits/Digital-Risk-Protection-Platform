@@ -17,10 +17,10 @@ export const BrandHeroCard: React.FC<BrandHeroCardProps> = ({
   onRunScan,
   isScanning
 }) => {
-  const brandName = currentBrand?.brand_name || 'BrandShield';
-  const website = currentBrand?.official_website || 'www.brandshield.ai';
-  const appName = currentBrand?.official_apps?.[0] || 'BrandShield Official';
-  const publisher = currentBrand?.official_developer || 'BrandShield Security Corp';
+  const brandName = currentBrand?.brand_name || 'Digital Risk Protection Platform';
+  const website = currentBrand?.official_website || 'www.digitalriskprotection.com';
+  const appName = currentBrand?.official_apps?.[0] || 'DRP Official App';
+  const publisher = currentBrand?.official_developer || 'Digital Risk Protection Platform';
 
   return (
     <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl">

@@ -13,16 +13,16 @@ export interface FirebaseConfig {
 }
 
 const DEFAULT_FIREBASE_CONFIG: FirebaseConfig = {
-  apiKey: "AIzaSyD-sample-brandshield-demo-key",
-  authDomain: "brandshield-ai-drp.firebaseapp.com",
-  projectId: "brandshield-ai-drp",
-  storageBucket: "brandshield-ai-drp.appspot.com",
+  apiKey: "AIzaSyD-sample-drp-platform-demo-key",
+  authDomain: "digital-risk-protection.firebaseapp.com",
+  projectId: "digital-risk-protection-platform",
+  storageBucket: "digital-risk-protection.appspot.com",
   messagingSenderId: "102938475610",
   appId: "1:102938475610:web:9876543210abcdef"
 };
 
 export function getFirebaseConfig(): FirebaseConfig {
-  const saved = localStorage.getItem('brandshield_firebase_config');
+  const saved = localStorage.getItem('drp_platform_firebase_config');
   if (saved) {
     try {
       return JSON.parse(saved);
@@ -34,7 +34,7 @@ export function getFirebaseConfig(): FirebaseConfig {
 }
 
 export function saveFirebaseConfig(config: FirebaseConfig) {
-  localStorage.setItem('brandshield_firebase_config', JSON.stringify(config));
+  localStorage.setItem('drp_platform_firebase_config', JSON.stringify(config));
 }
 
 export interface AuthUserProfile {
@@ -49,7 +49,7 @@ export interface AuthUserProfile {
 export const DEFAULT_ADMIN_PROFILE: AuthUserProfile = {
   uid: 'admin-sec-01',
   displayName: 'Security Admin',
-  email: 'admin@brandshield.ai',
+  email: 'admin@digitalriskprotection.com',
   role: 'Admin',
   photoURL: ''
 };
@@ -79,7 +79,7 @@ export async function loginWithEmail(email: string, pass: string): Promise<AuthU
           role: 'Admin',
           idToken: data.idToken
         };
-        localStorage.setItem('brandshield_current_user', JSON.stringify(profile));
+        localStorage.setItem('drp_platform_current_user', JSON.stringify(profile));
         return profile;
       }
     } catch (e) {
@@ -94,7 +94,7 @@ export async function loginWithEmail(email: string, pass: string): Promise<AuthU
     email: email,
     role: 'Admin'
   };
-  localStorage.setItem('brandshield_current_user', JSON.stringify(profile));
+  localStorage.setItem('drp_platform_current_user', JSON.stringify(profile));
   return profile;
 }
 
@@ -102,10 +102,10 @@ export async function loginWithGoogle(): Promise<AuthUserProfile> {
   const profile: AuthUserProfile = {
     uid: `google-${Date.now()}`,
     displayName: 'Security Admin',
-    email: 'admin@brandshield.ai',
+    email: 'admin@digitalriskprotection.com',
     role: 'Admin'
   };
-  localStorage.setItem('brandshield_current_user', JSON.stringify(profile));
+  localStorage.setItem('drp_platform_current_user', JSON.stringify(profile));
   return profile;
 }
 
@@ -133,7 +133,7 @@ export async function registerWithEmail(email: string, pass: string, name: strin
           role: 'Admin',
           idToken: data.idToken
         };
-        localStorage.setItem('brandshield_current_user', JSON.stringify(profile));
+        localStorage.setItem('drp_platform_current_user', JSON.stringify(profile));
         return profile;
       }
     } catch (e) {
@@ -147,16 +147,16 @@ export async function registerWithEmail(email: string, pass: string, name: strin
     email: email,
     role: 'Admin'
   };
-  localStorage.setItem('brandshield_current_user', JSON.stringify(profile));
+  localStorage.setItem('drp_platform_current_user', JSON.stringify(profile));
   return profile;
 }
 
 export async function logoutUser(): Promise<void> {
-  localStorage.removeItem('brandshield_current_user');
+  localStorage.removeItem('drp_platform_current_user');
 }
 
 export function getCurrentUserProfile(): AuthUserProfile {
-  const saved = localStorage.getItem('brandshield_current_user');
+  const saved = localStorage.getItem('drp_platform_current_user');
   if (saved) {
     try {
       return JSON.parse(saved);

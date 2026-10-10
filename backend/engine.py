@@ -213,7 +213,7 @@ def generate_threats_for_brand(brand_name: str, official_handles: List[str], off
         "app_store_threats": app_store_threats
     }
 
-def analyze_url(url: str, target_brand: str = "BrandShield", official_website: str = "www.brandshield.ai") -> Dict[str, Any]:
+def analyze_url(url: str, target_brand: str = "Digital Risk Protection Platform", official_website: str = "www.digitalriskprotection.com") -> Dict[str, Any]:
     from urllib.parse import urlparse
     parsed = urlparse(url.strip())
     hostname = (parsed.hostname or "").lower()
@@ -317,12 +317,12 @@ def analyze_apk(
     app_title: str,
     declared_permissions: List[str],
     publisher: str,
-    target_brand: str = "BrandShield",
+    target_brand: str = "Digital Risk Protection Platform",
     official_publishers: Optional[List[str]] = None,
     official_packages: Optional[List[str]] = None
 ) -> Dict[str, Any]:
-    official_publishers = official_publishers or ["BrandShield Security Corp", "BrandShield Official"]
-    official_packages = official_packages or ["com.brandshield.official", "id.brandshield.ios"]
+    official_publishers = official_publishers or ["Digital Risk Protection Platform", "DRP Security Corp"]
+    official_packages = official_packages or ["com.drp.platform.official", "id.drp.platform.ios"]
 
     # 1. Clean Whitelist Exclusion (0% FP)
     if package_name in official_packages and any(p.lower() in publisher.lower() for p in official_publishers):
@@ -435,10 +435,10 @@ def analyze_apk(
 def analyze_social(
     handle: str,
     platform: str,
-    target_brand: str = "BrandShield",
+    target_brand: str = "Digital Risk Protection Platform",
     official_handles: Optional[List[str]] = None
 ) -> Dict[str, Any]:
-    official_handles = official_handles or ["@brandshield", "@brandshield_hq"]
+    official_handles = official_handles or ["@digitalriskprotection", "@drp_platform"]
     clean_handle = handle.strip()
     if not clean_handle.startswith("@") and platform.lower() in ["twitter", "x", "instagram"]:
         clean_handle = f"@{clean_handle}"

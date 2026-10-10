@@ -11,20 +11,20 @@ object DetectionEngine {
     )
 
     val PRESET_BRANDS = mapOf(
-        "BrandShield" to OfficialBrandAsset(
-            brandName = "BrandShield",
-            alternateNames = listOf("BrandShield AI", "BrandShield DRP", "Brand Shield"),
-            officialLogoUrl = "https://brandshield.ai/logo.png",
-            officialWebsite = "https://www.brandshield.ai",
+        "Digital Risk Protection Platform" to OfficialBrandAsset(
+            brandName = "Digital Risk Protection Platform",
+            alternateNames = listOf("Digital Risk Protection", "DRP Platform", "DRP Enterprise"),
+            officialLogoUrl = "https://digitalriskprotection.com/logo.png",
+            officialWebsite = "https://www.digitalriskprotection.com",
             officialHandles = listOf(
-                OfficialHandle("Twitter", "@brandshield", "https://x.com/brandshield"),
-                OfficialHandle("LinkedIn", "company/brandshield", "https://linkedin.com/company/brandshield"),
-                OfficialHandle("Instagram", "@brandshield_hq", "https://instagram.com/brandshield_hq")
+                OfficialHandle("Twitter", "@digitalriskprotection", "https://x.com/digitalriskprotection"),
+                OfficialHandle("LinkedIn", "company/digital-risk-protection", "https://linkedin.com/company/digital-risk-protection"),
+                OfficialHandle("Instagram", "@drp_platform", "https://instagram.com/drp_platform")
             ),
             officialApps = listOf(
-                OfficialApp("Google Play", "com.brandshield.official", "BrandShield Official", "BrandShield Security Corp")
+                OfficialApp("Google Play", "com.drp.platform.official", "Digital Risk Protection Platform", "Digital Risk Protection Platform")
             ),
-            officialPublishers = listOf("BrandShield Security Corp", "BrandShield Official")
+            officialPublishers = listOf("Digital Risk Protection Platform", "DRP Security Corp")
         ),
         "Tesla" to OfficialBrandAsset(
             brandName = "Tesla",

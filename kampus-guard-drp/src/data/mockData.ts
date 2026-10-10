@@ -1,27 +1,27 @@
 import type { OfficialBrandAsset } from '../types';
 
 export const INITIAL_BRAND_ASSETS: Record<string, OfficialBrandAsset> = {
-  'BrandShield': {
-    brandName: 'BrandShield',
-    alternateNames: ['BrandShield AI', 'BrandShield DRP', 'Brand Shield'],
+  'Digital Risk Protection Platform': {
+    brandName: 'Digital Risk Protection Platform',
+    alternateNames: ['DRP Platform', 'Digital Risk Protection', 'DRP Enterprise'],
     officialLogoUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80',
-    officialWebsite: 'https://www.brandshield.ai',
+    officialWebsite: 'https://www.digitalriskprotection.com',
     officialHandles: [
-      { platform: 'twitter', handle: '@brandshield', url: 'https://x.com/brandshield', verified: true },
-      { platform: 'linkedin', handle: 'company/brandshield', url: 'https://linkedin.com/company/brandshield', verified: true },
-      { platform: 'instagram', handle: '@brandshield_hq', url: 'https://instagram.com/brandshield_hq', verified: true },
-      { platform: 'telegram', handle: '@brandshield_official', url: 'https://t.me/brandshield_official', verified: true }
+      { platform: 'twitter', handle: '@digitalriskprotection', url: 'https://x.com/digitalriskprotection', verified: true },
+      { platform: 'linkedin', handle: 'company/digital-risk-protection-platform', url: 'https://linkedin.com/company/digital-risk-protection-platform', verified: true },
+      { platform: 'instagram', handle: '@digitalriskprotection_hq', url: 'https://instagram.com/digitalriskprotection_hq', verified: true },
+      { platform: 'telegram', handle: '@drp_platform_official', url: 'https://t.me/drp_platform_official', verified: true }
     ],
     officialApps: [
       {
         store: 'google_play',
-        appId: 'com.brandshield.official',
-        appName: 'BrandShield Official',
-        publisherName: 'BrandShield Security Corp',
+        appId: 'com.drp.platform.official',
+        appName: 'Digital Risk Protection Platform',
+        publisherName: 'Digital Risk Protection Platform',
         iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150&auto=format&fit=crop&q=80'
       }
     ],
-    officialPublishers: ['BrandShield Security Corp', 'BrandShield Official']
+    officialPublishers: ['Digital Risk Protection Platform', 'DRP Enterprise Security']
   },
   'Tesla': {
     brandName: 'Tesla',

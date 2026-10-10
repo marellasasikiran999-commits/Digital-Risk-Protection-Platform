@@ -15,10 +15,10 @@ interface BrandProfileManagerProps {
 export const BrandProfileManager: React.FC<BrandProfileManagerProps> = ({
   brandAsset: initialAsset,
   onUpdateBrandAsset,
-  selectedBrand = 'BrandShield',
+  selectedBrand = 'Digital Risk Protection Platform',
   onOpenAddBrand
 }) => {
-  const defaultAsset = initialAsset || INITIAL_BRAND_ASSETS[selectedBrand] || INITIAL_BRAND_ASSETS['BrandShield'];
+  const defaultAsset = initialAsset || INITIAL_BRAND_ASSETS[selectedBrand] || INITIAL_BRAND_ASSETS['Digital Risk Protection Platform'];
   const [currentAsset, setCurrentAsset] = useState<OfficialBrandAsset>(defaultAsset);
 
   const [newHandle, setNewHandle] = useState('');
@@ -31,7 +31,7 @@ export const BrandProfileManager: React.FC<BrandProfileManagerProps> = ({
   const [savedToast, setSavedToast] = useState(false);
 
   useEffect(() => {
-    const asset = initialAsset || INITIAL_BRAND_ASSETS[selectedBrand] || INITIAL_BRAND_ASSETS['BrandShield'];
+    const asset = initialAsset || INITIAL_BRAND_ASSETS[selectedBrand] || INITIAL_BRAND_ASSETS['Digital Risk Protection Platform'];
     setCurrentAsset(asset);
     setWebsiteInput(asset.officialWebsite);
   }, [initialAsset, selectedBrand]);
@@ -274,7 +274,7 @@ export const BrandProfileManager: React.FC<BrandProfileManagerProps> = ({
               </select>
               <input
                 type="text"
-                placeholder="App Name (e.g. BrandShield Portal)"
+                placeholder="App Name (e.g. DRP Portal)"
                 value={newAppName}
                 onChange={(e) => setNewAppName(e.target.value)}
                 className="flex-1 bg-[#141e33] border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-blue-500"
@@ -283,7 +283,7 @@ export const BrandProfileManager: React.FC<BrandProfileManagerProps> = ({
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Package ID (e.g. com.brandshield.app)"
+                placeholder="Package ID (e.g. com.drp.app)"
                 value={newAppId}
                 onChange={(e) => setNewAppId(e.target.value)}
                 className="flex-1 bg-[#141e33] border border-slate-700 rounded-xl px-3 py-2 text-white font-mono focus:outline-none focus:border-blue-500"

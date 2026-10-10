@@ -36,10 +36,10 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
             </div>
           </div>
           <div>
-            <h1 className="text-base font-extrabold text-white tracking-tight flex items-center gap-1.5">
-              BrandShield <span className="text-blue-400 text-xs px-1.5 py-0.5 rounded bg-blue-950 border border-blue-800">AI</span>
+            <h1 className="text-xs font-black text-white tracking-tight uppercase leading-tight">
+              Digital Risk Protection
             </h1>
-            <p className="text-[10px] text-slate-400 font-medium">Digital Risk Protection</p>
+            <p className="text-[10px] text-blue-400 font-bold uppercase tracking-wider">Platform</p>
           </div>
         </div>
 

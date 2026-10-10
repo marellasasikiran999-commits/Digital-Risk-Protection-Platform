@@ -14,30 +14,30 @@ export const EditBrandModal: React.FC<EditBrandModalProps> = ({
   brand,
   onBrandUpdated
 }) => {
-  const [brandName, setBrandName] = useState(brand?.brand_name || 'BrandShield');
-  const [website, setWebsite] = useState(brand?.official_website || 'https://www.brandshield.ai');
+  const [brandName, setBrandName] = useState(brand?.brand_name || 'Digital Risk Protection Platform');
+  const [website, setWebsite] = useState(brand?.official_website || 'https://www.digitalriskprotection.com');
   const [logoUrl, setLogoUrl] = useState(brand?.official_logo_url || '');
-  const [developer, setDeveloper] = useState(brand?.official_developer || 'BrandShield Security Corp');
+  const [developer, setDeveloper] = useState(brand?.official_developer || 'Digital Risk Protection Platform');
   const [handlesInput, setHandlesInput] = useState(
-    Array.isArray(brand?.official_handles) ? brand.official_handles.join(', ') : '@brandshield, @brandshield_hq'
+    Array.isArray(brand?.official_handles) ? brand.official_handles.join(', ') : '@digitalriskprotection, @drp_platform'
   );
   const [appsInput, setAppsInput] = useState(
-    Array.isArray(brand?.official_apps) ? brand.official_apps.join(', ') : 'com.brandshield.official, BrandShield Official'
+    Array.isArray(brand?.official_apps) ? brand.official_apps.join(', ') : 'com.drp.platform.official, Digital Risk Protection Platform'
   );
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     if (brand) {
-      setBrandName(brand.brand_name || 'BrandShield');
-      setWebsite(brand.official_website || 'https://www.brandshield.ai');
+      setBrandName(brand.brand_name || 'Digital Risk Protection Platform');
+      setWebsite(brand.official_website || 'https://www.digitalriskprotection.com');
       setLogoUrl(brand.official_logo_url || '');
-      setDeveloper(brand.official_developer || 'BrandShield Security Corp');
+      setDeveloper(brand.official_developer || 'Digital Risk Protection Platform');
       setHandlesInput(
-        Array.isArray(brand.official_handles) ? brand.official_handles.join(', ') : '@brandshield, @brandshield_hq'
+        Array.isArray(brand.official_handles) ? brand.official_handles.join(', ') : '@digitalriskprotection, @drp_platform'
       );
       setAppsInput(
-        Array.isArray(brand.official_apps) ? brand.official_apps.join(', ') : 'com.brandshield.official, BrandShield Official'
+        Array.isArray(brand.official_apps) ? brand.official_apps.join(', ') : 'com.drp.platform.official, Digital Risk Protection Platform'
       );
     }
   }, [brand]);

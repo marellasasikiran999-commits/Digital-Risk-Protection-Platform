@@ -96,7 +96,7 @@ export const AddBrandModal: React.FC<AddBrandModalProps> = ({
             <input
               type="text"
               required
-              placeholder="e.g. BrandShield, Acme Global"
+              placeholder="e.g. Digital Risk Protection Platform, Acme Global"
               value={brandName}
               onChange={(e) => setBrandName(e.target.value)}
               className="w-full bg-[#0a0e17] border border-slate-800 focus:border-orange-500 rounded-xl px-3.5 py-2.5 text-white focus:outline-none"

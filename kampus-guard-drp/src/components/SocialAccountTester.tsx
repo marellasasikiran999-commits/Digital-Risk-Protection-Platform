@@ -2,30 +2,30 @@ import React, { useState } from 'react';
 import { Radio, Copy, Check } from 'lucide-react';
 
 export const SocialAccountTester: React.FC = () => {
-  const [handle, setHandle] = useState('@brandshield_support24');
+  const [handle, setHandle] = useState('@drp_support24');
   const [platform, setPlatform] = useState('Instagram');
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const [copied, setCopied] = useState(false);
 
   const samples = [
-    { handle: '@brandshield_support24', platform: 'Instagram' },
-    { handle: '@brаndshield_promo', platform: 'Twitter' },
-    { handle: '@brandshield', platform: 'Twitter' } // Official
+    { handle: '@drp_support24', platform: 'Instagram' },
+    { handle: '@digitаlrisk_promo', platform: 'Twitter' },
+    { handle: '@digitalriskprotection', platform: 'Twitter' } // Official
   ];
 
   const handleRunTest = () => {
     setAnalyzing(true);
     setTimeout(() => {
       const clean = handle.trim();
-      const isOfficial = clean.toLowerCase() === '@brandshield' || clean.toLowerCase() === '@brandshield_hq';
+      const isOfficial = clean.toLowerCase() === '@digitalriskprotection' || clean.toLowerCase() === '@digitalriskprotection_hq';
 
       if (isOfficial) {
         setResult({
           isOfficial: true,
           score: 0,
           level: 'Safe',
-          verdict: 'OFFICIAL WHITELISTED ACCOUNT (0% False Positive)',
+          verdict: 'OFFICIAL WHITELISTED ACCOUNT (0% False Positive Guarantee)',
           homoglyph: 'None',
           similarity: '100%',
           reasons: ['Matches registered Brand Profile baseline exactly.'],
@@ -45,9 +45,9 @@ export const SocialAccountTester: React.FC = () => {
           reasons: [
             hasCyrillic ? 'Unicode Homoglyph confusable character spoofing' : 'Affix hijacking (_support24 / _promo)',
             'Missing official verification badge checkmark',
-            'High string similarity to @brandshield (89%)'
+            'High string similarity to official @digitalriskprotection (89%)'
           ],
-          takedown: `FORMAL SOCIAL MEDIA ABUSE NOTICE\nPlatform: ${platform}\nImpersonating Handle: ${clean}\nTarget Brand: BrandShield\nRisk Score: ${score}/100\nEvidence: Unauthorized corporate brand use, deceptive account credentials.\nAction: Immediate suspension under Platform Terms of Service.`
+          takedown: `FORMAL SOCIAL MEDIA ABUSE NOTICE\nPlatform: ${platform}\nImpersonating Handle: ${clean}\nTarget Brand: Digital Risk Protection Platform\nRisk Score: ${score}/100\nEvidence: Unauthorized corporate brand use, deceptive account credentials.\nAction: Immediate suspension under Platform Terms of Service.`
         });
       }
       setAnalyzing(false);

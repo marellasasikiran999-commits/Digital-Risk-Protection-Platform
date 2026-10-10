@@ -106,7 +106,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
             </div>
             <div>
               <h3 className="text-base font-bold text-white">Firebase Authentication & Credentials</h3>
-              <p className="text-xs text-gray-400">BrandShield AI Access Control</p>
+              <p className="text-xs text-gray-400">Digital Risk Protection Platform Access Control</p>
             </div>
           </div>
           <button
@@ -192,7 +192,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-800/80 text-gray-400">
                   <span>Assigned Organization:</span>
-                  <span className="text-white font-medium">BrandShield Enterprise</span>
+                  <span className="text-white font-medium">Digital Risk Protection Platform</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-gray-800/80 text-gray-400">
                   <span>Access Permissions:</span>
@@ -229,7 +229,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@brandshield.ai"
+                    placeholder="admin@digitalriskprotection.com"
                     className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-orange-500"
                   />
                 </div>
@@ -307,7 +307,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@brandshield.ai"
+                    placeholder="admin@digitalriskprotection.com"
                     className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-orange-500"
                   />
                 </div>
@@ -341,7 +341,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
           {activeTab === 'config' && (
             <form onSubmit={handleSaveConfig} className="space-y-4">
               <p className="text-xs text-gray-400">
-                You can configure your real Firebase Web App credentials below. If left as default, BrandShield AI provides offline persistent simulation for hackathon demo convenience.
+                You can configure your real Firebase Web App credentials below. If left as default, Digital Risk Protection Platform provides offline persistent simulation for hackathon demo convenience.
               </p>
 
               <div>

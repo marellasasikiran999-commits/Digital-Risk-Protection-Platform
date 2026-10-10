@@ -54,11 +54,11 @@ export const BottomAnalyticsRow: React.FC = () => {
 
         <div className="space-y-2 text-xs">
           {[
-            { rank: 1, name: 'BrandShield Pro', score: 88, color: 'bg-rose-500/20 text-rose-400' },
-            { rank: 2, name: 'BrandShield Rewards', score: 82, color: 'bg-rose-500/20 text-rose-400' },
-            { rank: 3, name: '@brandshield_support24', score: 76, color: 'bg-orange-500/20 text-orange-400' },
-            { rank: 4, name: 'BrandShield Official', score: 65, color: 'bg-orange-500/20 text-orange-400' },
-            { rank: 5, name: 'BrandShield Sentinel', score: 54, color: 'bg-amber-500/20 text-amber-400' }
+            { rank: 1, name: 'Digital Risk Protection Pro', score: 88, color: 'bg-rose-500/20 text-rose-400' },
+            { rank: 2, name: 'DRP Rewards Wallet', score: 82, color: 'bg-rose-500/20 text-rose-400' },
+            { rank: 3, name: '@drp_support24', score: 76, color: 'bg-orange-500/20 text-orange-400' },
+            { rank: 4, name: 'DRP Official Clone', score: 65, color: 'bg-orange-500/20 text-orange-400' },
+            { rank: 5, name: 'DRP Sentinel Harvester', score: 54, color: 'bg-amber-500/20 text-amber-400' }
           ].map((item) => (
             <div key={item.rank} className="flex items-center justify-between p-1.5 rounded-lg bg-[#141e33] border border-slate-800/80">
               <div className="flex items-center gap-2 truncate">
@@ -83,8 +83,8 @@ export const BottomAnalyticsRow: React.FC = () => {
           {[
             { text: 'App scan completed - 12 new findings', time: '2 hours ago', icon: Smartphone, color: 'text-blue-400' },
             { text: 'Social media scan completed - 8 new findings', time: '4 hours ago', icon: Radio, color: 'text-purple-400' },
-            { text: 'Brand profile updated - BrandShield', time: '6 hours ago', icon: Shield, color: 'text-emerald-400' },
-            { text: 'Finding marked as legitimate - @brand_shield', time: '8 hours ago', icon: CheckCircle2, color: 'text-cyan-400' }
+            { text: 'Brand profile updated - Digital Risk Protection Platform', time: '6 hours ago', icon: Shield, color: 'text-emerald-400' },
+            { text: 'Finding marked as legitimate - @drp_whitelist', time: '8 hours ago', icon: CheckCircle2, color: 'text-cyan-400' }
           ].map((act, i) => {
             const Icon = act.icon;
             return (

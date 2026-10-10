@@ -1,0 +1,10 @@
+{
+  "name": "digital-risk-protection-platform",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix kampus-guard-drp run dev",
+    "build": "npm --prefix kampus-guard-drp run build",
+    "preview": "npm --prefix kampus-guard-drp run preview"
+  }
+}
