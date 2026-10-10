@@ -1,9 +1,14 @@
 :root, [data-theme="cyber-obsidian"] {
-  font-family: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: dark;
   color: rgba(255, 255, 255, 0.92);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   --bg-core: #060a14;
   --accent-glow-1: rgba(59, 130, 246, 0.14);
   --accent-glow-2: rgba(6, 182, 212, 0.09);
@@ -96,9 +101,46 @@ body {
   background: #253861;
 }
 
-/* Monospace Badge Font */
+/* Typography Engine */
+h1, h2, h3, h4, .font-heading {
+  font-family: 'Space Grotesk', 'Outfit', sans-serif;
+  letter-spacing: -0.025em;
+}
+
+.font-display {
+  font-family: 'Space Grotesk', 'Outfit', sans-serif;
+  letter-spacing: -0.025em;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.015em;
+}
+
 .font-cyber {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-feature-settings: "zero", "ss01";
+}
+
+/* Glowing Typography Utilities */
+.text-glow {
+  text-shadow: 0 0 24px rgba(59, 130, 246, 0.45);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 24px rgba(6, 182, 212, 0.45);
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 45%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, #ffffff 0%, #e9d5ff 45%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* Optimus Noise Overlay */
