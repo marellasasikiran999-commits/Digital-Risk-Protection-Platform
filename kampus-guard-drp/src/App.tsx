@@ -282,23 +282,11 @@ export function App() {
           {/* TAB 4: APP STORE MONITORING */}
           {activeTab === 'appstore' && (
             <div className="space-y-6">
-              <div className="flex items-center justify-between bg-[#0f172a] border border-slate-800 p-5 rounded-2xl">
-                <div>
-                  <h2 className="text-lg font-bold text-white">App Store &amp; Third-Party Repository Monitor</h2>
-                  <p className="text-xs text-slate-400">Flag unauthorized Google Play and APK mirror clones claiming official affiliation.</p>
-                </div>
-                <button
-                  onClick={handleRunAppScan}
-                  disabled={isScanningApp}
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-blue-600/20"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 ${isScanningApp ? 'animate-spin' : ''}`} />
-                  {isScanningApp ? 'Checking Stores...' : 'Run Live App Store Scan'}
-                </button>
-              </div>
               <AppStoreMonitoring
                 findings={findings}
                 onSelectFinding={(f) => setSelectedFindingForEvidence(f)}
+                onRunAppScan={handleRunAppScan}
+                isScanningApp={isScanningApp}
               />
             </div>
           )}
