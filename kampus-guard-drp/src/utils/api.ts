@@ -117,6 +117,61 @@ const DEFAULT_BRANDS: Brand[] = [
 // Default Realistic Seed Findings for Digital Risk Protection Platform
 const DEFAULT_FINDINGS: Finding[] = [
   {
+    id: 'FIND-SCENARIO-A',
+    brand_name: 'Digital Risk Protection Platform',
+    finding_type: 'social',
+    title: 'Instagram / Meta',
+    category: 'Social Media › Homoglyph Impersonation',
+    candidate_name: '@Brand_Official_Helpdesk',
+    asset: '@Brand_Official_Helpdesk',
+    risk_score: 96,
+    risk_level: 'Critical',
+    status: 'Pending',
+    confidence_score: 98,
+    similarity_rate: 96,
+    detection_source: 'Instagram Live Crawler',
+    note: 'High-threat homoglyph profile impersonating the corporate brand with Cyrillic confusable letter and deceptive affix "Official_Helpdesk". Bio solicits customer recovery credentials.',
+    factors: [
+      { factor: 'Unicode Homoglyph Confusable Detected', score: 38 },
+      { factor: 'Deceptive Support Affix (_Official_Helpdesk)', score: 32 },
+      { factor: 'Credential Harvesting Phishing Link in Bio', score: 26 }
+    ],
+    logo_similarity: 92,
+    is_official: false,
+    detected_date: 'Just now',
+    updated_date: 'Just now',
+    takedown_notice: 'FORMAL SOCIAL MEDIA ABUSE NOTICE: Profile @Brand_Official_Helpdesk uses trademarked corporate identity and Cyrillic character spoofing.'
+  },
+  {
+    id: 'FIND-SCENARIO-B',
+    brand_name: 'Digital Risk Protection Platform',
+    finding_type: 'app',
+    title: 'Google Play & Mirrors',
+    category: 'App Store Defense › Rogue Distribution',
+    candidate_name: 'Digital Risk Protection Wallet Pro',
+    asset: 'com.fake.brand.mobilepro',
+    risk_score: 95,
+    risk_level: 'Critical',
+    status: 'Pending',
+    confidence_score: 96,
+    similarity_rate: 94,
+    detection_source: 'Google Play & APKPure',
+    developer: 'Digital Risk Partners LLC',
+    package_name: 'com.fake.brand.mobilepro',
+    note: 'Copycat mobile app detected on third-party stores with publisher mismatch ("Digital Risk Partners LLC" vs official authorized publisher). Requests dangerous permissions: RECEIVE_SMS, SYSTEM_ALERT_WINDOW.',
+    market_distribution: { Playstore: 45, Appstore: 0, ApkDl: 25, Apkgp: 18, Androidappsapk: 12, Total: 100 },
+    factors: [
+      { factor: 'Publisher Mismatch (Digital Risk Partners LLC vs Authorized Developer)', score: 35 },
+      { factor: 'Dangerous Permission: RECEIVE_SMS (OTP Interception)', score: 30 },
+      { factor: 'Dangerous Permission: SYSTEM_ALERT_WINDOW (Phishing Overlay)', score: 30 }
+    ],
+    logo_similarity: 95,
+    is_official: false,
+    detected_date: 'Just now',
+    updated_date: 'Just now',
+    takedown_notice: 'GOOGLE PLAY PROTECT TAKEDOWN: Package com.fake.brand.mobilepro by unauthorized entity "Digital Risk Partners LLC" violates brand trademark.'
+  },
+  {
     id: 'FIND-DRP-01',
     brand_name: 'Digital Risk Protection Platform',
     finding_type: 'social',

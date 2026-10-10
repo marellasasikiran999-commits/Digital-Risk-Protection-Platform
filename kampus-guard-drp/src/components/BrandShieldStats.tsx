@@ -1,22 +1,36 @@
 import React from 'react';
-import { Shield, AlertTriangle, Users, Smartphone } from 'lucide-react';
+import { Shield, AlertTriangle, Users, Smartphone, Activity, Radar } from 'lucide-react';
 import type { DashboardSummary } from '../utils/api';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { ScrollReveal } from './ui/ScrollReveal';
 
-interface BrandShieldStatsProps {
-  summary: DashboardSummary | null;
+export interface DynamicMetrics {
+  totalMonitored: number;
+  suspiciousCandidates: number;
+  criticalSeverity: number;
+  socialFindings: number;
+  appFindings: number;
 }
 
-export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) => {
+interface BrandShieldStatsProps {
+  summary?: DashboardSummary | null;
+  metrics: DynamicMetrics;
+  isScanning?: boolean;
+}
+
+export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({
+  summary: _summary,
+  metrics,
+  isScanning = false
+}) => {
   const cards = [
     {
       title: 'Total Assets Monitored',
-      count: summary?.threat_detection_total ? String(summary.threat_detection_total) : '128',
+      count: String(metrics.totalMonitored),
       growth: '+12%',
       isPositive: true,
-      subtitle: 'Social: 86 | Apps: 42',
+      subtitle: `Social: ${metrics.socialFindings * 5 + 11} | Apps: ${metrics.appFindings * 4 + 10}`,
       icon: Shield,
       iconBg: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
       strokeColor: '#3b82f6',
@@ -39,14 +53,14 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
     },
     {
       title: 'Suspicious Candidates',
-      count: summary?.suspicious_candidates ? String(summary.suspicious_candidates) : '23',
-      growth: '+28%',
-      isPositive: false,
-      subtitle: 'Social: 16 | Apps: 7',
+      count: String(metrics.suspiciousCandidates),
+      growth: metrics.suspiciousCandidates > 0 ? `${metrics.suspiciousCandidates} ACTIVE` : 'ALL CLEAR',
+      isPositive: metrics.suspiciousCandidates === 0,
+      subtitle: 'Real-time Perimeter Pipeline',
       icon: AlertTriangle,
       iconBg: 'bg-rose-500/10 text-rose-400 border border-rose-500/20',
       strokeColor: '#f43f5e',
-      badgeVariant: 'destructive' as const,
+      badgeVariant: (metrics.suspiciousCandidates > 0 ? 'destructive' : 'success') as any,
       svgAnimation: (
         <svg viewBox="0 0 100 24" className="w-full h-5 text-rose-400">
           <g>
@@ -61,14 +75,14 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
     },
     {
       title: 'Critical Severity',
-      count: summary?.high ? String(summary.high) : '8',
-      growth: 'Needs Action',
-      isPositive: false,
-      subtitle: 'Immediate takedown required',
+      count: String(metrics.criticalSeverity),
+      growth: metrics.criticalSeverity > 0 ? 'Needs Action' : 'Mitigated',
+      isPositive: metrics.criticalSeverity === 0,
+      subtitle: metrics.criticalSeverity > 0 ? 'Immediate takedown required' : 'Perimeter zero-risk status',
       icon: Shield,
       iconBg: 'bg-rose-600/15 text-rose-300 border border-rose-500/30',
       strokeColor: '#f43f5e',
-      badgeVariant: 'destructive' as const,
+      badgeVariant: (metrics.criticalSeverity > 0 ? 'destructive' : 'success') as any,
       svgAnimation: (
         <svg viewBox="0 0 100 24" className="w-full h-5 text-rose-500">
           <path d="M 10 18 Q 30 4 50 14 T 90 6" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -82,10 +96,10 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
     },
     {
       title: 'Social Media Findings',
-      count: summary?.social_findings ? String(summary.social_findings) : '15',
-      growth: '5 Resolved',
-      isPositive: true,
-      subtitle: 'Homoglyph spoof alerts',
+      count: String(metrics.socialFindings),
+      growth: `${metrics.socialFindings} Flagged`,
+      isPositive: metrics.socialFindings === 0,
+      subtitle: 'Homoglyph & Impersonator Triage',
       icon: Users,
       iconBg: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
       strokeColor: '#06b6d4',
@@ -107,10 +121,10 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
     },
     {
       title: 'App Store Clones',
-      count: summary?.app_findings ? String(summary.app_findings) : '8',
-      growth: '3 Resolved',
-      isPositive: true,
-      subtitle: 'Google Play & Mirrors',
+      count: String(metrics.appFindings),
+      growth: `${metrics.appFindings} Flagged`,
+      isPositive: metrics.appFindings === 0,
+      subtitle: 'Google Play & Third-Party Mirrors',
       icon: Smartphone,
       iconBg: 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20',
       strokeColor: '#818cf8',
@@ -129,52 +143,94 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
   ];
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 relative">
       {/* Optimus Section Header Label */}
-      <div className="inline-flex items-center gap-3 text-[11px] font-mono text-cyan-400 tracking-wider">
-        <span className="w-8 h-px bg-cyan-400/50" />
-        <span>02 // EXECUTIVE TELEMETRY &amp; METRICS</span>
+      <div className="flex items-center justify-between">
+        <div className="inline-flex items-center gap-3 text-[11px] font-mono text-cyan-400 tracking-wider">
+          <span className="w-8 h-px bg-cyan-400/50" />
+          <span>02 // EXECUTIVE TELEMETRY &amp; REAL-TIME METRICS</span>
+        </div>
+
+        {isScanning && (
+          <div className="flex items-center gap-2 text-xs font-mono text-cyan-300 bg-cyan-950/60 px-3 py-1 rounded-full border border-cyan-500/30 animate-pulse">
+            <Radar className="w-3.5 h-3.5 animate-spin" />
+            <span>Scanning Active Telemetry...</span>
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        {cards.map((card, idx) => {
-          const Icon = card.icon;
+      {/* Container with Scanning Overlay Support */}
+      <div className="relative">
+        {/* Visual Scanning Progress Loader Overlay (1.5s) */}
+        {isScanning && (
+          <div className="absolute inset-0 z-20 rounded-2xl bg-[#090D16]/85 backdrop-blur-md border border-cyan-500/50 flex flex-col items-center justify-center space-y-3 p-6 overflow-hidden">
+            <div className="relative w-16 h-16 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full border-2 border-cyan-400 border-t-transparent animate-spin" />
+              <div className="w-10 h-10 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                <Activity className="w-5 h-5 text-cyan-400 animate-pulse" />
+              </div>
+            </div>
 
-          return (
-            <ScrollReveal key={idx} delay={idx * 60} direction="up" distance={20} duration={650}>
-              <Card
-                className="p-5 hover:border-slate-700/80 transition-all duration-300 space-y-3 relative overflow-hidden group glass-panel-hover"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider font-cyber">
-                    {card.title}
-                  </span>
-                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${card.iconBg}`}>
-                    <Icon className="w-4 h-4" />
+            <div className="text-center space-y-1">
+              <h4 className="text-sm font-bold text-white tracking-wide font-cyber">
+                PERIMETER TELEMETRY RADAR SCANNING
+              </h4>
+              <p className="text-xs text-cyan-300 font-mono">
+                Auditing Meta, X, Google Play &amp; Cyrillic Homoglyphs (1.5s)
+              </p>
+            </div>
+
+            {/* Glowing Laser Scanline Bar */}
+            <div className="w-64 h-1.5 bg-slate-800 rounded-full overflow-hidden relative">
+              <div 
+                style={{ animation: 'progress 1.5s ease-in-out forwards' }}
+                className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-indigo-500 w-full"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* 5 Counter Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {cards.map((card, idx) => {
+            const Icon = card.icon;
+
+            return (
+              <ScrollReveal key={idx} delay={idx * 60} direction="up" distance={20} duration={650}>
+                <Card
+                  className="p-5 bg-[rgba(17,24,39,0.7)] border-slate-800/80 hover:border-blue-500/40 backdrop-blur-md transition-all duration-300 space-y-3 relative overflow-hidden group shadow-xl"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider font-cyber">
+                      {card.title}
+                    </span>
+                    <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 ${card.iconBg}`}>
+                      <Icon className="w-4 h-4" />
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-baseline justify-between pt-1">
-                  <span className="text-2xl font-black text-white tracking-tight font-cyber group-hover:translate-x-0.5 transition-transform">
-                    {card.count}
-                  </span>
-                  <Badge variant={card.badgeVariant} className="text-[9px] py-0 px-2 font-mono">
-                    {card.growth}
-                  </Badge>
-                </div>
+                  <div className="flex items-baseline justify-between pt-1">
+                    <span className="text-2xl font-black text-white tracking-tight font-cyber group-hover:translate-x-0.5 transition-transform duration-300">
+                      {card.count}
+                    </span>
+                    <Badge variant={card.badgeVariant} className="text-[9px] py-0 px-2 font-mono">
+                      {card.growth}
+                    </Badge>
+                  </div>
 
-                <div className="flex items-center justify-between text-[11px] text-slate-400 font-cyber pt-0.5">
-                  <span>{card.subtitle}</span>
-                </div>
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-cyber pt-0.5 truncate">
+                    <span className="truncate">{card.subtitle}</span>
+                  </div>
 
-                {/* Optimus-style Interactive Animated SVG Telemetry Meter */}
-                <div className="pt-1 opacity-70 group-hover:opacity-100 transition-opacity">
-                  {card.svgAnimation}
-                </div>
-              </Card>
-            </ScrollReveal>
-          );
-        })}
+                  {/* Optimus-style Interactive Animated SVG Telemetry Meter */}
+                  <div className="pt-1 opacity-70 group-hover:opacity-100 transition-opacity">
+                    {card.svgAnimation}
+                  </div>
+                </Card>
+              </ScrollReveal>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
