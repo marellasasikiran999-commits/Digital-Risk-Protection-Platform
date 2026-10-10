@@ -14,6 +14,8 @@ import { AppStoreMonitoring } from './components/AppStoreMonitoring';
 import { IncidentReportsView } from './components/IncidentReportsView';
 import { CyberThreatGlobe3D } from './components/3d/CyberThreatGlobe3D';
 import { TiltCard3D } from './components/3d/TiltCard3D';
+import { AppleDeviceStudio3D } from './components/3d/AppleDeviceStudio3D';
+import { LookAlikeDetectionLab } from './components/LookAlikeDetectionLab';
 import { EvidenceModal } from './components/EvidenceModal';
 import { AddBrandModal } from './components/AddBrandModal';
 import { EditBrandModal } from './components/EditBrandModal';
@@ -199,10 +201,27 @@ export function App() {
             </div>
           )}
 
+          {/* TAB: 3D APPLE DEVICE STUDIO */}
+          {activeTab === 'device_3d' && (
+            <div className="space-y-6">
+              <AppleDeviceStudio3D brandName={currentBrandName} />
+            </div>
+          )}
+
           {/* TAB: 3D INTERACTIVE THREAT GLOBE */}
           {activeTab === 'globe_3d' && (
             <div className="space-y-6">
               <CyberThreatGlobe3D />
+            </div>
+          )}
+
+          {/* TAB: LOOK-ALIKE AI ENGINE & EXCLUSION FILTER (Bonus Feature) */}
+          {activeTab === 'lookalike_lab' && (
+            <div className="space-y-6">
+              <LookAlikeDetectionLab 
+                brandName={currentBrandName}
+                officialHandles={brands.find(b => b.brand_name === currentBrandName)?.official_handles || ['@digitalriskprotection', '@digitalriskprotection_hq']}
+              />
             </div>
           )}
 
