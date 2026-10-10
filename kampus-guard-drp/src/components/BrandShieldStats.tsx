@@ -143,7 +143,7 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
           return (
             <ScrollReveal key={idx} delay={idx * 60} direction="up" distance={20} duration={650}>
               <Card
-                className="p-5 hover:border-slate-700/80 transition-all duration-300 space-y-3 relative overflow-hidden group glass-panel-hover"
+                className="p-5 hover:border-slate-700/80 transition-all duration-300 space-y-3 relative overflow-hidden group glass-panel-hover hud-bracket"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider font-cyber">

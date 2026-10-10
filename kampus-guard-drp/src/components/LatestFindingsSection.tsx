@@ -127,7 +127,7 @@ const dossier = await generateDossier({
         {/* Latest Findings Table (col-span-8) */}
         <div className="lg:col-span-8">
           <ScrollReveal direction="up" delay={0} distance={24} duration={700}>
-            <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 group glass-panel-hover">
+            <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 group glass-panel-hover hud-bracket card-glow-top">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h3 className="text-sm font-bold text-white mr-2 group-hover:translate-x-1 transition-transform">
@@ -198,7 +198,7 @@ const dossier = await generateDossier({
                       <tr 
                         key={item.id}
                         onClick={() => onSelectFinding(item)}
-                        className="hover:bg-[#141f36] cursor-pointer transition-colors group/row"
+                        className="hover:bg-[#141f36] cursor-pointer transition-colors group/row triage-row-hover"
                       >
                         <td className="py-3 px-2">
                           <div className="w-8 h-8 rounded-xl bg-[#121c30] border border-slate-800 flex items-center justify-center group-hover/row:border-blue-500/40 transition-colors">

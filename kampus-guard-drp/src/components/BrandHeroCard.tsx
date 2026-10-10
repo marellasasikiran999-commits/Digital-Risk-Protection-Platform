@@ -29,7 +29,7 @@ export const BrandHeroCard: React.FC<BrandHeroCardProps> = ({
 
   return (
     <ScrollReveal direction="up" distance={24} duration={750}>
-      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-[#091021]/80 border-slate-800/80 shadow-2xl card-glow-top group">
+      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-[#091021]/80 border-slate-800/80 shadow-2xl card-glow-top hud-bracket group">
         {/* Optimus ambient background glows */}
         <div className="absolute -top-24 -left-24 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
