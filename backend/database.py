@@ -314,7 +314,7 @@ def seed_findings_data(conn: sqlite3.Connection):
                     {'factor': 'Newly registered domain (< 7 days old)', 'score': 32},
                     {'factor': 'Host on anonymous Russian bulletproof IP', 'score': 22}
                 ]),
-                json.dumps({'A': '185.220.101.5', 'NS': 'ns1.bulletproofdns.org'}),
+                json.dumps({'A': '185.220.***.5 (Host)', 'NS': 'ns1.bulletproofdns.org'}),
                 91,
                 0,
                 '1 hour ago',

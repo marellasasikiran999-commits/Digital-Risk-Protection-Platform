@@ -269,7 +269,7 @@ const DEFAULT_FINDINGS: Finding[] = [
     detection_source: 'Typosquatting DNS Engine',
     note: 'Phishing site mimicking corporate single-sign-on portal.',
     whois_info: 'Registrar: Namecheap Inc. | Privacy Shield: Enabled | Created: 3 days ago',
-    dns_records: { A: '185.220.101.5', NS: 'ns1.bulletproofdns.org' },
+    dns_records: { A: '185.220.***.5 (Host)', NS: 'ns1.bulletproofdns.org' },
     factors: [
       { factor: 'Typosquatting Affix (-login-claim.com)', score: 40 },
       { factor: 'Newly registered domain (< 7 days old)', score: 32 },

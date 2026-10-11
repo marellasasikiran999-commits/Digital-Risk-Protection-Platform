@@ -30,7 +30,7 @@ const THREAT_DATA: ThreatPoint[] = [
     lat: 55.75,
     lng: 37.61,
     type: 'Unicode Spoof (U+0430 Confusable)',
-    ip: '185.220.101.45',
+    ip: '185.220.***.*** (External C2)',
     severity: 'CRITICAL',
     score: 98,
     details: 'Spawning live fake portals with Cyrillic lookalikes targeting customer login forms.'
@@ -43,7 +43,7 @@ const THREAT_DATA: ThreatPoint[] = [
     lat: 22.54,
     lng: 114.05,
     type: 'Trojan-Banker.AndroidOS',
-    ip: '113.108.81.18',
+    ip: '113.108.***.*** (Trojan Mirror)',
     severity: 'CRITICAL',
     score: 94,
     details: 'Hosting cracked companion APKs injecting SYSTEM_ALERT_WINDOW overlay screens.'
@@ -56,7 +56,7 @@ const THREAT_DATA: ThreatPoint[] = [
     lat: -23.55,
     lng: -46.63,
     type: 'Spyware SMS Stealer',
-    ip: '177.18.204.30',
+    ip: '177.18.***.*** (Botnet Gateway)',
     severity: 'HIGH',
     score: 89,
     details: 'Harvesting incoming SMS OTP codes via unauthorized background notification listener.'
@@ -69,7 +69,7 @@ const THREAT_DATA: ThreatPoint[] = [
     lat: 6.52,
     lng: 3.37,
     type: 'Social Media Impersonation',
-    ip: '102.164.38.9',
+    ip: '102.164.***.*** (Phishing Relay)',
     severity: 'HIGH',
     score: 87,
     details: 'Operating deceptive Twitter/Instagram accounts (@brand_support24) claiming official affiliation.'
@@ -82,7 +82,7 @@ const THREAT_DATA: ThreatPoint[] = [
     lat: 50.11,
     lng: 8.68,
     type: 'Typosquat Resolver',
-    ip: '194.26.29.112',
+    ip: '194.26.***.*** (Fast-Flux C2)',
     severity: 'CRITICAL',
     score: 96,
     details: 'Rotates IP addresses every 120 seconds across 40+ proxy hosts to evade domain takedowns.'
@@ -95,7 +95,7 @@ const THREAT_DATA: ThreatPoint[] = [
     lat: 44.42,
     lng: 26.10,
     type: 'Combo-squat Domain',
-    ip: '89.38.150.14',
+    ip: '89.38.***.*** (Credential Farm)',
     severity: 'MEDIUM',
     score: 78,
     details: 'Spoofed rewards landing pages luring users to submit SSO corporate credentials.'
