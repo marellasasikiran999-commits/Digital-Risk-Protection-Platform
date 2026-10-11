@@ -87,6 +87,17 @@ def init_db():
         )
     """)
 
+    # 4. Scan history (audit trail of every scan executed)
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS scan_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            brand_name TEXT NOT NULL,
+            scan_type TEXT NOT NULL,
+            findings_count INTEGER NOT NULL DEFAULT 0,
+            scanned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
     conn.commit()
     seed_findings_data(conn)
     conn.close()

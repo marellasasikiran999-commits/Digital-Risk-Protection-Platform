@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root, [data-theme="cyber-obsidian"] {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Text', Inter, sans-serif;
   line-height: 1.5;
@@ -329,4 +331,3 @@ h1, h2, h3, h4, .font-heading {
   animation: laser-sweep 2.8s ease-in-out infinite;
   pointer-events: none;
 }
-

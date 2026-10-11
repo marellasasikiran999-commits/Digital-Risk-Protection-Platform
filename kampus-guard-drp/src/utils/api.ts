@@ -58,6 +58,8 @@ export interface DashboardSummary {
   social_findings: number;
   app_findings: number;
   domain_findings: number;
+  whitelisted_assets?: number;
+  resolved?: number;
   total_brands: number;
   mean_time_to_detect: string;
   mean_time_to_response: string;
@@ -421,35 +423,108 @@ export async function updateFindingStatusAPI(id: string, status: string): Promis
 }
 
 // 5. Run Social Scan
-export async function runSocialScanAPI(brand_name: string): Promise<any> {
+export interface ScanResult {
+  status: string;
+  brand: string;
+  candidates_evaluated: number;
+  new_findings_count: number;
+  flagged_count: number;
+  whitelisted_count: number;
+  platforms?: string[];
+}
+
+export async function runSocialScanAPI(brand_name: string): Promise<ScanResult> {
   if (API_BASE_URL) {
     try {
       const res = await fetch(`${API_BASE_URL}/api/scan/social`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ brand: brand_name })
+        body: JSON.stringify({ brand_name })
       });
       if (res.ok) return await res.json();
     } catch {}
   }
 
-  return { success: true, brand_name, detected: 15 };
+  return {
+    status: 'offline',
+    brand: brand_name,
+    candidates_evaluated: 0,
+    new_findings_count: 0,
+    flagged_count: 0,
+    whitelisted_count: 0,
+  };
 }
 
 // 6. Run App Store Scan
-export async function runAppScanAPI(brand_name: string): Promise<any> {
+export async function runAppScanAPI(brand_name: string): Promise<ScanResult> {
   if (API_BASE_URL) {
     try {
       const res = await fetch(`${API_BASE_URL}/api/scan/appstore`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ brand: brand_name })
+        body: JSON.stringify({ brand_name })
       });
       if (res.ok) return await res.json();
     } catch {}
   }
 
-  return { success: true, brand_name, detected: 8 };
+  return {
+    status: 'offline',
+    brand: brand_name,
+    candidates_evaluated: 0,
+    new_findings_count: 0,
+    flagged_count: 0,
+    whitelisted_count: 0,
+  };
+}
+
+// 6b. Update an existing brand baseline
+export async function updateBrandAPI(brandId: number, brand: {
+  brand_name: string;
+  official_website: string;
+  official_logo_url: string;
+  official_developer: string;
+  official_handles: string[];
+  official_apps: string[];
+}): Promise<any> {
+  if (API_BASE_URL) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/brands/${brandId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(brand)
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+  }
+
+  const updated = getLocalBrands().map(b => (b.id === brandId ? { ...b, ...brand } : b));
+  saveLocalBrands(updated);
+  return { status: 'updated', id: brandId, brand_name: brand.brand_name };
+}
+
+// 6c. Analyse a single social handle against the brand baseline
+export async function auditSocialHandleAPI(handle: string, brandName: string, platform = 'twitter'): Promise<any | null> {
+  if (!API_BASE_URL) return null;
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/audit/social`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ handle, brand_name: brandName, platform })
+    });
+    if (res.ok) return await res.json();
+  } catch {}
+  return null;
+}
+
+// 6d. Look-alike variant catalogue for a brand
+export async function getLookalikeVariantsAPI(brandName: string): Promise<any | null> {
+  if (!API_BASE_URL) return null;
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/lookalike/variants?brand=${encodeURIComponent(brandName)}`);
+    if (res.ok) return await res.json();
+  } catch {}
+  return null;
 }
 
 // 7. Get Dashboard Summary (Live Metrics)
