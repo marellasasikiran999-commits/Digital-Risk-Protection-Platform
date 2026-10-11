@@ -1,32 +1,25 @@
-# React + TypeScript + Vite
+# Digital Risk Protection Platform (DRP) - Frontend Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+This package contains the React 19 + TypeScript + Vite frontend client for the Digital Risk Protection Platform.
 
-Currently, two official plugins are available:
+For full architectural documentation, feature guides, API specifications, and analyst workflows, please refer to the primary repository [README.md](../README.md).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Quick Start (Frontend)
 
-## React Compiler
+```bash
+# Install dependencies
+npm install
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+# Run development server
+npm run dev
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+# Run type check and production build
+npm run build
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Tech Stack
+* **Framework:** React 19, TypeScript
+* **Build Tool:** Vite 8
+* **Styling:** Tailwind CSS, Custom Cyberpunk HUD & Glassmorphism themes
+* **3D Visualizations:** Three.js (WebGL 2.0)
+* **Icons:** Lucide React
