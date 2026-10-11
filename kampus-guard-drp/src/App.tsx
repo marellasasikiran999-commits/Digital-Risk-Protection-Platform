@@ -26,6 +26,7 @@ import {
 } from './utils/api';
 import { getCurrentUserProfile, type AuthUserProfile } from './utils/firebase';
 import { CheckCircle, RefreshCw, Key, Download } from 'lucide-react';
+import { PageHeader } from './components/ui/PageHeader';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -161,31 +162,49 @@ export function App() {
         />
 
         {/* Live Moving Telemetry Marquee Ticker */}
-        <div className="border-b border-slate-800/80 bg-[#080d1a]/60 py-2 overflow-hidden select-none">
-          <div className="animate-marquee whitespace-nowrap text-[11px] font-mono text-slate-400 flex items-center gap-10">
-            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> 23 SUSPICIOUS CANDIDATES SCANNED</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-cyan-400">99.98% CYRILLIC HOMOGLYPH ACCURACY</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-indigo-400">0% FALSE POSITIVE BASELINE FILTER</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2">MULTI-STORE CRAWL: GOOGLE PLAY &amp; APKPURE</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-emerald-400"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> GLOBAL PERIMETER LATENCY &lt;14MS</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-amber-400">AUTONOMOUS EVIDENCE DOSSIER READY</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> 23 SUSPICIOUS CANDIDATES SCANNED</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-cyan-400">99.98% CYRILLIC HOMOGLYPH ACCURACY</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-indigo-400">0% FALSE POSITIVE BASELINE FILTER</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2">MULTI-STORE CRAWL: GOOGLE PLAY &amp; APKPURE</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-emerald-400"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> GLOBAL PERIMETER LATENCY &lt;14MS</span>
-            <span className="text-slate-600">/</span>
-            <span className="flex items-center gap-2 text-amber-400">AUTONOMOUS EVIDENCE DOSSIER READY</span>
+        <div className="border-b border-slate-800/80 bg-[#060912]/80 py-1.5 overflow-hidden select-none relative" style={{ background: 'linear-gradient(90deg, #060912 0%, #07101f 50%, #060912 100%)' }}>
+          {/* Left fade mask */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 z-10 pointer-events-none" style={{ background: 'linear-gradient(to right, #060912, transparent)' }} />
+          {/* Right fade mask */}
+          <div className="absolute right-0 top-0 bottom-0 w-16 z-10 pointer-events-none" style={{ background: 'linear-gradient(to left, #060912, transparent)' }} />
+          <div className="animate-marquee whitespace-nowrap text-[11px] font-mono text-slate-500 flex items-center gap-8">
+            {[
+              { text: '23 SUSPICIOUS CANDIDATES UNDER SURVEILLANCE', color: 'text-emerald-400', dot: 'bg-emerald-400', pulse: true },
+              { text: '99.98% CYRILLIC HOMOGLYPH DETECTION ACCURACY', color: 'text-cyan-400' },
+              { text: '0% FALSE POSITIVE RATE — BASELINE VERIFIED', color: 'text-blue-400' },
+              { text: 'LIVE CRAWL: GOOGLE PLAY · APKPURE · THIRD-PARTY MIRRORS', color: 'text-slate-400' },
+              { text: 'GLOBAL PERIMETER RESPONSE LATENCY < 14ms', color: 'text-emerald-300', dot: 'bg-emerald-400', pulse: true },
+              { text: '5 ACTIVE TAKEDOWN NOTICES DISPATCHED', color: 'text-amber-400' },
+              { text: 'MULTI-PLATFORM: INSTAGRAM · X · FACEBOOK · TELEGRAM', color: 'text-slate-400' },
+              { text: 'FORENSIC EVIDENCE DOSSIER: AUTO-GENERATED & READY', color: 'text-violet-400' },
+              { text: 'APK SANDBOX: REAL-TIME BINARY FINGERPRINTING ACTIVE', color: 'text-indigo-400' },
+              { text: '128 BRAND ASSETS PROTECTED ACROSS 4 PLATFORMS', color: 'text-cyan-300' },
+            ].flatMap((item, i) => [
+              <span key={`a-${i}`} className={`flex items-center gap-2 ${item.color}`}>
+                {item.dot && <span className={`w-1.5 h-1.5 rounded-full ${item.dot} ${item.pulse ? 'animate-pulse' : ''}`} />}
+                {item.text}
+              </span>,
+              <span key={`sep-a-${i}`} className="text-slate-700">·</span>
+            ])}
+            {/* Duplicate for seamless loop */}
+            {[
+              { text: '23 SUSPICIOUS CANDIDATES UNDER SURVEILLANCE', color: 'text-emerald-400', dot: 'bg-emerald-400', pulse: true },
+              { text: '99.98% CYRILLIC HOMOGLYPH DETECTION ACCURACY', color: 'text-cyan-400' },
+              { text: '0% FALSE POSITIVE RATE — BASELINE VERIFIED', color: 'text-blue-400' },
+              { text: 'LIVE CRAWL: GOOGLE PLAY · APKPURE · THIRD-PARTY MIRRORS', color: 'text-slate-400' },
+              { text: 'GLOBAL PERIMETER RESPONSE LATENCY < 14ms', color: 'text-emerald-300', dot: 'bg-emerald-400', pulse: true },
+              { text: '5 ACTIVE TAKEDOWN NOTICES DISPATCHED', color: 'text-amber-400' },
+              { text: 'MULTI-PLATFORM: INSTAGRAM · X · FACEBOOK · TELEGRAM', color: 'text-slate-400' },
+              { text: 'FORENSIC EVIDENCE DOSSIER: AUTO-GENERATED & READY', color: 'text-violet-400' },
+              { text: 'APK SANDBOX: REAL-TIME BINARY FINGERPRINTING ACTIVE', color: 'text-indigo-400' },
+              { text: '128 BRAND ASSETS PROTECTED ACROSS 4 PLATFORMS', color: 'text-cyan-300' },
+            ].flatMap((item, i) => [
+              <span key={`b-${i}`} className={`flex items-center gap-2 ${item.color}`}>
+                {item.dot && <span className={`w-1.5 h-1.5 rounded-full ${item.dot} ${item.pulse ? 'animate-pulse' : ''}`} />}
+                {item.text}
+              </span>,
+              <span key={`sep-b-${i}`} className="text-slate-700">·</span>
+            ])}
           </div>
         </div>
 
@@ -225,7 +244,7 @@ export function App() {
               />
 
               {/* Bottom Analytics Row: Risk Distribution + Top Risk + Recent Activity + Pro Tip */}
-              <BottomAnalyticsRow />
+              <BottomAnalyticsRow summary={summary} findings={findings} />
             </div>
           )}
 
@@ -261,28 +280,23 @@ export function App() {
           {/* TAB 3: SOCIAL MEDIA MONITORING & TESTER */}
           {activeTab === 'social' && (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#091021]/80 border border-slate-800/80 p-6 rounded-2xl shadow-xl backdrop-blur-xl card-glow-top hud-bracket">
-                <div>
-                  <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold tracking-widest uppercase mb-1">
-                    <span className="w-6 h-px bg-cyan-400" />
-                    <span>03 // SURVEILLANCE MATRIX</span>
-                  </div>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display">
-                    Social Surface Surveillance &amp; Impersonation Triage
-                  </h1>
-                  <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-                    Multi-network heuristics detecting Cyrillic confusable homoglyphs, deceptive affixes, and unauthorized brand handles.
-                  </p>
-                </div>
-                <button
-                  onClick={handleRunSocialScan}
-                  disabled={isScanningSocial}
-                  className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-blue-600/25 shrink-0 btn-shimmer"
-                >
-                  <RefreshCw className={`w-3.5 h-3.5 ${isScanningSocial ? 'animate-spin' : ''}`} />
-                  {isScanningSocial ? 'Scanning Platforms...' : 'Run Live Social Scan'}
-                </button>
-              </div>
+              <PageHeader
+                index="03"
+                label="SURVEILLANCE MATRIX"
+                title="Social Surface Surveillance & Impersonation Triage"
+                subtitle="Multi-network heuristics detecting Cyrillic confusable homoglyphs, deceptive affixes, and unauthorized brand handles."
+                accentColor="cyan"
+                action={
+                  <button
+                    onClick={handleRunSocialScan}
+                    disabled={isScanningSocial}
+                    className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-blue-600/25 shrink-0 btn-shimmer"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isScanningSocial ? 'animate-spin' : ''}`} />
+                    {isScanningSocial ? 'Scanning Platforms...' : 'Run Live Social Scan'}
+                  </button>
+                }
+              />
               <SocialAccountTester activeBrand={brands.find(b => b.brand_name === currentBrandName) || brands[0]} />
             </div>
           )}
@@ -302,27 +316,22 @@ export function App() {
           {/* TAB 5: ALL FINDINGS */}
           {activeTab === 'findings' && (
             <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-[#091021]/80 border border-slate-800/80 p-6 rounded-2xl shadow-xl backdrop-blur-xl card-glow-top hud-bracket">
-                <div>
-                  <div className="inline-flex items-center gap-2 text-xs font-mono text-blue-400 font-bold tracking-widest uppercase mb-1">
-                    <span className="w-6 h-px bg-blue-400" />
-                    <span>05 // CENTRAL INTELLIGENCE REPOSITORY</span>
-                  </div>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display">
-                    Consolidated External Threat Repository
-                  </h1>
-                  <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-                    Unified audit feed compiling mobile packages, social accounts, and phishing registrars with cryptographic match scoring.
-                  </p>
-                </div>
-                <button
-                  onClick={handleExportReport}
-                  className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shrink-0 btn-shimmer border border-slate-700/60"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  Export All (CSV)
-                </button>
-              </div>
+              <PageHeader
+                index="05"
+                label="CENTRAL INTELLIGENCE REPOSITORY"
+                title="Consolidated External Threat Repository"
+                subtitle="Unified audit feed compiling mobile packages, social accounts, and phishing registrars with cryptographic match scoring."
+                accentColor="blue"
+                action={
+                  <button
+                    onClick={handleExportReport}
+                    className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs font-semibold flex items-center gap-2 shrink-0 btn-shimmer border border-slate-700/60"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    Export All (CSV)
+                  </button>
+                }
+              />
 
               <LatestFindingsSection
                 findings={findings}
@@ -340,6 +349,13 @@ export function App() {
           {/* TAB 6: MALICIOUS APK SANDBOX & TESTER */}
           {activeTab === 'apk_tester' && (
             <div className="space-y-6">
+              <PageHeader
+                index="06"
+                label="MALWARE DETONATION & PERMISSIONS"
+                title="Mobile APK Malware Sandbox & Static Heuristics"
+                subtitle="Deep static analysis examining APK permissions, package signatures, and Trojan Banker indicators against official brand baselines."
+                accentColor="rose"
+              />
               <MaliciousApkSandbox />
             </div>
           )}
@@ -347,6 +363,13 @@ export function App() {
           {/* TAB 7: FAKE URL / PHISHING DOMAIN INSPECTOR */}
           {activeTab === 'url_tester' && (
             <div className="space-y-6">
+              <PageHeader
+                index="07"
+                label="PHISHING RECONNAISSANCE"
+                title="Phishing Domain & Cyrillic Homoglyph Inspector"
+                subtitle="Real-time URL tokenizer uncovering look-alike domains, punycode spoofing, and malicious redirect structures."
+                accentColor="amber"
+              />
               <FakeUrlTester activeBrand={brands.find(b => b.brand_name === currentBrandName) || brands[0]} />
             </div>
           )}

@@ -31,14 +31,18 @@ export const IncidentReportsView: React.FC<IncidentReportsViewProps> = ({ curren
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white flex items-center gap-2">
+              <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold tracking-widest uppercase mb-1">
+                <span className="w-6 h-px bg-cyan-400" />
+                <span>08 // EXECUTIVE AUDIT &amp; COMPLIANCE</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-display tracking-tight flex items-center gap-2.5 flex-wrap">
                 Executive Threat &amp; Incident Reports
-                <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold">
+                <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-semibold font-mono">
                   Live Audit Feed
                 </span>
               </h1>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Cryptographically verifiable incident logs, takedown requests, and perimeter compliance telemetry for {currentBrand}.
+              <p className="text-xs sm:text-sm text-slate-300 mt-1">
+                Cryptographically verifiable incident logs, takedown requests, and perimeter compliance telemetry for <strong className="text-white font-semibold">{currentBrand}</strong>.
               </p>
             </div>
           </div>

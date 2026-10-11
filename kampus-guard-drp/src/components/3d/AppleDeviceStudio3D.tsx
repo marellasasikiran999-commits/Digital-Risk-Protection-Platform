@@ -226,11 +226,11 @@ export const AppleDeviceStudio3D: React.FC<AppleDeviceStudio3DProps> = ({
 
     // 6. Animation Loop
     let animId: number;
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animId = requestAnimationFrame(animate);
-      const elapsed = clock.getElapsedTime();
+      const elapsed = (performance.now() - startTime) * 0.001;
 
       // Smooth auto-rotation if idle
       if (autoRotate && !isDragging && phoneGroupRef.current) {

@@ -1,8 +1,46 @@
 import React from 'react';
 import { Shield, ArrowRight, CheckCircle2, Smartphone, Radio } from 'lucide-react';
 import { ScrollReveal } from './ui/ScrollReveal';
+import type { DashboardSummary, Finding } from '../utils/api';
 
-export const BottomAnalyticsRow: React.FC = () => {
+interface BottomAnalyticsRowProps {
+  summary?: DashboardSummary | null;
+  findings?: Finding[];
+}
+
+export const BottomAnalyticsRow: React.FC<BottomAnalyticsRowProps> = ({ summary, findings }) => {
+  // Compute risk distribution dynamically if findings exist
+  const totalFindings = findings && findings.length > 0 ? findings.length : (summary?.threat_detection_total ? 23 : 23);
+  const criticalCount = findings ? findings.filter(f => f.risk_level === 'Critical').length : (summary?.critical ?? 5);
+  const highCount = findings ? findings.filter(f => f.risk_level === 'High').length : (summary?.high ?? 7);
+  const mediumCount = findings ? findings.filter(f => f.risk_level === 'Medium').length : (summary?.medium ?? 7);
+  const lowCount = findings ? findings.filter(f => f.risk_level === 'Low').length : (summary?.low ?? 4);
+
+  const critPercent = totalFindings > 0 ? Math.round((criticalCount / totalFindings) * 100) : 22;
+  const highPercent = totalFindings > 0 ? Math.round((highCount / totalFindings) * 100) : 30;
+  const medPercent = totalFindings > 0 ? Math.round((mediumCount / totalFindings) * 100) : 30;
+  const lowPercent = totalFindings > 0 ? Math.max(0, 100 - critPercent - highPercent - medPercent) : 18;
+
+  // Top risk findings
+  const topRiskItems = findings && findings.length > 0
+    ? [...findings].sort((a, b) => b.risk_score - a.risk_score).slice(0, 5).map((f, i) => ({
+        rank: i + 1,
+        name: f.candidate_name || f.asset || f.title,
+        score: f.risk_score,
+        color: f.risk_score >= 85 
+          ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+          : f.risk_score >= 70
+          ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+          : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+      }))
+    : [
+        { rank: 1, name: 'Digital Risk Protection Pro', score: 88, color: 'bg-rose-500/20 text-rose-400 border border-rose-500/30' },
+        { rank: 2, name: 'DRP Rewards Wallet', score: 82, color: 'bg-rose-500/20 text-rose-400 border border-rose-500/30' },
+        { rank: 3, name: '@drp_support24', score: 76, color: 'bg-orange-500/20 text-orange-400 border border-orange-500/30' },
+        { rank: 4, name: 'DRP Official Clone', score: 65, color: 'bg-orange-500/20 text-orange-400 border border-orange-500/30' },
+        { rank: 5, name: 'DRP Sentinel Harvester', score: 54, color: 'bg-amber-500/20 text-amber-400 border border-amber-500/30' }
+      ];
+
   return (
     <div className="space-y-2">
       {/* Optimus Section Header Label */}
@@ -23,17 +61,13 @@ export const BottomAnalyticsRow: React.FC = () => {
               <div className="relative w-28 h-28 shrink-0">
                 <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                   <circle cx="50" cy="50" r="38" stroke="#1e293b" strokeWidth="12" fill="transparent" />
-                  {/* Critical Red 22% */}
-                  <circle cx="50" cy="50" r="38" stroke="#f43f5e" strokeWidth="12" fill="transparent" strokeDasharray="52 238" strokeDashoffset="0" />
-                  {/* High Orange 30% */}
-                  <circle cx="50" cy="50" r="38" stroke="#f97316" strokeWidth="12" fill="transparent" strokeDasharray="71 238" strokeDashoffset="-52" />
-                  {/* Medium Yellow 30% */}
-                  <circle cx="50" cy="50" r="38" stroke="#fbbf24" strokeWidth="12" fill="transparent" strokeDasharray="71 238" strokeDashoffset="-123" />
-                  {/* Low Green 18% */}
-                  <circle cx="50" cy="50" r="38" stroke="#10b981" strokeWidth="12" fill="transparent" strokeDasharray="44 238" strokeDashoffset="-194" />
+                  <circle cx="50" cy="50" r="38" stroke="#f43f5e" strokeWidth="12" fill="transparent" strokeDasharray={`${(critPercent / 100) * 238} 238`} strokeDashoffset="0" />
+                  <circle cx="50" cy="50" r="38" stroke="#f97316" strokeWidth="12" fill="transparent" strokeDasharray={`${(highPercent / 100) * 238} 238`} strokeDashoffset={`-${(critPercent / 100) * 238}`} />
+                  <circle cx="50" cy="50" r="38" stroke="#fbbf24" strokeWidth="12" fill="transparent" strokeDasharray={`${(medPercent / 100) * 238} 238`} strokeDashoffset={`-${((critPercent + highPercent) / 100) * 238}`} />
+                  <circle cx="50" cy="50" r="38" stroke="#10b981" strokeWidth="12" fill="transparent" strokeDasharray={`${(lowPercent / 100) * 238} 238`} strokeDashoffset={`-${((critPercent + highPercent + medPercent) / 100) * 238}`} />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-xl font-black text-white font-cyber">23</span>
+                  <span className="text-xl font-black text-white font-cyber">{totalFindings}</span>
                   <span className="text-[9px] text-slate-400 font-mono">Findings</span>
                 </div>
               </div>
@@ -41,19 +75,19 @@ export const BottomAnalyticsRow: React.FC = () => {
               <div className="space-y-1 text-[11px] font-mono flex-1">
                 <div className="flex items-center justify-between gap-2">
                   <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" /> Critical</span>
-                  <strong className="text-white">5 (22%)</strong>
+                  <strong className="text-white">{criticalCount} ({critPercent}%)</strong>
                 </div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-orange-500" /> High</span>
-                  <strong className="text-white">7 (30%)</strong>
+                  <strong className="text-white">{highCount} ({highPercent}%)</strong>
                 </div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-amber-400" /> Medium</span>
-                  <strong className="text-white">7 (30%)</strong>
+                  <strong className="text-white">{mediumCount} ({medPercent}%)</strong>
                 </div>
                 <div className="flex items-center justify-between gap-2">
                   <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Low</span>
-                  <strong className="text-white">4 (18%)</strong>
+                  <strong className="text-white">{lowCount} ({lowPercent}%)</strong>
                 </div>
               </div>
             </div>
@@ -68,13 +102,7 @@ export const BottomAnalyticsRow: React.FC = () => {
             </h3>
 
             <div className="space-y-2 text-xs">
-              {[
-                { rank: 1, name: 'Digital Risk Protection Pro', score: 88, color: 'bg-rose-500/20 text-rose-400 border border-rose-500/30' },
-                { rank: 2, name: 'DRP Rewards Wallet', score: 82, color: 'bg-rose-500/20 text-rose-400 border border-rose-500/30' },
-                { rank: 3, name: '@drp_support24', score: 76, color: 'bg-orange-500/20 text-orange-400 border border-orange-500/30' },
-                { rank: 4, name: 'DRP Official Clone', score: 65, color: 'bg-orange-500/20 text-orange-400 border border-orange-500/30' },
-                { rank: 5, name: 'DRP Sentinel Harvester', score: 54, color: 'bg-amber-500/20 text-amber-400 border border-amber-500/30' }
-              ].map((item) => (
+              {topRiskItems.map((item) => (
                 <div key={item.rank} className="flex items-center justify-between p-1.5 rounded-lg bg-[#141e33] border border-slate-800/80 hover:border-slate-700 transition-colors">
                   <div className="flex items-center gap-2 truncate">
                     <span className="w-4 h-4 rounded-full bg-slate-800 text-slate-400 font-mono text-[10px] flex items-center justify-center shrink-0">

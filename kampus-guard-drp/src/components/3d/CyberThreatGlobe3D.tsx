@@ -432,20 +432,21 @@ export const CyberThreatGlobe3D: React.FC = () => {
       <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-blue-950/40 via-[#0a1020] to-[#070b16] border-blue-500/20 card-glow-top">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="flex items-center gap-2">
-              <Badge variant="cyber">
-                Interactive WebGL 3D Matrix
-              </Badge>
-              <Badge variant="success">
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold tracking-widest uppercase mb-1.5">
+              <span className="w-6 h-px bg-cyan-400" />
+              <span>02 // GLOBAL THREAT RADAR</span>
+            </div>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display">
+                Global Cyber Threat Matrix &amp; Vector Globe
+              </h1>
+              <Badge variant="success" className="font-mono text-xs">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>Real-Time Defense Active</span>
+                <span>Defense Mesh Active</span>
               </Badge>
             </div>
-            <h2 className="text-xl font-black text-white mt-1.5 tracking-tight font-sans">
-              Global Cyber Threat Matrix &amp; Attack Vectors
-            </h2>
-            <p className="text-xs text-slate-300 mt-0.5">
-              Click &amp; drag to rotate in 3D space. Scroll to zoom. Click any threat node to inspect live malicious origins and intercept arcs.
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+              Real-time WebGL 3D geospatial surveillance. Click &amp; drag to rotate, scroll to zoom, or select any glowing node to inspect origin telemetry and attack trajectories.
             </p>
           </div>
 

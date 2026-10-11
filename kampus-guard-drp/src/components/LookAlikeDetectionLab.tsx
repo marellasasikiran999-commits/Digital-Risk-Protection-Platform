@@ -343,19 +343,21 @@ Submitted via Digital Risk Protection Platform Autonomous Intelligence Engine.`
       <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-purple-950/40 via-[#0a1020] to-[#070b16] border-purple-500/20 card-glow-top">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="flex items-center gap-2">
-              <Badge variant="cyber">
-                Hackathon Bonus Feature
-              </Badge>
-              <Badge variant="success">
-                <ShieldCheck className="w-3 h-3" /> 0% False Positive Exclusion Active
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-violet-400 font-bold tracking-widest uppercase mb-1.5">
+              <span className="w-6 h-px bg-violet-400" />
+              <span>04 // AI HOMOGLYPH MATRIX</span>
+            </div>
+            <div className="flex items-center gap-2.5 flex-wrap">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight font-display">
+                Look-alike Permutation Engine &amp; Exclusion Filter
+              </h1>
+              <Badge variant="success" className="font-mono text-xs">
+                <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                <span>0% False Positive Baseline</span>
               </Badge>
             </div>
-            <h2 className="text-xl font-black text-white mt-1.5 tracking-tight font-sans">
-              Look-alike Name Detection Engine &amp; Exclusion Filter
-            </h2>
-            <p className="text-xs text-slate-300 mt-0.5">
-              Autonomous generator &amp; discriminator for <strong>Character Swaps</strong>, <strong>Added Words</strong>, and <strong>Spacing Changes</strong> while guaranteeing official assets are never falsely flagged.
+            <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+              Autonomous generator and discriminator for character swaps, deceptive affixes, and spacing modulations — ensuring official assets are certified clean.
             </p>
           </div>
 

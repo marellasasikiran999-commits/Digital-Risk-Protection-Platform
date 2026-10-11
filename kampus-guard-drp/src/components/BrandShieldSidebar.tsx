@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Shield, LayoutDashboard, Building2, Radio, Smartphone, 
-  Search, FileText, Settings, Bug, Globe, Sparkles
+  Search, FileText, Settings, Bug, Globe, Sparkles, Trophy
 } from 'lucide-react';
 
 interface BrandShieldSidebarProps {
@@ -18,7 +18,7 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
       title: 'COMMAND CENTER',
       items: [
         { id: 'dashboard', label: 'Security Dashboard', icon: LayoutDashboard },
-        { id: 'globe_3d', label: '3D Threat Globe', icon: Globe, badge: '3D LIVE' },
+        { id: 'globe_3d', label: '3D Threat Globe', icon: Globe, badge: '3D LIVE', badgeColor: 'text-emerald-400 border-emerald-500/25 bg-emerald-500/8' },
         { id: 'brands', label: 'Brand Baseline & Assets', icon: Building2 },
         { id: 'findings', label: 'Threat Triage Feed', icon: Search }
       ]
@@ -26,52 +26,61 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
     {
       title: 'INTELLIGENCE & SCANNERS',
       items: [
-        { id: 'lookalike_lab', label: 'Look-alike AI Engine', icon: Sparkles, badge: 'INTERACTIVE' },
+        { id: 'lookalike_lab', label: 'Look-alike AI Engine', icon: Sparkles, badge: 'AI', badgeColor: 'text-violet-400 border-violet-500/25 bg-violet-500/8' },
         { id: 'social', label: 'Social Media Monitor', icon: Radio },
         { id: 'appstore', label: 'App Store Monitor', icon: Smartphone },
-        { id: 'url_tester', label: 'Phishing Domain Inspector', icon: Globe, badge: 'HOMOGLYPH' },
-        { id: 'apk_tester', label: 'APK Malware Sandbox', icon: Bug, badge: 'MALWARE' }
+        { id: 'url_tester', label: 'Phishing Inspector', icon: Globe, badge: 'LIVE', badgeColor: 'text-cyan-400 border-cyan-500/25 bg-cyan-500/8' },
+        { id: 'apk_tester', label: 'APK Malware Sandbox', icon: Bug, badge: 'SCAN', badgeColor: 'text-rose-400 border-rose-500/25 bg-rose-500/8' }
       ]
     },
     {
       title: 'GOVERNANCE & AUDIT',
       items: [
-        { id: 'reports', label: 'Executive Incident Reports', icon: FileText },
-        { id: 'settings', label: 'System & Baseline Settings', icon: Settings }
+        { id: 'reports', label: 'Incident Reports', icon: FileText },
+        { id: 'settings', label: 'System Settings', icon: Settings }
       ]
     }
   ];
 
   return (
-    <aside className="w-64 bg-[#080d1a]/95 border-r border-slate-800/80 flex flex-col justify-between p-4 shrink-0 select-none z-30 min-h-screen backdrop-blur-2xl">
-      <div className="space-y-6">
-        {/* Digital Risk Protection Platform Logo Header */}
-        <div className="flex items-center gap-3 px-2 py-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 p-0.5 flex items-center justify-center shadow-lg shadow-blue-500/30">
-            <div className="w-full h-full bg-[#0a1020] rounded-[10px] flex items-center justify-center">
-              <Shield className="w-5 h-5 text-blue-400" />
+    <aside className="w-60 bg-[#060a14]/95 border-r border-slate-800/70 flex flex-col justify-between p-3 shrink-0 select-none z-30 min-h-screen backdrop-blur-2xl">
+      <div className="space-y-5">
+        {/* Logo Header */}
+        <div className="flex items-center gap-3 px-2 pt-2 pb-1">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-blue-500/30 shrink-0" style={{ filter: 'drop-shadow(0 0 8px rgba(59,130,246,0.4))' }}>
+            <div className="w-full h-full bg-[#08101e] rounded-[10px] flex items-center justify-center">
+              <Shield className="w-4.5 h-4.5 text-blue-400" style={{ width: '18px', height: '18px' }} />
             </div>
           </div>
           <div>
-            <h1 className="text-xs font-black text-white tracking-wider uppercase leading-tight font-display">
-              Digital Risk Protection
+            <h1 className="text-[11px] font-black text-white tracking-wider uppercase leading-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+              Digital Risk<br/>Protection
             </h1>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-[10px] text-cyan-400 font-bold uppercase tracking-wider font-cyber">Platform</span>
-              <span className="text-[9px] text-slate-500 font-mono">v3.0.0</span>
+              <span className="text-[9px] text-cyan-400 font-bold uppercase tracking-wider font-mono">Platform</span>
+              <span className="text-[8px] text-slate-600 font-mono">v3.0</span>
             </div>
           </div>
         </div>
 
-        {/* Section Navigation */}
-        <nav className="space-y-6">
+        {/* Hackathon badge */}
+        <div className="mx-1 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 flex items-center gap-2">
+          <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+          <div>
+            <span className="text-[9px] font-bold text-amber-300 block font-mono uppercase tracking-wider">ByteXL Hackathon</span>
+            <span className="text-[8px] text-slate-500 font-mono">Submission · 10 Oct 2026</span>
+          </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="space-y-5">
           {navSections.map((section, sIdx) => (
-            <div key={sIdx} className="space-y-1.5">
-              <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest px-2 block">
+            <div key={sIdx} className="space-y-1">
+              <span className="text-[9px] font-mono font-bold text-slate-600 uppercase tracking-[0.15em] px-2 block">
                 {section.title}
               </span>
 
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {section.items.map((item) => {
                   const Icon = item.icon;
                   const isActive = activeTab === item.id;
@@ -80,19 +89,20 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
                     <button
                       key={item.id}
                       onClick={() => setActiveTab(item.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all relative ${
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[11px] font-semibold transition-all duration-200 ${
                         isActive
-                          ? 'bg-gradient-to-r from-blue-600/90 to-indigo-600/90 text-white font-bold shadow-lg shadow-blue-600/25 border border-blue-500/30'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-[#0f172a]/70 hover:border-slate-800 border border-transparent'
+                          ? 'bg-gradient-to-r from-blue-600/85 to-indigo-600/85 text-white shadow-lg shadow-blue-600/20 border border-blue-500/25'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-white/4 border border-transparent'
                       }`}
+                      style={isActive ? {} : { '--tw-bg-opacity': '0.04' } as React.CSSProperties}
                     >
-                      <div className="flex items-center gap-2.5 truncate">
-                        <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                        <span className="truncate">{item.label}</span>
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Icon className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                        <span className="truncate leading-tight">{item.label}</span>
                       </div>
 
-                      {item.badge && !isActive && (
-                        <span className="text-[8px] font-cyber font-bold px-1.5 py-0.5 rounded bg-blue-500/10 text-cyan-400 border border-blue-500/20">
+                      {'badge' in item && item.badge && !isActive && (
+                        <span className={`text-[8px] font-mono font-bold px-1.5 py-0.5 rounded-md border shrink-0 ${(item as {badge?: string; badgeColor?: string}).badgeColor || 'text-cyan-400 border-blue-500/20 bg-blue-500/8'}`}>
                           {item.badge}
                         </span>
                       )}
@@ -106,18 +116,19 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
       </div>
 
       {/* Bottom Status Card */}
-      <div className="p-4 rounded-2xl bg-gradient-to-b from-[#0f172a] to-[#0a1020] border border-blue-900/30 relative overflow-hidden shadow-xl card-glow-top">
+      <div className="p-3 rounded-2xl bg-gradient-to-b from-[#0d1829] to-[#090f1d] border border-blue-900/25 relative overflow-hidden shadow-xl mt-4">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
         <div className="flex items-center justify-between mb-2">
-          <div className="w-8 h-8 rounded-lg bg-blue-500/15 border border-blue-500/30 flex items-center justify-center">
-            <Shield className="w-4 h-4 text-cyan-400" />
+          <div className="w-7 h-7 rounded-lg bg-blue-500/12 border border-blue-500/20 flex items-center justify-center">
+            <Shield className="w-3.5 h-3.5 text-cyan-400" />
           </div>
-          <span className="text-[9px] font-cyber text-emerald-400 flex items-center gap-1 font-bold">
+          <span className="text-[9px] font-mono text-emerald-400 flex items-center gap-1 font-bold">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             ACTIVE
           </span>
         </div>
-        <h4 className="text-xs font-bold text-white leading-tight font-display">Perimeter Surveillance</h4>
-        <p className="text-[10px] text-slate-400 mt-0.5 font-sans">Continuous attack surface monitoring across registered brand assets.</p>
+        <h4 className="text-[11px] font-bold text-white leading-tight">Perimeter Surveillance</h4>
+        <p className="text-[10px] text-slate-500 mt-1 leading-snug font-sans">Continuous monitoring across all registered brand surfaces.</p>
       </div>
     </aside>
   );
