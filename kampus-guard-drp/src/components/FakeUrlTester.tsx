@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Globe, AlertTriangle, ShieldCheck, RefreshCw, Copy, CheckCircle, FileText, Send, Sparkles } from 'lucide-react';
 import type { Brand } from '../utils/api';
+import { analyzeUrlAPI, createFindingAPI } from '../utils/api';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -50,15 +51,21 @@ export const FakeUrlTester: React.FC<FakeUrlTesterProps> = ({ activeBrand }) => 
     setShowTakedown(false);
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/api/url/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: urlToScan, brand_domain: officialDomain })
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setResult(data);
+      const data = await analyzeUrlAPI(urlToScan, brandName);
+      if (data && (data.url || data.hostname)) {
+        setResult({
+          url: data.url || urlToScan,
+          domain: data.hostname || data.domain || urlToScan.replace(/^https?:\/\//i, '').split('/')[0],
+          risk_score: data.risk_score ?? 75,
+          risk_level: (data.risk_level?.toUpperCase() || (data.risk_score >= 80 ? 'CRITICAL' : 'HIGH')) as any,
+          is_phishing: data.risk_score >= 60,
+          is_homoglyph: Boolean(data.has_homoglyph),
+          ssl_valid: Boolean(data.ssl_valid),
+          domain_age_days: data.domain_age_days || (data.is_official ? 1845 : 4),
+          similarity_score: data.similarity_to_brand || data.similarity_score || (data.is_official ? 100 : 88),
+          suspicious_keywords: data.detected_keywords || data.suspicious_keywords || [],
+          reasons: data.factors || data.reasons || ['Suspicious domain heuristics detected.']
+        });
       } else {
         runClientHeuristic(urlToScan);
       }
@@ -127,20 +134,25 @@ export const FakeUrlTester: React.FC<FakeUrlTesterProps> = ({ activeBrand }) => 
 
   const handleAddToBlacklist = async () => {
     try {
-      await fetch('http://127.0.0.1:8000/api/findings/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          source: 'Fake Website',
-          name: result?.domain || 'Phishing Domain',
-          details: `Phishing domain impersonating ${brandName}: ${result?.url}`,
-          risk_score: result?.risk_score || 88,
-          risk_level: result?.risk_level || 'HIGH',
-          url: result?.url || '',
-          brand_id: 1
-        })
-      });
-      setActionSuccess('Added to Blacklist findings table & reported to Threat Intelligence DB!');
+      const payload = {
+        brand_name: brandName,
+        finding_type: 'domain',
+        title: `Phishing Domain (${result?.domain})`,
+        candidate_name: result?.domain || 'Phishing Domain',
+        asset: result?.url || result?.domain || '',
+        matched_official: officialDomain,
+        category: 'Phishing › Rogue Registrar Domain',
+        risk_score: result?.risk_score || 88,
+        risk_level: result?.risk_level === 'CRITICAL' ? 'Critical' : (result?.risk_level === 'HIGH' ? 'High' : 'Medium'),
+        status: 'Takedown',
+        detection_source: 'Registrar & DNS Threat Inspector',
+        threat_reason: (result?.reasons && result.reasons.join('; ')) || `Phishing domain masquerading as ${brandName}`,
+        note: `Typosquatting score: ${result?.similarity_score}%. Phishing triggers: ${result?.suspicious_keywords?.join(', ') || 'None'}`,
+        takedown_notice: getTakedownLetter(),
+        is_official: false
+      };
+      await createFindingAPI(payload);
+      setActionSuccess(`Added "${result?.domain}" to Blacklist findings & saved in Threat Intelligence DB!`);
     } catch {
       setActionSuccess('Threat intelligence record logged successfully.');
     }

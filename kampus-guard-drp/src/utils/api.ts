@@ -357,6 +357,45 @@ export async function createBrandAPI(brand: {
   return newBrand;
 }
 
+// 2c. Create Custom Finding (Blacklist / Manual Triage)
+export async function createFindingAPI(finding: any): Promise<any> {
+  if (API_BASE_URL) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/findings/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(finding)
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+  }
+
+  const existing = getLocalFindings();
+  const newFinding: Finding = {
+    ...finding,
+    id: finding.id || `MANUAL-${Date.now()}`,
+    detected_date: 'Just now',
+    updated_date: 'Just now'
+  };
+  saveLocalFindings([newFinding, ...existing]);
+  return { status: 'created', id: newFinding.id };
+}
+
+// 2d. Analyze URL / Phishing Domain
+export async function analyzeUrlAPI(url: string, brandName: string): Promise<any> {
+  if (API_BASE_URL) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/url/analyze`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, brand_name: brandName })
+      });
+      if (res.ok) return await res.json();
+    } catch {}
+  }
+  return null;
+}
+
 // 3. Fetch Findings (with Filters & Search)
 export async function getFindingsAPI(params: {
   brand?: string;

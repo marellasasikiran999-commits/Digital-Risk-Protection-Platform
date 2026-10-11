@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Building2, Save, CheckCircle } from 'lucide-react';
+import { updateBrandAPI } from '../utils/api';
 
 interface EditBrandModalProps {
   isOpen: boolean;
@@ -62,13 +63,9 @@ export const EditBrandModal: React.FC<EditBrandModalProps> = ({
     };
 
     try {
-      await fetch(`http://127.0.0.1:8000/api/brands/${brand?.id || 1}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updated)
-      });
+      await updateBrandAPI(brand?.id || 1, updated);
     } catch {
-      // Fallback local update
+      // Fallback handled inside API
     }
 
     setSuccess(true);

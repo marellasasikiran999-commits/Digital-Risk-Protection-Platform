@@ -22,6 +22,7 @@ import { FirebaseAuthModal } from './components/FirebaseAuthModal';
 import { 
   getBrandsAPI, getFindingsAPI, getDashboardSummaryAPI, 
   runSocialScanAPI, runAppScanAPI, exportFindingsCSV,
+  updateBrandAPI,
   type Finding, type DashboardSummary, type Brand 
 } from './utils/api';
 import { getCurrentUserProfile, type AuthUserProfile } from './utils/firebase';
@@ -134,6 +135,29 @@ export function App() {
   const handleExportReport = () => {
     exportFindingsCSV(currentBrandName, findings);
     showToast('Exporting Digital Risk Protection Platform incident report (CSV format)...');
+  };
+
+  const handleUpdateBrandAsset = async (updated: any) => {
+    const found = brands.find(b => b.brand_name === updated.brandName);
+    if (found) {
+      const handles = (updated.officialHandles || []).map((h: any) => typeof h === 'string' ? h : h.handle);
+      const apps = (updated.officialApps || []).map((a: any) => typeof a === 'string' ? a : (a.appName || a.appId));
+      const payload = {
+        brand_name: updated.brandName,
+        official_website: updated.officialWebsite,
+        official_logo_url: updated.officialLogoUrl || found.official_logo_url,
+        official_developer: found.official_developer,
+        official_handles: handles,
+        official_apps: apps
+      };
+      try {
+        await updateBrandAPI(found.id, payload);
+        await loadData();
+        showToast(`Baseline updated for ${updated.brandName}`);
+      } catch (err) {
+        console.error('Failed to update brand baseline:', err);
+      }
+    }
   };
 
   return (
@@ -273,6 +297,7 @@ export function App() {
                 selectedBrand={currentBrandName}
                 onSelectBrand={(b) => setCurrentBrandName(b)}
                 onOpenAddBrand={() => setIsAddBrandOpen(true)}
+                onUpdateBrandAsset={handleUpdateBrandAsset}
               />
             </div>
           )}
@@ -452,6 +477,8 @@ export function App() {
             setSelectedFindingForEvidence(null);
             showToast('Finding marked as Legitimate & added to verified whitelist.');
           }}
+          allFindings={findings}
+          onSelectFinding={(f) => setSelectedFindingForEvidence(f)}
         />
       )}
 

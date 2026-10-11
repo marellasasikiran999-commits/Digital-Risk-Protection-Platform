@@ -149,7 +149,7 @@ const dossier = await generateDossier({
                       filter === 'all' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    All ({findings.length || 23})
+                    All ({findings.length})
                   </button>
                   <button
                     onClick={() => setFilter('high')}
@@ -157,7 +157,7 @@ const dossier = await generateDossier({
                       filter === 'high' ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    High (8)
+                    High ({findings.filter(f => f.risk_level === 'High' || f.risk_level === 'Critical').length})
                   </button>
                   <button
                     onClick={() => setFilter('medium')}
@@ -165,7 +165,7 @@ const dossier = await generateDossier({
                       filter === 'medium' ? 'bg-amber-500 text-slate-950 font-black shadow-md shadow-amber-500/30' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Medium (7)
+                    Medium ({findings.filter(f => f.risk_level === 'Medium').length})
                   </button>
                   <button
                     onClick={() => setFilter('low')}
@@ -173,7 +173,7 @@ const dossier = await generateDossier({
                       filter === 'low' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30' : 'text-slate-400 hover:text-white'
                     }`}
                   >
-                    Low (8)
+                    Low ({findings.filter(f => f.risk_level === 'Low').length})
                   </button>
                 </div>
 
