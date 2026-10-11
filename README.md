@@ -159,19 +159,19 @@ cd Digital-Risk-Protection-Platform
 ```bash
 cd backend
 pip install -r requirements.txt
-python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+uvicorn main:app --reload --port 8000
 ```
-* API endpoint: `http://127.0.0.1:8000`
-* Swagger documentation: `http://127.0.0.1:8000/docs`
+* API endpoint: [http://localhost:8000](http://localhost:8000)
+* Interactive Swagger Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ### 3. Start the Frontend Application
 In a separate terminal:
 ```bash
 cd kampus-guard-drp
 npm install
-npm run dev -- --host 127.0.0.1 --port 5173
+npm run dev
 ```
-* Web interface: `http://127.0.0.1:5173`
+* Web interface: [http://localhost:5173](http://localhost:5173)
 
 ### 4. Build for Production
 ```bash
