@@ -13,9 +13,9 @@ export interface FirebaseConfig {
 }
 
 const DEFAULT_FIREBASE_CONFIG: FirebaseConfig = {
-  apiKey: "AIzaSyD-sample-drp-platform-demo-key",
-  authDomain: "digital-risk-protection.firebaseapp.com",
-  projectId: "digital-risk-protection-platform",
+  apiKey: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_API_KEY) || "drp-identity-key-placeholder",
+  authDomain: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_AUTH_DOMAIN) || "digital-risk-protection.firebaseapp.com",
+  projectId: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_PROJECT_ID) || "digital-risk-protection-platform",
   storageBucket: "digital-risk-protection.appspot.com",
   messagingSenderId: "102938475610",
   appId: "1:102938475610:web:9876543210abcdef"

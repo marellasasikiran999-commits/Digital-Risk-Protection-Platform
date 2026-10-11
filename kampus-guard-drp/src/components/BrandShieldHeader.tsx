@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Bell, Palette, Check } from 'lucide-react';
+import { Search, Bell, Palette, Check, ShieldAlert, CheckCheck, Trash2 } from 'lucide-react';
 import type { AuthUserProfile } from '../utils/firebase';
+
+interface SecurityNotification {
+  id: string;
+  title: string;
+  message: string;
+  time: string;
+  severity: 'critical' | 'high' | 'medium' | 'info';
+  read: boolean;
+}
 
 interface BrandShieldHeaderProps {
   searchQuery: string;
@@ -21,6 +30,58 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
   const themeMenuRef = useRef<HTMLDivElement>(null);
 
+  const [isNotifMenuOpen, setIsNotifMenuOpen] = useState(false);
+  const notifMenuRef = useRef<HTMLDivElement>(null);
+
+  const [notifications, setNotifications] = useState<SecurityNotification[]>([
+    {
+      id: 'n-1',
+      title: 'Cyrillic Homoglyph Detected',
+      message: 'Spoofed phishing domain drp-plаtform.com (U+0430 confusable) registered.',
+      time: '12m ago',
+      severity: 'critical',
+      read: false
+    },
+    {
+      id: 'n-2',
+      title: 'Counterfeit APK Mirror Active',
+      message: 'Trojan-Banker clone com.fake.drp.rewards discovered on APKPure mirror.',
+      time: '34m ago',
+      severity: 'critical',
+      read: false
+    },
+    {
+      id: 'n-3',
+      title: 'Social Impersonation Alert',
+      message: 'Fraudulent support account @drp_support24 flagged on Instagram.',
+      time: '1h ago',
+      severity: 'high',
+      read: false
+    },
+    {
+      id: 'n-4',
+      title: 'Automated DMCA Dispatched',
+      message: 'Registrar cease-and-desist packet compiled and sent to bulletproof host.',
+      time: '2h ago',
+      severity: 'info',
+      read: true
+    }
+  ]);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const markAllAsRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  };
+
+  const clearAllNotifications = () => {
+    setNotifications([]);
+  };
+
+  const toggleNotificationRead = (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('drp-theme', theme);
@@ -31,14 +92,17 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
       if (themeMenuRef.current && !themeMenuRef.current.contains(event.target as Node)) {
         setIsThemeMenuOpen(false);
       }
+      if (notifMenuRef.current && !notifMenuRef.current.contains(event.target as Node)) {
+        setIsNotifMenuOpen(false);
+      }
     };
-    if (isThemeMenuOpen) {
+    if (isThemeMenuOpen || isNotifMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isThemeMenuOpen]);
+  }, [isThemeMenuOpen, isNotifMenuOpen]);
 
   const themes = [
     { id: 'cyber-obsidian', name: 'Cyber Obsidian', color: 'bg-cyan-400', desc: 'Electric Cyan & Deep Blue' },
@@ -124,17 +188,94 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
           )}
         </div>
 
-        {/* Notifications with badge */}
-        <div className="relative">
+        {/* Notifications with interactive badge & dropdown */}
+        <div className="relative" ref={notifMenuRef}>
           <button 
-            className="p-2.5 text-slate-400 hover:text-white rounded-xl bg-[var(--bg-input)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-color)] hover:border-slate-700 transition-all shadow-sm"
+            onClick={() => setIsNotifMenuOpen(!isNotifMenuOpen)}
+            className="p-2.5 text-slate-400 hover:text-white rounded-xl bg-[var(--bg-input)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-color)] hover:border-slate-700 transition-all shadow-sm relative"
             title="Active Intelligence Alerts"
           >
             <Bell className="w-4 h-4" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center shadow-lg shadow-rose-500/40 border border-[#080d1a] animate-pulse">
+                {unreadCount}
+              </span>
+            )}
           </button>
-          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center shadow-lg shadow-rose-500/40 border border-[#080d1a]">
-            3
-          </span>
+
+          {isNotifMenuOpen && (
+            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-2xl font-sans">
+              <div className="p-3.5 border-b border-[var(--border-color)] flex items-center justify-between bg-white/[0.02]">
+                <div className="flex items-center gap-2">
+                  <ShieldAlert className="w-4 h-4 theme-accent-text" />
+                  <span className="text-xs font-bold text-white tracking-wide">Threat Alerts</span>
+                  {unreadCount > 0 && (
+                    <span className="px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                      {unreadCount} new
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-1.5">
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={markAllAsRead}
+                      className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-white text-[10px] flex items-center gap-1 transition-colors"
+                      title="Mark all as read"
+                    >
+                      <CheckCheck className="w-3 h-3 text-cyan-400" />
+                      <span>Read all</span>
+                    </button>
+                  )}
+                  {notifications.length > 0 && (
+                    <button
+                      onClick={clearAllNotifications}
+                      className="p-1 hover:bg-white/10 rounded text-slate-400 hover:text-rose-400 transition-colors"
+                      title="Clear notifications"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="max-h-80 overflow-y-auto divide-y divide-white/[0.04]">
+                {notifications.length === 0 ? (
+                  <div className="p-6 text-center text-slate-500 text-xs font-mono">
+                    No active threat notifications. All perimeters secure.
+                  </div>
+                ) : (
+                  notifications.map((notif) => (
+                    <div
+                      key={notif.id}
+                      onClick={() => toggleNotificationRead(notif.id)}
+                      className={`p-3.5 hover:bg-white/[0.04] transition-colors cursor-pointer flex items-start gap-3 text-left ${
+                        !notif.read ? 'bg-white/[0.02]' : 'opacity-70'
+                      }`}
+                    >
+                      <span className={`w-2 h-2 rounded-full mt-1 shrink-0 ${
+                        notif.severity === 'critical' ? 'bg-rose-500 shadow-sm shadow-rose-500/50' :
+                        notif.severity === 'high' ? 'bg-amber-400 shadow-sm shadow-amber-400/50' :
+                        'bg-cyan-400 shadow-sm shadow-cyan-400/50'
+                      } ${!notif.read ? 'animate-pulse' : ''}`} />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-bold text-white truncate">{notif.title}</span>
+                          <span className="text-[10px] font-mono text-slate-500 shrink-0">{notif.time}</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 leading-relaxed mt-0.5">{notif.message}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              <div className="p-2 border-t border-[var(--border-color)] bg-white/[0.01] text-center">
+                <span className="text-[10px] font-mono text-slate-500">
+                  Real-Time SOC Event Stream Active
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* User Profile Card */}
