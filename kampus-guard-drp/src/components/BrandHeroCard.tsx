@@ -27,17 +27,17 @@ export const BrandHeroCard: React.FC<BrandHeroCardProps> = ({
 
   return (
     <ScrollReveal direction="up" distance={24} duration={750}>
-      <div className="relative overflow-hidden rounded-2xl bg-[#091021]/90 border border-slate-800/80 shadow-2xl group" style={{ boxShadow: '0 0 60px -15px rgba(59,130,246,0.15), 0 25px 50px -12px rgba(0,0,0,0.6)' }}>
+      <div className="relative overflow-hidden rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] shadow-2xl group transition-colors duration-300">
         {/* Gradient glow blobs */}
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-blue-600/8 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-cyan-600/8 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-[var(--accent-glow-1)] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-[var(--accent-glow-2)] rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[var(--border-highlight)] to-transparent" />
         
         {/* Top HUD bar */}
-        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-800/50 relative z-10">
+        <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-[var(--border-color)] relative z-10">
           <div className="flex items-center gap-3">
-            <span className="w-8 h-px bg-blue-400/60" />
-            <span className="text-[10px] font-mono text-cyan-400 tracking-[0.2em] uppercase font-bold">01 // Executive Brand Perimeter</span>
+            <span className="w-8 h-px bg-[var(--accent-primary)]/60" />
+            <span className="text-[10px] font-mono theme-accent-text tracking-[0.2em] uppercase font-bold">01 // Executive Brand Perimeter</span>
           </div>
           <div className="flex items-center gap-4 text-[11px] font-mono">
             <span className="flex items-center gap-1.5 text-emerald-400">

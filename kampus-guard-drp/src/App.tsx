@@ -161,7 +161,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b14] text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white noise-overlay">
+    <div className="min-h-screen bg-[var(--bg-core)] text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white noise-overlay transition-colors duration-500">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 bg-[#121c32] border border-blue-500/40 text-blue-300 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-xs animate-bounce font-medium">

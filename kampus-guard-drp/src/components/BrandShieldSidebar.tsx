@@ -43,13 +43,13 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
   ];
 
   return (
-    <aside className="w-60 bg-[#060a14]/95 border-r border-slate-800/70 flex flex-col justify-between p-3 shrink-0 select-none z-30 min-h-screen backdrop-blur-2xl">
+    <aside className="w-60 bg-[var(--bg-sidebar)]/95 border-r border-[var(--border-color)] flex flex-col justify-between p-3 shrink-0 select-none z-30 min-h-screen backdrop-blur-2xl transition-colors duration-300">
       <div className="space-y-5">
         {/* Logo Header */}
         <div className="flex items-center gap-3 px-2 pt-2 pb-1">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shadow-blue-500/30 shrink-0" style={{ filter: 'drop-shadow(0 0 8px rgba(59,130,246,0.4))' }}>
-            <div className="w-full h-full bg-[#08101e] rounded-[10px] flex items-center justify-center">
-              <Shield className="w-4.5 h-4.5 text-blue-400" style={{ width: '18px', height: '18px' }} />
+          <div className="w-9 h-9 rounded-xl theme-logo-bg p-0.5 flex items-center justify-center shadow-lg shrink-0">
+            <div className="w-full h-full bg-[var(--bg-core)] rounded-[10px] flex items-center justify-center transition-colors">
+              <Shield className="w-4.5 h-4.5 theme-accent-text" style={{ width: '18px', height: '18px' }} />
             </div>
           </div>
           <div>
@@ -57,17 +57,17 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
               Digital Risk<br/>Protection
             </h1>
             <div className="flex items-center gap-1.5 mt-0.5">
-              <span className="text-[9px] text-cyan-400 font-bold uppercase tracking-wider font-mono">Platform</span>
+              <span className="text-[9px] theme-accent-text font-bold uppercase tracking-wider font-mono">Platform</span>
               <span className="text-[8px] text-slate-600 font-mono">v3.0</span>
             </div>
           </div>
         </div>
 
         {/* Security Mesh badge */}
-        <div className="mx-1 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 flex items-center gap-2">
-          <ShieldCheck className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+        <div className="mx-1 px-3 py-2 rounded-xl bg-[var(--bg-input)] border border-[var(--border-color)] flex items-center gap-2 transition-colors">
+          <ShieldCheck className="w-3.5 h-3.5 theme-accent-text shrink-0" />
           <div>
-            <span className="text-[9px] font-bold text-blue-300 block font-mono uppercase tracking-wider">Enterprise SOC Edition</span>
+            <span className="text-[9px] font-bold text-white block font-mono uppercase tracking-wider">Enterprise SOC Edition</span>
             <span className="text-[8px] text-slate-500 font-mono">Autonomous Perimeter Defense</span>
           </div>
         </div>
@@ -76,7 +76,7 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
         <nav className="space-y-5">
           {navSections.map((section, sIdx) => (
             <div key={sIdx} className="space-y-1">
-              <span className="text-[9px] font-mono font-bold text-slate-600 uppercase tracking-[0.15em] px-2 block">
+              <span className="text-[9px] font-mono font-bold text-slate-500 uppercase tracking-[0.15em] px-2 block">
                 {section.title}
               </span>
 
@@ -91,8 +91,8 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
                       onClick={() => setActiveTab(item.id)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-[11px] font-semibold transition-all duration-200 ${
                         isActive
-                          ? 'bg-gradient-to-r from-blue-600/85 to-indigo-600/85 text-white shadow-lg shadow-blue-600/20 border border-blue-500/25'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-white/4 border border-transparent'
+                          ? 'nav-active-item text-white shadow-lg border'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-white/5 border border-transparent'
                       }`}
                       style={isActive ? {} : { '--tw-bg-opacity': '0.04' } as React.CSSProperties}
                     >

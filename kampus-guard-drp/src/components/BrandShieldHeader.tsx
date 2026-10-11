@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Search, Bell, Palette, Check } from 'lucide-react';
 import type { AuthUserProfile } from '../utils/firebase';
 
@@ -19,16 +19,32 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
     return localStorage.getItem('drp-theme') || 'cyber-obsidian';
   });
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+  const themeMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('drp-theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (themeMenuRef.current && !themeMenuRef.current.contains(event.target as Node)) {
+        setIsThemeMenuOpen(false);
+      }
+    };
+    if (isThemeMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isThemeMenuOpen]);
+
   const themes = [
     { id: 'cyber-obsidian', name: 'Cyber Obsidian', color: 'bg-cyan-400', desc: 'Electric Cyan & Deep Blue' },
     { id: 'midnight-violet', name: 'Midnight Violet', color: 'bg-purple-500', desc: 'Royal Indigo & Neon Purple' },
     { id: 'sentinel-emerald', name: 'Sentinel Emerald', color: 'bg-emerald-400', desc: 'Matrix Emerald & Teal' },
+    { id: 'crimson-strike', name: 'Crimson Strike', color: 'bg-rose-500', desc: 'Blood Rose & Incident Red' },
   ];
 
   const initials = currentUser.displayName 
@@ -36,9 +52,9 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
     : 'SA';
 
   return (
-    <header className="h-16 bg-[#080d1a]/80 border-b border-slate-800/80 px-6 flex items-center justify-between gap-4 sticky top-0 z-40 backdrop-blur-2xl">
+    <header className="h-16 bg-[var(--bg-header)]/90 border-b border-[var(--border-color)] px-6 flex items-center justify-between gap-4 sticky top-0 z-40 backdrop-blur-2xl transition-colors duration-300">
       {/* Search Input with Linear/Vercel style focus glow */}
-      <div className="flex items-center gap-2.5 bg-[#0d1527]/70 border border-slate-800/90 rounded-xl px-3.5 py-2 w-full max-w-md focus-within:border-blue-500/80 focus-within:shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)] transition-all">
+      <div className="flex items-center gap-2.5 bg-[var(--bg-input)] border border-[var(--border-color)] rounded-xl px-3.5 py-2 w-full max-w-md focus-within:border-[var(--border-highlight)] focus-within:shadow-[0_0_15px_-3px_var(--accent-glow)] transition-all">
         <Search className="w-4 h-4 text-slate-400 shrink-0" />
         <input
           type="text"
@@ -66,10 +82,10 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
       {/* Right controls */}
       <div className="flex items-center gap-3.5">
         {/* Dynamic Theme Preset Switcher */}
-        <div className="relative">
+        <div className="relative" ref={themeMenuRef}>
           <button
             onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
-            className="p-2.5 text-slate-300 hover:text-white rounded-xl bg-[#0d1527]/70 hover:bg-[#131d33] border border-slate-800/80 hover:border-slate-700 transition-all shadow-sm flex items-center gap-2 text-xs font-mono"
+            className="p-2.5 text-slate-300 hover:text-white rounded-xl bg-[var(--bg-input)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-color)] hover:border-[var(--border-highlight)] transition-all shadow-sm flex items-center gap-2 text-xs font-mono"
             title="Theme Palette Presets"
           >
             <Palette className="w-4 h-4 text-cyan-400" />
@@ -77,7 +93,7 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
           </button>
 
           {isThemeMenuOpen && (
-            <div className="absolute right-0 mt-2 w-52 bg-[#0c1324] border border-slate-800 rounded-xl shadow-2xl p-2 z-50 space-y-1 font-sans">
+            <div className="absolute right-0 mt-2 w-56 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-2xl p-2 z-50 space-y-1 font-sans backdrop-blur-2xl">
               <span className="text-[10px] font-mono text-slate-400 px-2 py-1 block uppercase tracking-wider">
                 Cyber Defense Themes
               </span>
@@ -90,13 +106,16 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
                   }}
                   className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors ${
                     theme === t.id
-                      ? 'bg-blue-600/20 text-white border border-blue-500/40'
-                      : 'text-slate-300 hover:bg-slate-800/60'
+                      ? 'bg-blue-600/20 text-white border border-[var(--border-highlight)]'
+                      : 'text-slate-300 hover:bg-white/5'
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     <span className={`w-2.5 h-2.5 rounded-full ${t.color}`} />
-                    <span>{t.name}</span>
+                    <div className="text-left">
+                      <span className="block">{t.name}</span>
+                      <span className="text-[9px] text-slate-400 block">{t.desc}</span>
+                    </div>
                   </div>
                   {theme === t.id && <Check className="w-3.5 h-3.5 text-cyan-400" />}
                 </button>
@@ -108,7 +127,7 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
         {/* Notifications with badge */}
         <div className="relative">
           <button 
-            className="p-2.5 text-slate-400 hover:text-white rounded-xl bg-[#0d1527]/50 hover:bg-[#131d33] border border-slate-800/80 hover:border-slate-700 transition-all shadow-sm"
+            className="p-2.5 text-slate-400 hover:text-white rounded-xl bg-[var(--bg-input)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-color)] hover:border-slate-700 transition-all shadow-sm"
             title="Active Intelligence Alerts"
           >
             <Bell className="w-4 h-4" />
@@ -121,7 +140,7 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
         {/* User Profile Card */}
         <button
           onClick={onOpenAuthModal}
-          className="flex items-center gap-3 p-1.5 pr-3 rounded-xl bg-[#0d1527]/50 hover:bg-[#131d33] border border-slate-800/80 hover:border-blue-500/40 transition-all text-left shadow-sm group"
+          className="flex items-center gap-3 p-1.5 pr-3 rounded-xl bg-[var(--bg-input)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-color)] hover:border-[var(--border-highlight)] transition-all text-left shadow-sm group"
           title="Firebase Account & Team Role"
         >
           <div className="relative">
