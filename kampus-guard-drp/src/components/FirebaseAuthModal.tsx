@@ -341,7 +341,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
           {activeTab === 'config' && (
             <form onSubmit={handleSaveConfig} className="space-y-4">
               <p className="text-xs text-gray-400">
-                You can configure your real Firebase Web App credentials below. If left as default, Digital Risk Protection Platform provides offline persistent simulation for hackathon demo convenience.
+                You can configure your real Firebase Web App credentials below. If left as default, Digital Risk Protection Platform provides persistent local simulation for enterprise evaluation.
               </p>
 
               <div>

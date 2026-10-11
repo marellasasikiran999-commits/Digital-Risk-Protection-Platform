@@ -64,8 +64,8 @@ export const MaliciousApkSandbox: React.FC = () => {
     },
     {
       label: 'Clean Built Companion APK (Safe)',
-      fileName: 'app-debug.apk',
-      pkg: 'com.example.bytexlhackathonhealthapp10oct',
+      fileName: 'app-official.apk',
+      pkg: 'com.drp.platform.official',
       title: 'Digital Risk Protection Platform',
       pub: 'Digital Risk Protection Platform',
       perms: 'android.permission.INTERNET, android.permission.ACCESS_NETWORK_STATE'
@@ -182,8 +182,8 @@ export const MaliciousApkSandbox: React.FC = () => {
       // Detect package name from file or binary
       let detectedPkg = 'com.unknown.dropped.apk';
       const cleanLower = fileName.toLowerCase();
-      if (cleanLower.includes('debug') || cleanLower.includes('app-debug')) {
-        detectedPkg = 'com.example.bytexlhackathonhealthapp10oct';
+      if (cleanLower.includes('official') || cleanLower.includes('clean')) {
+        detectedPkg = 'com.drp.platform.official';
       } else if (cleanLower.includes('trojan') || cleanLower.includes('fake') || cleanLower.includes('reward')) {
         detectedPkg = 'com.fake.drp.rewards';
       } else {
@@ -195,7 +195,7 @@ export const MaliciousApkSandbox: React.FC = () => {
       detectedTitle = detectedTitle.charAt(0).toUpperCase() + detectedTitle.slice(1);
 
       // Default publisher
-      const detectedPublisher = (detectedPkg.includes('bytexl') || cleanLower.includes('debug'))
+      const detectedPublisher = (detectedPkg.includes('drp.platform') || cleanLower.includes('official'))
         ? 'Digital Risk Protection Platform'
         : 'Unverified Third-Party Developer';
 
@@ -235,9 +235,8 @@ export const MaliciousApkSandbox: React.FC = () => {
     setTimeout(() => {
       const perms = permsStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
       const isOfficial = 
-        pkg === 'com.example.bytexlhackathonhealthapp10oct' || 
-        pub === 'Digital Risk Protection Platform' ||
-        pkg === 'com.drp.platform.official';
+        pkg === 'com.drp.platform.official' || 
+        pub === 'Digital Risk Protection Platform';
 
       const flagged = DANGEROUS_PERMISSIONS_DB.filter(d => 
         perms.some(p => p.includes(d.name) || p.includes(d.name.replace('android.permission.', '')))

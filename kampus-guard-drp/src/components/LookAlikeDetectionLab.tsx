@@ -393,7 +393,7 @@ Submitted via Digital Risk Protection Platform Autonomous Intelligence Engine.`
         <Card className="lg:col-span-7 p-6 space-y-5 shadow-xl">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Layers className="w-4 h-4 text-purple-400" /> Hackathon Bonus Permutation Vectors
+              <Layers className="w-4 h-4 text-purple-400" /> AI Heuristic Permutation Vectors
             </h3>
 
             {/* Category Filter Tabs */}

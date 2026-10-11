@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Shield, LayoutDashboard, Building2, Radio, Smartphone, 
-  Search, FileText, Settings, Bug, Globe, Sparkles, Trophy
+  Search, FileText, Settings, Bug, Globe, Sparkles, ShieldCheck
 } from 'lucide-react';
 
 interface BrandShieldSidebarProps {
@@ -63,12 +63,12 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
           </div>
         </div>
 
-        {/* Hackathon badge */}
-        <div className="mx-1 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 flex items-center gap-2">
-          <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+        {/* Security Mesh badge */}
+        <div className="mx-1 px-3 py-2 rounded-xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-500/20 flex items-center gap-2">
+          <ShieldCheck className="w-3.5 h-3.5 text-blue-400 shrink-0" />
           <div>
-            <span className="text-[9px] font-bold text-amber-300 block font-mono uppercase tracking-wider">ByteXL Hackathon</span>
-            <span className="text-[8px] text-slate-500 font-mono">Submission · 10 Oct 2026</span>
+            <span className="text-[9px] font-bold text-blue-300 block font-mono uppercase tracking-wider">Enterprise SOC Edition</span>
+            <span className="text-[8px] text-slate-500 font-mono">Autonomous Perimeter Defense</span>
           </div>
         </div>
 
