@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import * as THREE from 'three';
+import React, { useEffect, useState } from 'react';
 import { 
-  Shield, RotateCw, Maximize2, Zap, Radio 
+  Shield, Zap, Radio, Crosshair
 } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -102,321 +101,9 @@ const THREAT_DATA: ThreatPoint[] = [
   }
 ];
 
-// Target HQ (Corporate Protected Headquarters)
-const HQ_POINT = {
-  name: 'Digital Risk Protection Corporate HQ',
-  city: 'Silicon Valley',
-  country: 'USA',
-  lat: 37.38,
-  lng: -122.08
-};
-
-// Convert Lat/Lng to 3D Cartesian coordinates on sphere of radius R
-function latLngToVector3(lat: number, lng: number, radius: number): THREE.Vector3 {
-  const phi = (90 - lat) * (Math.PI / 180);
-  const theta = (lng + 180) * (Math.PI / 180);
-  const x = -(radius * Math.sin(phi) * Math.cos(theta));
-  const z = radius * Math.sin(phi) * Math.sin(theta);
-  const y = radius * Math.cos(phi);
-  return new THREE.Vector3(x, y, z);
-}
-
 export const CyberThreatGlobe3D: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [selectedThreat, setSelectedThreat] = useState<ThreatPoint>(THREAT_DATA[0]);
-  const [autoRotate, setAutoRotate] = useState(true);
   const [interceptCount, setInterceptCount] = useState(1420);
-
-  // Scene refs for interactive control
-  const globeGroupRef = useRef<THREE.Group | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-    const container = containerRef.current;
-    const width = container.clientWidth;
-    const height = container.clientHeight || 580;
-
-    // 1. Scene, Camera, Renderer
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = 280;
-    cameraRef.current = camera;
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    container.innerHTML = '';
-    container.appendChild(renderer.domElement);
-
-    const globeGroup = new THREE.Group();
-    scene.add(globeGroup);
-    globeGroupRef.current = globeGroup;
-
-    const GLOBE_RADIUS = 80;
-
-    // 2. Base Dark Sphere
-    const sphereGeometry = new THREE.SphereGeometry(GLOBE_RADIUS, 64, 64);
-    const sphereMaterial = new THREE.MeshBasicMaterial({
-      color: 0x050a16,
-      transparent: true,
-      opacity: 0.95
-    });
-    const baseSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    globeGroup.add(baseSphere);
-
-    // 3. Cyber Wireframe / Longitude-Latitude Grid
-    const wireGeometry = new THREE.SphereGeometry(GLOBE_RADIUS + 0.3, 32, 24);
-    const wireMaterial = new THREE.MeshBasicMaterial({
-      color: 0x1e3a8a,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.18
-    });
-    const wireSphere = new THREE.Mesh(wireGeometry, wireMaterial);
-    globeGroup.add(wireSphere);
-
-    // 4. Dot Matrix Particles around the globe
-    const dotCount = 1800;
-    const dotPositions = new Float32Array(dotCount * 3);
-    const dotColors = new Float32Array(dotCount * 3);
-
-    for (let i = 0; i < dotCount; i++) {
-      const lat = (Math.random() - 0.5) * 180;
-      const lng = (Math.random() - 0.5) * 360;
-      const pos = latLngToVector3(lat, lng, GLOBE_RADIUS + 0.6);
-      dotPositions[i * 3] = pos.x;
-      dotPositions[i * 3 + 1] = pos.y;
-      dotPositions[i * 3 + 2] = pos.z;
-
-      const isCyan = Math.random() > 0.4;
-      dotColors[i * 3] = isCyan ? 0.05 : 0.2;
-      dotColors[i * 3 + 1] = isCyan ? 0.7 : 0.5;
-      dotColors[i * 3 + 2] = isCyan ? 0.95 : 1.0;
-    }
-
-    const dotGeometry = new THREE.BufferGeometry();
-    dotGeometry.setAttribute('position', new THREE.BufferAttribute(dotPositions, 3));
-    dotGeometry.setAttribute('color', new THREE.BufferAttribute(dotColors, 3));
-
-    const dotMaterial = new THREE.PointsMaterial({
-      size: 1.8,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.65
-    });
-    const dotParticles = new THREE.Points(dotGeometry, dotMaterial);
-    globeGroup.add(dotParticles);
-
-    // 5. Outer Atmospheric Glow
-    const glowGeometry = new THREE.SphereGeometry(GLOBE_RADIUS * 1.15, 32, 32);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-      color: 0x06b6d4,
-      transparent: true,
-      opacity: 0.06,
-      side: THREE.BackSide
-    });
-    const atmosphereGlow = new THREE.Mesh(glowGeometry, glowMaterial);
-    globeGroup.add(atmosphereGlow);
-
-    // 6. HQ Target Node (Green Shield Anchor)
-    const hqPos = latLngToVector3(HQ_POINT.lat, HQ_POINT.lng, GLOBE_RADIUS);
-    const hqGeometry = new THREE.SphereGeometry(2.5, 16, 16);
-    const hqMaterial = new THREE.MeshBasicMaterial({ color: 0x10b981 });
-    const hqMesh = new THREE.Mesh(hqGeometry, hqMaterial);
-    hqMesh.position.copy(hqPos);
-    globeGroup.add(hqMesh);
-
-    // Ring beacon around HQ
-    const hqRingGeometry = new THREE.RingGeometry(3, 4.2, 32);
-    const hqRingMaterial = new THREE.MeshBasicMaterial({
-      color: 0x10b981,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.7
-    });
-    const hqRing = new THREE.Mesh(hqRingGeometry, hqRingMaterial);
-    hqRing.position.copy(hqPos);
-    hqRing.lookAt(new THREE.Vector3(0, 0, 0));
-    globeGroup.add(hqRing);
-
-    // 7. Threat Nodes & 3D Bezier Attack Arcs
-    const threatMeshes: THREE.Mesh[] = [];
-    const arcCurves: THREE.QuadraticBezierCurve3[] = [];
-    const pulseSpheres: THREE.Mesh[] = [];
-
-    THREAT_DATA.forEach((threat) => {
-      const threatPos = latLngToVector3(threat.lat, threat.lng, GLOBE_RADIUS);
-
-      // Threat Pin
-      const pinGeom = new THREE.SphereGeometry(2.2, 16, 16);
-      const pinMat = new THREE.MeshBasicMaterial({
-        color: threat.severity === 'CRITICAL' ? 0xf43f5e : 0xfb923c
-      });
-      const pinMesh = new THREE.Mesh(pinGeom, pinMat);
-      pinMesh.position.copy(threatPos);
-      pinMesh.userData = { threat };
-      globeGroup.add(pinMesh);
-      threatMeshes.push(pinMesh);
-
-      // Threat Pulse Ring
-      const ringGeom = new THREE.RingGeometry(2.6, 3.8, 24);
-      const ringMat = new THREE.MeshBasicMaterial({
-        color: threat.severity === 'CRITICAL' ? 0xf43f5e : 0xfb923c,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.8
-      });
-      const ringMesh = new THREE.Mesh(ringGeom, ringMat);
-      ringMesh.position.copy(threatPos);
-      ringMesh.lookAt(new THREE.Vector3(0, 0, 0));
-      globeGroup.add(ringMesh);
-
-      // Arc between Threat and HQ
-      const midPoint = new THREE.Vector3()
-        .addVectors(threatPos, hqPos)
-        .multiplyScalar(0.5);
-      const distance = threatPos.distanceTo(hqPos);
-      // Elevate arc altitude into 3D orbit proportional to distance
-      const altitude = GLOBE_RADIUS + distance * 0.45;
-      midPoint.normalize().multiplyScalar(altitude);
-
-      const curve = new THREE.QuadraticBezierCurve3(threatPos, midPoint, hqPos);
-      arcCurves.push(curve);
-
-      // Draw Arc Line
-      const arcPoints = curve.getPoints(50);
-      const arcGeom = new THREE.BufferGeometry().setFromPoints(arcPoints);
-      const arcMat = new THREE.LineBasicMaterial({
-        color: threat.severity === 'CRITICAL' ? 0xf43f5e : 0x06b6d4,
-        transparent: true,
-        opacity: 0.45
-      });
-      const arcLine = new THREE.Line(arcGeom, arcMat);
-      globeGroup.add(arcLine);
-
-      // Animated Energy Pulse Photon along Arc
-      const pulseGeom = new THREE.SphereGeometry(1.4, 12, 12);
-      const pulseMat = new THREE.MeshBasicMaterial({
-        color: 0xffffff
-      });
-      const pulseMesh = new THREE.Mesh(pulseGeom, pulseMat);
-      pulseMesh.position.copy(threatPos);
-      globeGroup.add(pulseMesh);
-      pulseSpheres.push(pulseMesh);
-    });
-
-    // 8. Interactive Drag Rotation & Raycaster
-    let isDragging = false;
-    let prevMousePos = { x: 0, y: 0 };
-    let rotSpeed = { x: 0, y: 0.002 };
-
-    const onMouseDown = (e: MouseEvent) => {
-      isDragging = true;
-      prevMousePos = { x: e.clientX, y: e.clientY };
-    };
-
-    const onMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return;
-      const deltaX = e.clientX - prevMousePos.x;
-      const deltaY = e.clientY - prevMousePos.y;
-
-      globeGroup.rotation.y += deltaX * 0.005;
-      globeGroup.rotation.x += deltaY * 0.005;
-
-      prevMousePos = { x: e.clientX, y: e.clientY };
-    };
-
-    const onMouseUp = () => {
-      isDragging = false;
-    };
-
-    const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      camera.position.z += e.deltaY * 0.15;
-      camera.position.z = Math.max(160, Math.min(380, camera.position.z));
-    };
-
-    // Raycaster for threat node clicks
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    const onClick = (e: MouseEvent) => {
-      const rect = renderer.domElement.getBoundingClientRect();
-      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-      const intersects = raycaster.intersectObjects(threatMeshes);
-
-      if (intersects.length > 0) {
-        const hit = intersects[0].object;
-        if (hit.userData && hit.userData.threat) {
-          setSelectedThreat(hit.userData.threat);
-        }
-      }
-    };
-
-    const dom = renderer.domElement;
-    dom.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('mouseup', onMouseUp);
-    dom.addEventListener('wheel', onWheel, { passive: false });
-    dom.addEventListener('click', onClick);
-
-    // 9. Animation Loop
-    let animationFrameId: number;
-    const startTime = performance.now();
-
-    const animate = () => {
-      animationFrameId = requestAnimationFrame(animate);
-      const elapsedTime = (performance.now() - startTime) * 0.001;
-
-      // Auto rotation
-      if (autoRotate && !isDragging) {
-        globeGroup.rotation.y += rotSpeed.y;
-      }
-
-      // Animate attack pulses traveling along Great Circle Arcs
-      pulseSpheres.forEach((pulse, idx) => {
-        const curve = arcCurves[idx];
-        const progress = (elapsedTime * 0.35 + idx * 0.18) % 1.0;
-        const currentPos = curve.getPoint(progress);
-        pulse.position.copy(currentPos);
-      });
-
-      // Pulse HQ beacon scale
-      const pulseScale = 1.0 + Math.sin(elapsedTime * 4) * 0.15;
-      hqRing.scale.set(pulseScale, pulseScale, 1);
-
-      renderer.render(scene, camera);
-    };
-
-    animate();
-
-    // Resize Handler
-    const handleResize = () => {
-      if (!containerRef.current) return;
-      const w = containerRef.current.clientWidth;
-      const h = containerRef.current.clientHeight || 580;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-      dom.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('mouseup', onMouseUp);
-      dom.removeEventListener('wheel', onWheel);
-      dom.removeEventListener('click', onClick);
-      renderer.dispose();
-    };
-  }, [autoRotate]);
 
   // Live intercept ticker simulation
   useEffect(() => {
@@ -446,7 +133,7 @@ export const CyberThreatGlobe3D: React.FC = () => {
               </Badge>
             </div>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-              Real-time WebGL 3D geospatial surveillance. Click &amp; drag to rotate, scroll to zoom, or select any glowing node to inspect origin telemetry and attack trajectories.
+              Real-time threat surveillance telemetry. Select any active vector node to inspect origin telemetry, IP coordinates, and dispatch automated mitigations.
             </p>
           </div>
 
@@ -459,78 +146,110 @@ export const CyberThreatGlobe3D: React.FC = () => {
         </div>
       </Card>
 
-      {/* Main 3D Canvas + Interactive HUD Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* 3D WebGL Canvas (Col Span 8) */}
-        <Card className="lg:col-span-8 p-0 overflow-hidden relative shadow-2xl min-h-[580px] bg-[#060a14]/90 border-slate-800 flex flex-col justify-between">
-          {/* Top Canvas Controls HUD */}
-          <div className="p-4 flex items-center justify-between z-20 pointer-events-auto">
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="gap-1.5 py-1 px-3 bg-slate-900/80 backdrop-blur-md">
-                <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-                <span>6 Active Threat Vectors</span>
-              </Badge>
+      {/* Main Interactive Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        {/* Active Threat Vectors Matrix (Col Span 7) */}
+        <Card className="lg:col-span-7 p-6 overflow-hidden relative shadow-2xl bg-[#060a14]/90 border-slate-800 flex flex-col justify-between">
+          <div className="space-y-4">
+            {/* Top Vectors HUD */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800/80">
+              <div className="flex items-center gap-2.5">
+                <Badge variant="secondary" className="gap-1.5 py-1 px-3 bg-slate-900/80 backdrop-blur-md border border-cyan-500/30">
+                  <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                  <span className="font-cyber font-bold text-cyan-300">06 ACTIVE THREAT VECTORS</span>
+                </Badge>
+                <span className="text-[11px] text-slate-400 font-cyber hidden sm:inline">
+                  Real-time Ingestion Stream
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                <span className="text-[11px] font-cyber text-emerald-400 font-semibold uppercase tracking-wider">
+                  Live Telemetry
+                </span>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setAutoRotate(!autoRotate)}
-                className={`font-cyber text-[11px] h-8 ${autoRotate ? 'border-cyan-500/50 text-cyan-300 bg-cyan-950/20' : ''}`}
-                title="Toggle 3D Orbit Auto-Rotation"
-              >
-                <RotateCw className={`w-3.5 h-3.5 ${autoRotate ? 'animate-spin' : ''}`} />
-                <span>{autoRotate ? 'Auto-Orbit On' : 'Orbit Paused'}</span>
-              </Button>
+            {/* Grid of the 6 Active Threat Vectors */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {THREAT_DATA.map((threat) => {
+                const isSelected = selectedThreat.id === threat.id;
+                const isCritical = threat.severity === 'CRITICAL';
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  if (cameraRef.current) {
-                    cameraRef.current.position.z = 280;
-                  }
-                }}
-                className="font-cyber text-[11px] h-8"
-                title="Reset Camera Zoom"
-              >
-                <Maximize2 className="w-3.5 h-3.5" />
-                <span>Reset View</span>
-              </Button>
+                return (
+                  <button
+                    key={threat.id}
+                    onClick={() => setSelectedThreat(threat)}
+                    className={`p-3.5 rounded-xl border text-left transition-all duration-200 cursor-pointer relative overflow-hidden flex flex-col justify-between gap-2.5 ${
+                      isSelected
+                        ? 'border-cyan-400/80 bg-gradient-to-br from-cyan-950/40 via-[#0c162d] to-[#070d1e] shadow-[0_0_20px_rgba(6,182,212,0.2)]'
+                        : 'border-slate-800/80 bg-[#090f1f]/60 hover:bg-[#0c162d]/80 hover:border-slate-700'
+                    }`}
+                  >
+                    {/* Top Vector Meta */}
+                    <div className="flex items-start justify-between gap-2 w-full">
+                      <div className="min-w-0">
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-semibold block truncate">
+                          {threat.type}
+                        </span>
+                        <h4 className="text-xs font-bold text-white mt-0.5 truncate font-sans">
+                          {threat.name}
+                        </h4>
+                      </div>
+                      <Badge
+                        variant={isCritical ? 'destructive' : 'warning'}
+                        className="text-[10px] font-mono font-bold shrink-0"
+                      >
+                        {threat.score}
+                      </Badge>
+                    </div>
+
+                    {/* Threat Details Snippet */}
+                    <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed font-sans">
+                      {threat.details}
+                    </p>
+
+                    {/* Bottom Location & IP Telemetry */}
+                    <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-slate-400 w-full">
+                      <span className="flex items-center gap-1 text-slate-300">
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                        {threat.city}, {threat.country}
+                      </span>
+                      <span className="text-slate-400 truncate max-w-[140px]">
+                        {threat.ip.split(' ')[0]}
+                      </span>
+                    </div>
+
+                    {/* Selected Active Glow Accent */}
+                    {isSelected && (
+                      <div className="absolute top-0 right-0 w-2 h-2 bg-cyan-400 rounded-bl-md shadow-[0_0_8px_rgba(6,182,212,1)]" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Three.js Canvas Container */}
-          <div
-            ref={containerRef}
-            className="w-full h-[520px] cursor-grab active:cursor-grabbing relative z-10"
-          />
-
-          {/* Bottom HUD Legend */}
-          <div className="p-4 border-t border-slate-800/80 bg-[#080d1a]/80 backdrop-blur-md flex items-center justify-between z-20 text-[11px] font-cyber text-slate-400">
+          {/* Bottom HUD Defense Telemetry Strip */}
+          <div className="p-3.5 mt-4 rounded-xl border border-slate-800/80 bg-[#080d1a]/80 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 text-[11px] font-cyber text-slate-400">
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                <span>Protected Headquarters</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-emerald-300 font-semibold">Perimeter Defense: Active</span>
               </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                <span>Critical Origin Vector</span>
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-                <span>High Severity Node</span>
+              <span className="flex items-center gap-1.5 text-slate-300">
+                <Crosshair className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Geospatial Coverage: 100%</span>
               </span>
             </div>
-            <span className="hidden sm:inline text-slate-500 text-[10px]">
-              Drag to Rotate • Scroll to Zoom
+            <span className="text-[10px] font-mono text-cyan-400/80">
+              LATENCY: 12ms // C2_HEURISTICS: ENGAGED
             </span>
           </div>
         </Card>
 
-        {/* Right Threat Node Inspection Card (Col Span 4) */}
-        <Card className="lg:col-span-4 p-6 space-y-4 shadow-xl flex flex-col justify-between">
+        {/* Right Threat Node Inspection Card (Col Span 5) */}
+        <Card className="lg:col-span-5 p-6 space-y-4 shadow-xl flex flex-col justify-between bg-[#060a14]/90 border-slate-800">
           <div>
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-white flex items-center gap-2">
@@ -603,7 +322,7 @@ export const CyberThreatGlobe3D: React.FC = () => {
                     <button
                       key={t.id}
                       onClick={() => setSelectedThreat(t)}
-                      className={`text-[10px] font-cyber px-2.5 py-1.5 rounded-lg border text-left truncate transition-all ${
+                      className={`text-[10px] font-cyber px-2.5 py-1.5 rounded-lg border text-left truncate transition-all cursor-pointer ${
                         selectedThreat.id === t.id
                           ? 'border-cyan-500 bg-cyan-950/40 text-cyan-200 font-bold'
                           : 'border-slate-800 bg-[#0b1222]/50 text-slate-400 hover:text-white hover:border-slate-700'
