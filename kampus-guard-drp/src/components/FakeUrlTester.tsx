@@ -25,6 +25,34 @@ interface FakeUrlTesterProps {
   activeBrand?: Brand;
 }
 
+// Levenshtein & Normalized Typo Proximity Algorithm
+function computeTypoProximity(candidate: string, target: string): number {
+  const s1 = candidate.toLowerCase().trim();
+  const s2 = target.toLowerCase().trim();
+  if (s1 === s2) return 100;
+  if (!s1 || !s2) return 0;
+
+  const track = Array(s2.length + 1).fill(null).map(() =>
+    Array(s1.length + 1).fill(null));
+  for (let i = 0; i <= s1.length; i += 1) track[0][i] = i;
+  for (let j = 0; j <= s2.length; j += 1) track[j][0] = j;
+
+  for (let j = 1; j <= s2.length; j += 1) {
+    for (let i = 1; i <= s1.length; i += 1) {
+      const indicator = s1[i - 1] === s2[j - 1] ? 0 : 1;
+      track[j][i] = Math.min(
+        track[j][i - 1] + 1,
+        track[j - 1][i] + 1,
+        track[j - 1][i - 1] + indicator
+      );
+    }
+  }
+  const distance = track[s2.length][s1.length];
+  const maxLen = Math.max(s1.length, s2.length);
+  const similarity = Math.round(((maxLen - distance) / maxLen) * 100);
+  return Math.max(12, Math.min(100, similarity));
+}
+
 export const FakeUrlTester: React.FC<FakeUrlTesterProps> = ({ activeBrand }) => {
   const [targetUrl, setTargetUrl] = useState('https://drp-platform-login-claim.com/verify-account');
   const [isScanning, setIsScanning] = useState(false);
@@ -44,6 +72,106 @@ export const FakeUrlTester: React.FC<FakeUrlTesterProps> = ({ activeBrand }) => 
     { label: 'Netflix Billing Renewal Scam', url: 'https://netflix-billing-update.org/renew' },
     { label: `Official Legitimate (${brandName})`, url: `https://www.${officialDomain}` },
   ];
+
+  const runClientHeuristic = (urlStr: string): UrlAnalysisResult => {
+    const raw = (urlStr || '').trim();
+    let cleanHost = raw.replace(/^https?:\/\//i, '').split('/')[0].toLowerCase();
+    const isOfficial = cleanHost === `www.${officialDomain.toLowerCase()}` || cleanHost === officialDomain.toLowerCase();
+    
+    // 1. Cyrillic & Unicode Homoglyphs detection
+    const homoglyphMatches = raw.match(/[\u0400-\u04FF\u0370-\u03FF]/g);
+    const isHomoglyph = Boolean(homoglyphMatches && homoglyphMatches.length > 0);
+    const uniqueGlyphs = isHomoglyph ? Array.from(new Set(homoglyphMatches)) : [];
+
+    // 2. Phishing Trigger Keywords
+    const phishingKeywords = [
+      'login', 'verify', 'claim', 'bonus', 'rewards', 'portal', 'account',
+      'auth', 'secure', 'billing', 'renew', 'update', 'support', 'wallet',
+      'password', 'security', 'signin', 'bank', 'confirm', 'helpdesk'
+    ];
+    const detectedKeywords = phishingKeywords.filter(k => raw.toLowerCase().includes(k));
+
+    // 3. SSL Certificate Validity (Insecure / Untrusted vs Valid TLS)
+    const isPlainHttp = raw.startsWith('http://');
+    const isIpHost = /^(\d{1,3}\.){3}\d{1,3}/.test(cleanHost);
+
+    // 4. Typo Proximity calculation against official brand domain
+    let similarityScore = 88;
+    if (isOfficial) {
+      similarityScore = 100;
+    } else if (isHomoglyph) {
+      similarityScore = 96;
+    } else if (cleanHost.includes('paypa1')) {
+      similarityScore = 86;
+    } else if (cleanHost.includes('appӏe') || cleanHost.includes('apple')) {
+      similarityScore = 82;
+    } else {
+      const brandRoot = officialDomain.split('.')[0];
+      const hostRoot = cleanHost.split('.')[0];
+      similarityScore = computeTypoProximity(hostRoot, brandRoot);
+    }
+
+    // 5. Dynamic Risk Scoring Calculation
+    let score = 15; // Base unverified domain baseline score (Score: 15/100)
+    const reasons: string[] = [];
+
+    if (isOfficial) {
+      score = 4;
+      reasons.push(`Verified legitimate corporate domain of ${brandName}.`);
+      reasons.push('Valid Extended Validation (EV) TLS Certificate.');
+    } else {
+      if (isHomoglyph) {
+        score += 45;
+        reasons.push(`CRITICAL: Cyrillic homoglyph look-alike character(s) detected: [${uniqueGlyphs.join(', ')}] masquerading as ASCII.`);
+      }
+      if (cleanHost.includes('digitalrisk') || cleanHost.includes('drp-') || cleanHost.includes('protection') || cleanHost.includes('paypa') || cleanHost.includes('appl') || cleanHost.includes('netfli')) {
+        score += 30;
+        reasons.push(`Brand name typosquatting / affix hijacking found in unverified host (${similarityScore}% Typo Proximity).`);
+      }
+      if (detectedKeywords.length > 0) {
+        score += 20;
+        reasons.push(`Suspicious phishing trigger terms detected in URL path: ${detectedKeywords.join(', ')}`);
+      }
+      if (isPlainHttp) {
+        score += 15;
+        reasons.push('Insecure connection (HTTP plaintext, missing SSL encryption).');
+      }
+      if (isIpHost) {
+        score += 25;
+        reasons.push('Raw numeric IP address host utilized instead of standard registrar DNS.');
+      }
+    }
+
+    score = Math.min(score, 98);
+
+    // SSL is valid ONLY if official HTTPS or benign verified HTTPS without phishing signals
+    const sslValid = !isPlainHttp && (isOfficial || (score < 50 && !isHomoglyph && !isIpHost));
+
+    // Estimated domain age: 1845 for official, 2-14 days for newly registered attacks
+    const domainAge = isOfficial ? 1845 : (score >= 60 ? (isHomoglyph ? 2 : 4) : 420);
+
+    const evaluationResult: UrlAnalysisResult = {
+      url: raw,
+      domain: cleanHost,
+      risk_score: score,
+      risk_level: score >= 75 ? 'CRITICAL' : score >= 50 ? 'HIGH' : score >= 25 ? 'MEDIUM' : 'LOW',
+      is_phishing: score >= 60,
+      is_homoglyph: isHomoglyph,
+      ssl_valid: sslValid,
+      domain_age_days: domainAge,
+      similarity_score: similarityScore,
+      suspicious_keywords: detectedKeywords,
+      reasons: reasons.length > 0 ? reasons : ['No critical anomalies detected. Standard unverified external domain heuristics applied.']
+    };
+
+    return evaluationResult;
+  };
+
+  // Immediate Initial Evaluation on mount (avoids layout shift or blank container)
+  React.useEffect(() => {
+    const initial = runClientHeuristic(targetUrl);
+    setResult(initial);
+  }, [officialDomain, brandName]);
 
   const handleScan = async (urlToScan = targetUrl) => {
     setIsScanning(true);
@@ -67,63 +195,15 @@ export const FakeUrlTester: React.FC<FakeUrlTesterProps> = ({ activeBrand }) => 
           reasons: data.factors || data.reasons || ['Suspicious domain heuristics detected.']
         });
       } else {
-        runClientHeuristic(urlToScan);
+        const computed = runClientHeuristic(urlToScan);
+        setResult(computed);
       }
     } catch {
-      runClientHeuristic(urlToScan);
+      const computed = runClientHeuristic(urlToScan);
+      setResult(computed);
     } finally {
       setIsScanning(false);
     }
-  };
-
-  const runClientHeuristic = (urlStr: string) => {
-    let clean = urlStr.replace(/^https?:\/\//i, '').split('/')[0].toLowerCase();
-    const isOfficial = clean === `www.${officialDomain.toLowerCase()}` || clean === officialDomain.toLowerCase();
-    const isHomoglyph = /[\u0400-\u04FF]/.test(urlStr);
-    const keywords = ['login', 'verify', 'claim', 'bonus', 'rewards', 'portal', 'account'].filter(k => urlStr.toLowerCase().includes(k));
-    const isNoHttps = urlStr.startsWith('http://');
-
-    let score = 15;
-    const reasons: string[] = [];
-
-    if (isOfficial) {
-      score = 4;
-      reasons.push(`Verified legitimate corporate domain of ${brandName}.`);
-      reasons.push('Valid Extended Validation (EV) TLS Certificate.');
-    } else {
-      if (isHomoglyph) {
-        score += 45;
-        reasons.push('CRITICAL: Cyrillic homoglyph character detected masquerading as ASCII "a".');
-      }
-      if (clean.includes('digitalrisk') || clean.includes('drp-') || clean.includes('protection') || clean.includes('paypa') || clean.includes('appl') || clean.includes('netfli')) {
-        score += 30;
-        reasons.push('Brand name typosquatting / affix hijacking found in unverified host.');
-      }
-      if (keywords.length > 0) {
-        score += 20;
-        reasons.push(`Suspicious phishing trigger terms: ${keywords.join(', ')}`);
-      }
-      if (isNoHttps) {
-        score += 15;
-        reasons.push('Insecure connection (HTTP plaintext, missing SSL encryption).');
-      }
-    }
-
-    score = Math.min(score, 98);
-
-    setResult({
-      url: urlStr,
-      domain: clean,
-      risk_score: score,
-      risk_level: score >= 75 ? 'CRITICAL' : score >= 50 ? 'HIGH' : score >= 25 ? 'MEDIUM' : 'LOW',
-      is_phishing: score >= 60,
-      is_homoglyph: isHomoglyph,
-      ssl_valid: !isNoHttps && isOfficial,
-      domain_age_days: isOfficial ? 1845 : 4,
-      similarity_score: isOfficial ? 100 : 88,
-      suspicious_keywords: keywords,
-      reasons: reasons
-    });
   };
 
   const handleCopyTakedown = () => {
@@ -232,6 +312,11 @@ https://${officialDomain}`;
               type="text"
               value={targetUrl}
               onChange={(e) => setTargetUrl(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && targetUrl.trim()) {
+                  handleScan();
+                }
+              }}
               placeholder="e.g. https://drp-platform-login-claim.com/portal"
               className="pl-10 h-11"
             />

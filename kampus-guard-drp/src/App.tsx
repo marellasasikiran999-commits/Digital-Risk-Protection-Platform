@@ -183,12 +183,15 @@ export function App() {
 
   const handleRunSocialScan = async () => {
     setIsScanningSocial(true);
+    window.dispatchEvent(new CustomEvent('drp:run-live-social-scan'));
     showToast('Scanning Instagram, X, Facebook & Telegram for username variations...');
     try {
       await runSocialScanAPI(currentBrandName);
       await loadData();
+      window.dispatchEvent(new CustomEvent('drp:run-live-social-scan'));
       showToast('Social Scan finished: 15 candidate accounts detected & scored.');
     } catch {
+      window.dispatchEvent(new CustomEvent('drp:run-live-social-scan'));
       showToast('Social monitoring feed refreshed.');
     } finally {
       setIsScanningSocial(false);

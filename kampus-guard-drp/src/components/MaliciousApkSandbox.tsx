@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { 
   Bug, CheckCircle2, AlertTriangle, 
   Copy, Check, Smartphone, FileCode,
@@ -8,6 +8,8 @@ import {
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import { realtimeDb } from '../utils/realtimeDb';
+import { auditPackageAPI } from '../utils/api';
 
 interface AnalyzedApkData {
   fileName: string;
@@ -332,9 +334,41 @@ Action Demanded: Immediate removal, certificate revocation, and global hash blac
         detectedThreats: threats
       });
 
+      // Synchronize forensic verdict into global Realtime Database
+      realtimeDb.applyNewFinding({
+        id: `FIND-APK-${pkg}`,
+        brand_name: 'Digital Risk Protection Platform',
+        finding_type: 'app',
+        title: title,
+        category: 'App Store Defense › Sandbox Reverse Engineering',
+        candidate_name: title,
+        asset: pkg,
+        matched_official: 'com.drp.platform.official',
+        risk_score: score,
+        risk_level: (score >= 85 ? 'Critical' : 'High') as any,
+        status: 'Pending',
+        confidence_score: 95,
+        similarity_rate: 88,
+        detection_source: 'Android APK Sandbox',
+        developer: pub,
+        package_name: pkg,
+        threat_reason: `Classified ${family}. Publisher signature mismatch with dangerous permissions.`,
+        note: `Invasive permissions detected: ${perms.join(', ')}`,
+        factors: flagged.map(f => ({ factor: `${f.name}: ${f.desc}`, score: f.severity === 'Critical' ? 35 : 20 })),
+        is_official: false,
+        detected_date: 'Just now',
+        updated_date: 'Just now',
+        takedown_notice: takedown
+      });
+
       setAnalyzing(false);
-    }, 600);
+    }, 500);
   };
+
+  // Immediate Initial Evaluation on mount with explicit sample payload
+  useEffect(() => {
+    runAnalysisEngine('DRP_Rewards_Trojan.apk', '6.97 MB', packageName, appTitle, publisher, permissionsInput);
+  }, []);
 
   const handleCopyTakedown = () => {
     if (!analysisResult?.takedownNotice) return;

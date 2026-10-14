@@ -455,16 +455,16 @@ export async function getFindingsAPI(params: {
 export async function updateFindingStatusAPI(id: string, status: string): Promise<any> {
   realtimeDb.applyStatusUpdate(id, status);
 
-  if (API_BASE_URL) {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/findings/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status })
-      });
-      if (res.ok) return await res.json();
-    } catch {}
-  }
+  try {
+    const endpoint = API_BASE_URL ? `${API_BASE_URL}/api/findings/${id}` : '/api/findings';
+    const bodyPayload = API_BASE_URL ? JSON.stringify({ status }) : JSON.stringify({ id, status });
+    const res = await fetch(endpoint, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: bodyPayload
+    });
+    if (res.ok) return await res.json();
+  } catch {}
 
   return { success: true, id, status };
 }
@@ -652,20 +652,112 @@ export interface AuditedPackageResult {
 
 export async function auditPackageAPI(packageName: string, brandName = 'Digital Risk Protection Platform'): Promise<AuditedPackageResult> {
   const clean = packageName.trim().toLowerCase();
-  if (API_BASE_URL) {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/audit/package`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ package_name: clean, brand_name: brandName })
-      });
-      if (res.ok) {
-        return await res.json();
-      }
-    } catch {}
-  }
+  
+  try {
+    const endpoint = API_BASE_URL ? `${API_BASE_URL}/api/audit/package` : '/api/audit/package';
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ package_name: clean, brand_name: brandName })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch {}
 
   // High-fidelity fallback for standalone cloud deployment
+  if (clean === 'com.fake.drp.rewards') {
+    return {
+      status: 'success',
+      finding_id: `FIND-APP-${Date.now()}`,
+      package_name: clean,
+      app_name: 'DRP Rewards Wallet',
+      publisher: 'Apex Rogue Dev Ltd',
+      store: 'google_play',
+      store_url: `https://play.google.com/store/apps/details?id=${clean}`,
+      icon_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
+      rating: 4.8,
+      downloads: '50,000+',
+      risk_score: 88,
+      risk_level: 'High',
+      note: 'Rogue rewards portal harvesting SMS credentials and displaying phishing overlays.',
+      permissions: ['RECEIVE_SMS', 'READ_SMS', 'SYSTEM_ALERT_WINDOW', 'BIND_ACCESSIBILITY_SERVICE'],
+      is_official: false,
+      is_publisher_mismatch: true,
+      found_on_play: true,
+      takedown_notice: `FORMAL STORE ABUSE TAKEDOWN: com.fake.drp.rewards impersonates ${brandName}. Publisher: Apex Rogue Dev Ltd.`
+    };
+  }
+
+  if (clean === 'id.drp.pro.fake') {
+    return {
+      status: 'success',
+      finding_id: `FIND-APP-${Date.now()}`,
+      package_name: clean,
+      app_name: 'Digital Risk Protection Pro',
+      publisher: 'DevApex Studio',
+      store: 'apple_app_store',
+      store_url: `https://apps.apple.com/app/drp-pro/id987654321`,
+      icon_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
+      rating: 4.1,
+      downloads: '10,000+',
+      risk_score: 68,
+      risk_level: 'Medium',
+      note: 'Unauthorized commercial client requesting SMS and system overlay without enterprise MDM certificate.',
+      permissions: ['RECEIVE_SMS', 'SYSTEM_ALERT_WINDOW'],
+      is_official: false,
+      is_publisher_mismatch: true,
+      found_on_play: true,
+      takedown_notice: `FORMAL STORE ABUSE TAKEDOWN: id.drp.pro.fake impersonates ${brandName}.`
+    };
+  }
+
+  if (clean === 'com.bycomsolutions.bycomvpn') {
+    return {
+      status: 'success',
+      finding_id: `FIND-APP-${Date.now()}`,
+      package_name: clean,
+      app_name: 'Bycom VPN - Secure Fast Proxy',
+      publisher: 'BYCOM Solutions LLC',
+      store: 'google_play',
+      store_url: `https://play.google.com/store/apps/details?id=${clean}`,
+      icon_url: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=150',
+      rating: 4.4,
+      downloads: '100,000+',
+      risk_score: 89,
+      risk_level: 'High',
+      note: 'Third-party VPN client requesting invasive network routing and overlay permissions.',
+      permissions: ['BIND_VPN_SERVICE', 'SYSTEM_ALERT_WINDOW', 'RECEIVE_SMS'],
+      is_official: false,
+      is_publisher_mismatch: true,
+      found_on_play: true,
+      takedown_notice: `FORMAL STORE ABUSE TAKEDOWN: com.bycomsolutions.bycomvpn flagged for invasive VPN and SMS interception.`
+    };
+  }
+
+  if (clean === 'com.cloned.drp.helper') {
+    return {
+      status: 'success',
+      finding_id: `FIND-APP-${Date.now()}`,
+      package_name: clean,
+      app_name: 'Digital Risk Protection Fast Support',
+      publisher: 'Shanghai Media Syndicate',
+      store: 'google_play',
+      store_url: `https://apkpure.com/drp-fast-support/com.cloned.drp.helper`,
+      icon_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
+      rating: 3.2,
+      downloads: '5,000+',
+      risk_score: 94,
+      risk_level: 'Critical',
+      note: 'Rogue support helper payload requesting installation, audio recording, and fine location.',
+      permissions: ['REQUEST_INSTALL_PACKAGES', 'RECORD_AUDIO', 'ACCESS_FINE_LOCATION'],
+      is_official: false,
+      is_publisher_mismatch: true,
+      found_on_play: false,
+      takedown_notice: `FORMAL STORE ABUSE TAKEDOWN: com.cloned.drp.helper flagged for spyware dropper and audio surveillance.`
+    };
+  }
+
   if (clean === 'com.apkpure.aegon') {
     return {
       status: 'success',

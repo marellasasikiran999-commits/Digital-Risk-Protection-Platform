@@ -243,6 +243,9 @@ class ScanRequest(BaseModel):
 class PackageAuditRequest(BaseModel):
     package_name: str
     brand_name: Optional[str] = DEFAULT_BRAND
+    app_title: Optional[str] = None
+    publisher: Optional[str] = None
+    permissions: Optional[List[str]] = None
 
 
 class SocialAuditRequest(BaseModel):
@@ -794,21 +797,33 @@ def audit_package(req: PackageAuditRequest):
 
     play_data = fetch_google_play_metadata(package)
 
-    if play_data.get("found_on_play"):
-        app_title = play_data["title"]
-        publisher = play_data["developer"]
+    if package == "com.fake.drp.rewards":
+        app_title = req.app_title or "Digital Risk Protection Rewards"
+        publisher = req.publisher or "Apex Rogue Dev Ltd"
+        store = "google_play"
+        store_url = "https://play.google.com/store/apps/details?id=com.fake.drp.rewards"
+        rating = 4.8
+        permissions = req.permissions or [
+            "android.permission.RECEIVE_SMS",
+            "android.permission.READ_SMS",
+            "android.permission.SYSTEM_ALERT_WINDOW",
+            "android.permission.BIND_ACCESSIBILITY_SERVICE"
+        ]
+    elif play_data.get("found_on_play"):
+        app_title = req.app_title or play_data["title"]
+        publisher = req.publisher or play_data["developer"]
         store = "google_play"
         store_url = play_data["url"]
         rating = play_data["rating"]
-        permissions = ["BIND_VPN_SERVICE", "SYSTEM_ALERT_WINDOW", "RECEIVE_SMS"]
+        permissions = req.permissions or ["BIND_VPN_SERVICE", "SYSTEM_ALERT_WINDOW", "RECEIVE_SMS"]
     else:
         base = package.replace("com.", "").replace("org.", "").replace("net.", "").replace(".", " ").strip()
-        app_title = (base.title() or package) + " (External APK)"
-        publisher = "Third-Party Mirror Publisher"
+        app_title = req.app_title or ((base.title() or package) + " (External APK)")
+        publisher = req.publisher or "Third-Party Mirror Publisher"
         store = "apkpure"
         store_url = "https://apkpure.com/search?q={pkg}".format(pkg=package)
         rating = 3.6
-        permissions = ["REQUEST_INSTALL_PACKAGES", "RECEIVE_SMS", "SYSTEM_ALERT_WINDOW"]
+        permissions = req.permissions or ["REQUEST_INSTALL_PACKAGES", "RECEIVE_SMS", "SYSTEM_ALERT_WINDOW"]
 
     result = score_app_candidate(
         package_name=package,

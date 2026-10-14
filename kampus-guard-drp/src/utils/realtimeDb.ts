@@ -212,6 +212,84 @@ export const SEED_FINDINGS: Finding[] = [
     detected_date: '1 hour ago',
     updated_date: '1 hour ago',
     takedown_notice: 'REGISTRAR ABUSE REPORT: Immediate suspension requested for drp-platform-login-claim.com'
+  },
+  {
+    id: 'app-threat-apkpure',
+    brand_name: 'Digital Risk Protection Platform',
+    finding_type: 'app',
+    title: 'APKPure Client',
+    category: 'App Store › Rogue Repository',
+    candidate_name: 'APKPure App Market & Client',
+    asset: 'com.apkpure.aegon',
+    risk_score: 92,
+    risk_level: 'Critical',
+    status: 'Pending',
+    confidence_score: 94,
+    similarity_rate: 89,
+    detection_source: 'APKPure Mirror Monitor',
+    developer: 'APKPure / Level Up Media Ltd.',
+    package_name: 'com.apkpure.aegon',
+    note: 'Third-party APK repository client bypassing Google Play Protect.',
+    factors: [
+      { factor: 'Invasive Permission (REQUEST_INSTALL_PACKAGES, INSTALL_PACKAGES)', score: 45 },
+      { factor: 'Third-party APK repository client', score: 35 }
+    ],
+    is_official: false,
+    detected_date: 'Just now',
+    updated_date: 'Just now',
+    takedown_notice: 'FORMAL STORE ABUSE TAKEDOWN: com.apkpure.aegon'
+  },
+  {
+    id: 'app-threat-bycom',
+    brand_name: 'Digital Risk Protection Platform',
+    finding_type: 'app',
+    title: 'Bycom VPN',
+    category: 'App Store › Invasive VPN',
+    candidate_name: 'Bycom VPN - Secure Fast Proxy',
+    asset: 'com.bycomsolutions.bycomvpn',
+    risk_score: 89,
+    risk_level: 'High',
+    status: 'Pending',
+    confidence_score: 91,
+    similarity_rate: 82,
+    detection_source: 'Google Play Store Monitor',
+    developer: 'BYCOM Solutions LLC',
+    package_name: 'com.bycomsolutions.bycomvpn',
+    note: 'Invasive permissions: BIND_VPN_SERVICE, SYSTEM_ALERT_WINDOW, RECEIVE_SMS.',
+    factors: [
+      { factor: 'Invasive VPN Routing (BIND_VPN_SERVICE)', score: 40 },
+      { factor: 'Overlay & SMS Interception (SYSTEM_ALERT_WINDOW, RECEIVE_SMS)', score: 35 }
+    ],
+    is_official: false,
+    detected_date: 'Yesterday',
+    updated_date: 'Yesterday',
+    takedown_notice: 'FORMAL STORE ABUSE TAKEDOWN: com.bycomsolutions.bycomvpn'
+  },
+  {
+    id: 'app-threat-helper',
+    brand_name: 'Digital Risk Protection Platform',
+    finding_type: 'app',
+    title: 'Fast Support Helper',
+    category: 'App Store › Spyware Dropper',
+    candidate_name: 'Digital Risk Protection Fast Support',
+    asset: 'com.cloned.drp.helper',
+    risk_score: 94,
+    risk_level: 'Critical',
+    status: 'Takedown',
+    confidence_score: 95,
+    similarity_rate: 91,
+    detection_source: 'APK Mirror Crawler',
+    developer: 'Shanghai Media Syndicate',
+    package_name: 'com.cloned.drp.helper',
+    note: 'Spyware payload: REQUEST_INSTALL_PACKAGES, RECORD_AUDIO, ACCESS_FINE_LOCATION.',
+    factors: [
+      { factor: 'Trojan Dropper (REQUEST_INSTALL_PACKAGES)', score: 45 },
+      { factor: 'Audio Wiretapping & Geolocation (RECORD_AUDIO, ACCESS_FINE_LOCATION)', score: 35 }
+    ],
+    is_official: false,
+    detected_date: '3 days ago',
+    updated_date: '3 days ago',
+    takedown_notice: 'FORMAL STORE ABUSE TAKEDOWN: com.cloned.drp.helper'
   }
 ];
 

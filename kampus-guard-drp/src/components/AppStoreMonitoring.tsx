@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { AppStoreThreat, AppStoreType } from '../types';
 import { 
   Smartphone, Search, RefreshCw, 
@@ -8,7 +8,8 @@ import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { ScrollReveal } from './ui/ScrollReveal';
-import { auditPackageAPI, type AuditedPackageResult } from '../utils/api';
+import { auditPackageAPI, updateFindingStatusAPI, type AuditedPackageResult } from '../utils/api';
+import { realtimeDb } from '../utils/realtimeDb';
 
 interface AppStoreMonitoringProps {
   threats?: AppStoreThreat[];
@@ -35,8 +36,50 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
   const [actionNotice, setActionNotice] = useState<string | null>(null);
   const [recentAudit, setRecentAudit] = useState<AuditedPackageResult | null>(null);
 
-  // Pre-populated default threats including com.apkpure.aegon and com.bycomsolutions.bycomvpn
+  // 5 Canonical Target APK Cards strictly benchmarked for DRP Platform
   const defaultThreats: AppStoreThreat[] = [
+    {
+      id: 'app-threat-rewards',
+      store: 'google_play',
+      appName: 'DRP Rewards Wallet',
+      appId: 'com.fake.drp.rewards',
+      storeUrl: 'https://play.google.com/store/apps/details?id=com.fake.drp.rewards',
+      iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
+      publisherName: 'Apex Rogue Dev Ltd',
+      rating: 4.8,
+      downloadsCount: '50,000+',
+      updatedDate: '2026-10-08',
+      descriptionSnippet: 'Rewards portal harvesting SMS and contacts disguised as user rewards wallet.',
+      riskScore: 88,
+      riskLevel: 'HIGH',
+      logoSimilarityScore: 82,
+      nameSimilarityScore: 92,
+      isPublisherMismatch: true,
+      suspiciousPermissions: ['RECEIVE_SMS', 'SYSTEM_ALERT_WINDOW'],
+      status: 'PENDING',
+      isOfficial: false
+    },
+    {
+      id: 'app-threat-drp-pro',
+      store: 'apple_app_store',
+      appName: 'Digital Risk Protection Pro',
+      appId: 'id.drp.pro.fake',
+      storeUrl: 'https://apps.apple.com/app/drp-pro/id987654321',
+      iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
+      publisherName: 'DevApex Studio',
+      rating: 4.1,
+      downloadsCount: '10,000+',
+      updatedDate: '2026-10-06',
+      descriptionSnippet: 'Unauthorized commercial client requesting SMS and system overlay without enterprise MDM certificate.',
+      riskScore: 68,
+      riskLevel: 'MEDIUM',
+      logoSimilarityScore: 71,
+      nameSimilarityScore: 85,
+      isPublisherMismatch: true,
+      suspiciousPermissions: ['RECEIVE_SMS', 'SYSTEM_ALERT_WINDOW'],
+      status: 'PENDING',
+      isOfficial: false
+    },
     {
       id: 'app-threat-apkpure',
       store: 'google_play',
@@ -80,49 +123,7 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
       isOfficial: false
     },
     {
-      id: 'app-threat-1',
-      store: 'google_play',
-      appName: 'Digital Risk Protection Rewards',
-      appId: 'com.fake.drp.rewards',
-      storeUrl: 'https://play.google.com/store/apps/details?id=com.fake.drp.rewards',
-      iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
-      publisherName: 'Global Trend Mobile',
-      rating: 4.8,
-      downloadsCount: '50,000+',
-      updatedDate: '2026-10-08',
-      descriptionSnippet: 'Rewards portal harvesting SMS and contacts without authorization.',
-      riskScore: 88,
-      riskLevel: 'HIGH',
-      logoSimilarityScore: 82,
-      nameSimilarityScore: 92,
-      isPublisherMismatch: true,
-      suspiciousPermissions: ['RECEIVE_SMS', 'READ_CONTACTS', 'SYSTEM_ALERT_WINDOW'],
-      status: 'FLAGGED',
-      isOfficial: false
-    },
-    {
-      id: 'app-threat-2',
-      store: 'apple_app_store',
-      appName: 'Digital Risk Protection Pro',
-      appId: 'id.drp.pro.fake',
-      storeUrl: 'https://apps.apple.com/app/drp-pro/id987654321',
-      iconUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150',
-      publisherName: 'DevApex Studio',
-      rating: 4.1,
-      downloadsCount: '10,000+',
-      updatedDate: '2026-10-06',
-      descriptionSnippet: 'Unauthorized commercial client requesting camera and location.',
-      riskScore: 68,
-      riskLevel: 'MEDIUM',
-      logoSimilarityScore: 71,
-      nameSimilarityScore: 85,
-      isPublisherMismatch: true,
-      suspiciousPermissions: ['CAMERA', 'ACCESS_FINE_LOCATION'],
-      status: 'INVESTIGATING',
-      isOfficial: false
-    },
-    {
-      id: 'app-threat-3',
+      id: 'app-threat-helper',
       store: 'google_play',
       appName: 'Digital Risk Protection Fast Support',
       appId: 'com.cloned.drp.helper',
@@ -132,7 +133,7 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
       rating: 3.2,
       downloadsCount: '5,000+',
       updatedDate: '2026-10-09',
-      descriptionSnippet: 'Rogue support helper payload requesting installation and audio recording.',
+      descriptionSnippet: 'Rogue support helper payload requesting installation, audio recording, and fine location.',
       riskScore: 94,
       riskLevel: 'CRITICAL',
       logoSimilarityScore: 91,
@@ -144,63 +145,47 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
     }
   ];
 
-  // Map any backend findings into threats if provided
-  const backendAppThreats: AppStoreThreat[] = (findings || [])
-    .filter((f: any) => f.finding_type === 'app')
-    .map((f: any) => {
-      let perms: string[] = [];
-      if (f.factors_json) {
-        try {
-          const factors = JSON.parse(f.factors_json);
-          perms = factors.map((fact: any) => fact.factor || fact.name || '').filter(Boolean);
-        } catch {}
-      }
-      return {
-        id: f.id,
-        store: (f.detection_source?.toLowerCase().includes('apple') ? 'apple_app_store' : 'google_play') as AppStoreThreat['store'],
-        appName: f.candidate_name || f.title,
-        appId: f.package_name || f.candidate_name,
-        storeUrl: f.package_name === 'com.apkpure.aegon' 
-          ? 'https://apkpure.com/apkpure/com.apkpure.aegon'
-          : `https://play.google.com/store/apps/details?id=${f.package_name || f.candidate_name}`,
-        iconUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=150',
-        publisherName: f.developer || 'Unauthorized Mirror',
-        rating: 4.0,
-        downloadsCount: '15,000+',
-        updatedDate: 'Recent',
-        descriptionSnippet: f.note || 'Publisher signature mismatch; unauthorized repository listing.',
-        riskScore: f.risk_score,
-        riskLevel: (f.risk_level?.toUpperCase() || 'HIGH') as AppStoreThreat['riskLevel'],
-        logoSimilarityScore: f.similarity_rate || 90,
-        nameSimilarityScore: f.confidence_score || 94,
-        isPublisherMismatch: true,
-        suspiciousPermissions: perms.length > 0 ? perms : ['RECEIVE_SMS', 'SYSTEM_ALERT_WINDOW'],
-        status: (f.status?.toUpperCase() || 'FLAGGED') as AppStoreThreat['status'],
-        isOfficial: false
-      };
-    });
-
-  const combinedInitial = [
-    ...backendAppThreats,
-    ...defaultThreats.filter(dt => !backendAppThreats.some(bt => bt.appId === dt.appId || bt.id === dt.id))
-  ];
-
   const [threatsList, setThreatsList] = useState<AppStoreThreat[]>(
-    (initialThreats && initialThreats.length > 0) ? initialThreats : combinedInitial
+    (initialThreats && initialThreats.length > 0) ? initialThreats : defaultThreats
   );
 
-  // Sync if new backend findings or initialThreats arrive
-  React.useEffect(() => {
+  // Real-Time Data Synchronization Hook (Firebase Realtime DB & WebSocket Stream)
+  useEffect(() => {
+    const unsubscribe = realtimeDb.subscribeToFindings((latestFindings) => {
+      setThreatsList(prev => prev.map(threatItem => {
+        const matchingFinding = latestFindings.find((f: any) => 
+          f.package_name === threatItem.appId || 
+          f.asset === threatItem.appId || 
+          f.id === threatItem.id
+        );
+
+        if (matchingFinding && matchingFinding.status) {
+          let updatedStatus: AppStoreThreat['status'] = threatItem.status;
+          const statusLower = matchingFinding.status.toLowerCase();
+          if (statusLower === 'legitimate' || statusLower === 'safe' || statusLower === 'whitelisted') {
+            updatedStatus = 'WHITELISTED';
+          } else if (statusLower === 'takedown' || statusLower === 'takedown_requested') {
+            updatedStatus = 'TAKEDOWN_REQUESTED';
+          } else if (statusLower === 'flagged') {
+            updatedStatus = 'FLAGGED';
+          } else if (statusLower === 'pending') {
+            updatedStatus = 'PENDING';
+          }
+          return { ...threatItem, status: updatedStatus };
+        }
+        return threatItem;
+      }));
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Sync if initialThreats change from parent
+  useEffect(() => {
     if (initialThreats && initialThreats.length > 0) {
       setThreatsList(initialThreats);
-    } else {
-      setThreatsList(prev => {
-        const ids = new Set(prev.map(p => p.appId));
-        const newOnes = combinedInitial.filter(c => !ids.has(c.appId));
-        return newOnes.length > 0 ? [...newOnes, ...prev] : prev;
-      });
     }
-  }, [findings, initialThreats]);
+  }, [initialThreats]);
 
   // Live Deep Audit handler for any custom package name
   const handleAuditCustomPackage = async (pkg: string) => {
@@ -237,7 +222,6 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
 
       setThreatsList(prev => [newThreat, ...prev.filter(p => p.appId !== cleanPkg)]);
       setRecentAudit(data);
-      // Clear filter to display all apps with newly audited item at the very top
       setSearchQuery('');
       setActionNotice(`Live audit complete: "${data.app_name}" (${data.package_name}) flagged with ${data.risk_score}/100 Risk!`);
       setTimeout(() => setActionNotice(null), 5000);
@@ -248,10 +232,27 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
     }
   };
 
+  // Interactive Binding: toggles global database status node in real-time
   const handleStatusChange = (id: string, newStatus: AppStoreThreat['status']) => {
+    // 1. Immediately update UI state
     setThreatsList(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
+
+    // 2. Identify target item
+    const target = threatsList.find(t => t.id === id);
+    const dbStatus = (newStatus === 'WHITELISTED' || newStatus === 'SAFE') 
+      ? 'Legitimate' 
+      : (newStatus === 'TAKEDOWN_REQUESTED' ? 'Takedown' : newStatus);
+
+    // 3. Mutate global realtime database & trigger WebSocket cycle
+    if (target) {
+      realtimeDb.applyStatusUpdate(target.id, dbStatus);
+      realtimeDb.applyStatusUpdate(target.appId, dbStatus);
+      updateFindingStatusAPI(target.id, dbStatus);
+      updateFindingStatusAPI(target.appId, dbStatus);
+    }
+
     if (onUpdateThreatStatus) onUpdateThreatStatus(id, newStatus);
-    setActionNotice(`App threat updated to: ${newStatus}`);
+    setActionNotice(`App threat "${target?.appName || id}" status updated to: ${newStatus}`);
     setTimeout(() => setActionNotice(null), 2500);
   };
 
@@ -571,10 +572,12 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
                   <div className="flex justify-between items-center text-slate-400">
                     <span>Status:</span>
                     <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
-                      t.status === 'WHITELISTED'
+                      t.status === 'WHITELISTED' || t.status === 'SAFE'
                         ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                         : t.status === 'TAKEDOWN_REQUESTED'
                         ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                        : t.status === 'PENDING'
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                         : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                     }`}>
                       {t.status}

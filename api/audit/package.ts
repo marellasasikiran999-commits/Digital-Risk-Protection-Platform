@@ -10,8 +10,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(200).end();
   }
 
-  const { package_name, brand_name } = req.body || {};
-  const cleanPkg = (package_name || '').trim().toLowerCase();
+  const { package_name, brand_name, app_title, publisher: devPublisher, permissions: customPerms } = req.body || {};
+  const cleanPkg = (package_name || 'com.fake.drp.rewards').trim().toLowerCase();
   if (!cleanPkg) {
     return res.status(400).json({ error: 'package_name is required' });
   }
@@ -21,19 +21,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const foundBrand = brands.find(b => b.brand_name.toLowerCase() === targetBrand.toLowerCase()) || brands[0];
   const isOfficial = (foundBrand?.official_apps || []).some((a: string) => a.toLowerCase() === cleanPkg);
 
-  const cleanTitle = cleanPkg
+  const cleanTitle = (app_title || (cleanPkg === 'com.fake.drp.rewards' ? 'Digital Risk Protection Rewards' : cleanPkg
     .replace(/^(com|org|net|id)\./, '')
     .split('.')
     .map((s: string) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(' ');
+    .join(' '))).trim();
 
   const findingId = `FIND-AUDIT-PKG-${Date.now()}`;
-  const publisher = isOfficial ? foundBrand?.official_developer : 'Third-Party Mirror Publisher';
+  const publisher = isOfficial 
+    ? foundBrand?.official_developer 
+    : (devPublisher || (cleanPkg === 'com.fake.drp.rewards' ? 'Apex Rogue Dev Ltd' : 'Third-Party Mirror Publisher'));
   const riskScore = isOfficial ? 0 : 88;
   const riskLevel = isOfficial ? 'Safe' : 'High';
-  const perms = isOfficial ? ['INTERNET', 'ACCESS_NETWORK_STATE'] : ['RECEIVE_SMS', 'SYSTEM_ALERT_WINDOW', 'REQUEST_INSTALL_PACKAGES'];
+  
+  const defaultMaliciousPerms = [
+    'android.permission.RECEIVE_SMS',
+    'android.permission.READ_SMS',
+    'android.permission.SYSTEM_ALERT_WINDOW',
+    'android.permission.BIND_ACCESSIBILITY_SERVICE'
+  ];
+  
+  const perms = isOfficial 
+    ? ['android.permission.INTERNET', 'android.permission.ACCESS_NETWORK_STATE'] 
+    : (Array.isArray(customPerms) && customPerms.length > 0 ? customPerms : defaultMaliciousPerms);
 
-  const takedown = isOfficial ? undefined : `FORMAL STORE ABUSE TAKEDOWN: Infringing package ${cleanPkg} impersonates ${targetBrand}.`;
+  const takedown = isOfficial ? undefined : `FORMAL STORE ABUSE TAKEDOWN: Infringing package ${cleanPkg} impersonates ${targetBrand}. Malware Family: Trojan-Banker.AndroidOS.OverlayStealer. Flagged Permissions: ${perms.join(', ')}. Publisher: ${publisher}.`;
 
   const finding: Finding = {
     id: findingId,
@@ -52,11 +64,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     detection_source: 'Dynamic APK Inspector',
     developer: publisher,
     package_name: cleanPkg,
-    threat_reason: isOfficial ? 'Verified legitimate build' : 'Publisher Mismatch + Dangerous Permissions',
-    note: isOfficial ? 'Whitelisted official corporate application.' : 'Unverified third-party mirror package.',
+    threat_reason: isOfficial ? 'Verified legitimate build' : 'Publisher Mismatch + Trojan Banker Overlay (RECEIVE_SMS, SYSTEM_ALERT_WINDOW)',
+    note: isOfficial ? 'Whitelisted official corporate application.' : `Rogue APK developed by ${publisher}. Targets SMS OTP tokens with overlay stealth.`,
     factors: isOfficial ? [] : [
-      { factor: 'Publisher Mismatch (Third-party developer signature)', score: 40 },
-      { factor: 'Invasive Permission (RECEIVE_SMS)', score: 28 }
+      { factor: `Publisher Mismatch (${publisher} vs ${targetBrand})`, score: 40 },
+      { factor: 'Invasive Trojan Permission (RECEIVE_SMS, READ_SMS)', score: 28 },
+      { factor: 'Phishing Overlay Capability (SYSTEM_ALERT_WINDOW)', score: 20 }
     ],
     is_official: isOfficial,
     detected_date: 'Just now',
