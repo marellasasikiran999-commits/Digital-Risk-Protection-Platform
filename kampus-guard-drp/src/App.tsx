@@ -37,7 +37,7 @@ export function App() {
   // Active User via Firebase with State Gating & Memoization
   const [currentUser, setCurrentUser] = useState<AuthUserProfile>(getCurrentUserProfile());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isAuthResolving, setIsAuthResolving] = useState(false);
+  const [isAuthResolving] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Toast timer reference to eliminate racing conditions
