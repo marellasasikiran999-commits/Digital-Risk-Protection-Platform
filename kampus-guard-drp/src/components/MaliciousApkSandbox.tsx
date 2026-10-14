@@ -9,7 +9,6 @@ import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { realtimeDb } from '../utils/realtimeDb';
-import { auditPackageAPI } from '../utils/api';
 
 interface AnalyzedApkData {
   fileName: string;

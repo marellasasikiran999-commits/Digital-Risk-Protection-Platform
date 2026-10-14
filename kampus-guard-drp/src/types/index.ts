@@ -44,7 +44,7 @@ export interface SocialThreat {
   homoglyphDetails?: string;
   phishingKeywordsFound: string[];
   
-  status: 'FLAGGED' | 'INVESTIGATING' | 'TAKEDOWN_REQUESTED' | 'TAKEN_DOWN' | 'WHITELISTED';
+  status: 'FLAGGED' | 'INVESTIGATING' | 'TAKEDOWN_REQUESTED' | 'TAKEN_DOWN' | 'WHITELISTED' | 'PENDING' | 'SAFE';
   isOfficial: boolean;
 }
 
@@ -68,7 +68,7 @@ export interface AppStoreThreat {
   isPublisherMismatch: boolean;
   suspiciousPermissions: string[];
   
-  status: 'FLAGGED' | 'INVESTIGATING' | 'TAKEDOWN_REQUESTED' | 'TAKEN_DOWN' | 'WHITELISTED';
+  status: 'FLAGGED' | 'INVESTIGATING' | 'TAKEDOWN_REQUESTED' | 'TAKEN_DOWN' | 'WHITELISTED' | 'PENDING' | 'SAFE';
   isOfficial: boolean;
 }
 

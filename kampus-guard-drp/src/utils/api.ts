@@ -41,6 +41,8 @@ export interface Finding {
   dns_records?: { A?: string; NS?: string };
   logo_similarity?: number;
   is_official: boolean;
+  matched_official?: string;
+  threat_reason?: string;
   detected_date: string;
   updated_date: string;
   takedown_notice?: string;
