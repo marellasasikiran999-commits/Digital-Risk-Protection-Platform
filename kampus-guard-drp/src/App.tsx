@@ -42,13 +42,8 @@ export function App() {
   const [isAuthResolving] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Cinematic Platform Intro Overlay State (session isolated)
-  const [isIntroActive, setIsIntroActive] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      return sessionStorage.getItem('drp_intro_seen') !== 'true';
-    }
-    return true;
-  });
+  // Cinematic Platform Intro Overlay State (Active on initial load)
+  const [isIntroActive, setIsIntroActive] = useState<boolean>(true);
 
   // Toast timer reference to eliminate racing conditions
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);

@@ -213,10 +213,19 @@ export const PlatformIntroLoader: React.FC<PlatformIntroLoaderProps> = ({ onComp
   return (
     <div
       id="drp-platform-intro-loader"
-      className={`fixed inset-0 z-[99999] bg-[#060b13] flex flex-col items-center justify-center overflow-hidden select-none transition-all duration-700 ease-out ${
+      className={`flex flex-col items-center justify-center overflow-hidden select-none transition-all duration-700 ease-out ${
         isExiting ? 'opacity-0 scale-105 pointer-events-none' : 'opacity-100 scale-100'
       }`}
       style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 99999999,
+        backgroundColor: '#060b13',
         backgroundImage: `
           radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.12) 0%, transparent 65%),
           radial-gradient(circle at 50% 70%, rgba(168, 85, 247, 0.10) 0%, transparent 70%),
