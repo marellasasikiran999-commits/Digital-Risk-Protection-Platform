@@ -1,0 +1,322 @@
+{
+  "metadata": {
+    "platform": "Digital Risk Protection Platform",
+    "schema_version": "3.2.0-realtime",
+    "exported_at": "2026-10-14T08:00:39Z",
+    "benchmark_compliance": "ByteXL Hackathon Specification"
+  },
+  "telemetry": {
+    "threat_detection_total": 23,
+    "suspicious_candidates": 6,
+    "critical": 0,
+    "high": 3,
+    "medium": 2,
+    "low": 1,
+    "social_findings": 3,
+    "app_findings": 2,
+    "domain_findings": 1,
+    "whitelisted_assets": 0,
+    "resolved": 5,
+    "security_score": 94.2,
+    "system_health": 99.8,
+    "mean_time_to_detect": "4.2 min",
+    "mean_time_to_response": "12.8 min"
+  },
+  "brand_baselines": {
+    "Digital Risk Protection Platform": {
+      "id": 1,
+      "brand_name": "Digital Risk Protection Platform",
+      "official_website": "www.digitalriskprotection.com",
+      "official_logo_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=150",
+      "official_developer": "Digital Risk Protection Platform",
+      "official_handles_json": "[\"@digitalriskprotection\", \"@drp_platform\", \"company/digital-risk-protection\"]",
+      "official_apps_json": "[\"com.drp.platform.official\", \"id.drp.platform.ios\"]",
+      "created_at": "2026-10-14 07:56:59",
+      "official_handles": [
+        "@digitalriskprotection",
+        "@drp_platform",
+        "company/digital-risk-protection"
+      ],
+      "official_apps": [
+        "com.drp.platform.official",
+        "id.drp.platform.ios"
+      ]
+    }
+  },
+  "threat_findings": {
+    "FIND-DRP-01": {
+      "id": "FIND-DRP-01",
+      "brand_name": "Digital Risk Protection Platform",
+      "finding_type": "social",
+      "title": "Instagram",
+      "candidate_name": "@drp_support24",
+      "category": "Social Media \u203a Fake Profile",
+      "asset": "@drp_support24",
+      "matched_official": "@digitalriskprotection",
+      "risk_score": 92,
+      "risk_level": "High",
+      "status": "Pending",
+      "confidence_score": 95,
+      "similarity_rate": 92,
+      "detection_source": "Instagram Crawler",
+      "threat_reason": "Similar name + extra word / No official logo",
+      "note": "Bio solicits account recovery fees and claims to be 24/7 technical helpdesk.",
+      "whois_info": null,
+      "developer": null,
+      "package_name": null,
+      "market_distribution_json": null,
+      "factors_json": "[{\"factor\": \"Affix Hijacking (_support24)\", \"score\": 35}, {\"factor\": \"No Verified Badge / Unofficial Avatar\", \"score\": 30}, {\"factor\": \"Soliciting Customer Credentials\", \"score\": 27}]",
+      "dns_records_json": null,
+      "logo_similarity": 64,
+      "is_official": 0,
+      "detected_date": "2 hours ago",
+      "updated_date": "2 hours ago",
+      "takedown_notice": "FORMAL ABUSE TAKEDOWN: Instagram profile @drp_support24 fraudulently impersonates Digital Risk Protection Platform.",
+      "factors": [
+        {
+          "factor": "Affix Hijacking (_support24)",
+          "score": 35
+        },
+        {
+          "factor": "No Verified Badge / Unofficial Avatar",
+          "score": 30
+        },
+        {
+          "factor": "Soliciting Customer Credentials",
+          "score": 27
+        }
+      ]
+    },
+    "FIND-DRP-02": {
+      "id": "FIND-DRP-02",
+      "brand_name": "Digital Risk Protection Platform",
+      "finding_type": "app",
+      "title": "Google Play",
+      "candidate_name": "DRP Rewards Wallet",
+      "category": "App Store \u203a Impersonator App",
+      "asset": "com.fake.drp.rewards",
+      "matched_official": "com.drp.platform.official",
+      "risk_score": 88,
+      "risk_level": "High",
+      "status": "Pending",
+      "confidence_score": 90,
+      "similarity_rate": 88,
+      "detection_source": "Google Play Store Monitor",
+      "threat_reason": "Similar name + different developer (Global Trend Mobile)",
+      "note": "Extracts SMS messages and contacts disguised as user rewards wallet.",
+      "whois_info": null,
+      "developer": "Global Trend Mobile",
+      "package_name": "com.fake.drp.rewards",
+      "market_distribution_json": "{\"Playstore\": 72, \"Appstore\": 0, \"ApkDl\": 15, \"Apkgp\": 8, \"Androidappsapk\": 5, \"Total\": 100}",
+      "factors_json": "[{\"factor\": \"Publisher Mismatch (Global Trend Mobile vs Digital Risk Protection Platform)\", \"score\": 40}, {\"factor\": \"Dangerous Permission (RECEIVE_SMS, READ_CONTACTS)\", \"score\": 28}, {\"factor\": \"Fake Rewards Scheme\", \"score\": 20}]",
+      "dns_records_json": null,
+      "logo_similarity": 82,
+      "is_official": 0,
+      "detected_date": "4 hours ago",
+      "updated_date": "4 hours ago",
+      "takedown_notice": "PLAYSTORE TAKEDOWN: com.fake.drp.rewards uses Digital Risk Protection Platform brand assets without authorization.",
+      "factors": [
+        {
+          "factor": "Publisher Mismatch (Global Trend Mobile vs Digital Risk Protection Platform)",
+          "score": 40
+        },
+        {
+          "factor": "Dangerous Permission (RECEIVE_SMS, READ_CONTACTS)",
+          "score": 28
+        },
+        {
+          "factor": "Fake Rewards Scheme",
+          "score": 20
+        }
+      ],
+      "market_distribution": {
+        "Playstore": 72,
+        "Appstore": 0,
+        "ApkDl": 15,
+        "Apkgp": 8,
+        "Androidappsapk": 5,
+        "Total": 100
+      }
+    },
+    "FIND-DRP-03": {
+      "id": "FIND-DRP-03",
+      "brand_name": "Digital Risk Protection Platform",
+      "finding_type": "social",
+      "title": "Twitter / X",
+      "candidate_name": "@drp_official_fake",
+      "category": "Social Media \u203a Typo/Spacing",
+      "asset": "@drp_official_fake",
+      "matched_official": "@digitalriskprotection",
+      "risk_score": 75,
+      "risk_level": "Medium",
+      "status": "In-progress",
+      "confidence_score": 88,
+      "similarity_rate": 75,
+      "detection_source": "Twitter/X Sentinel",
+      "threat_reason": "Spacing / Underscore variation (@drp_official_fake vs @digitalriskprotection)",
+      "note": "Monitors brand customer queries and tweets malicious phishing shortlinks.",
+      "whois_info": null,
+      "developer": null,
+      "package_name": null,
+      "market_distribution_json": null,
+      "factors_json": "[{\"factor\": \"Underscore variation impersonating verified handle\", \"score\": 32}, {\"factor\": \"Unverified handle soliciting direct messages\", \"score\": 25}, {\"factor\": \"Recent creation date (< 14 days)\", \"score\": 18}]",
+      "dns_records_json": null,
+      "logo_similarity": 78,
+      "is_official": 0,
+      "detected_date": "6 hours ago",
+      "updated_date": "6 hours ago",
+      "takedown_notice": "TWITTER TAKEDOWN: Handle @drp_official_fake impersonates official corporate entity.",
+      "factors": [
+        {
+          "factor": "Underscore variation impersonating verified handle",
+          "score": 32
+        },
+        {
+          "factor": "Unverified handle soliciting direct messages",
+          "score": 25
+        },
+        {
+          "factor": "Recent creation date (< 14 days)",
+          "score": 18
+        }
+      ]
+    },
+    "FIND-DRP-04": {
+      "id": "FIND-DRP-04",
+      "brand_name": "Digital Risk Protection Platform",
+      "finding_type": "app",
+      "title": "Apple App Store",
+      "candidate_name": "Digital Risk Protection Pro",
+      "category": "App Store \u203a Suspicious Clone",
+      "asset": "id.drp.pro.fake",
+      "matched_official": "id.drp.platform.ios",
+      "risk_score": 68,
+      "risk_level": "Medium",
+      "status": "Pending",
+      "confidence_score": 82,
+      "similarity_rate": 68,
+      "detection_source": "Apple App Store Sentinel",
+      "threat_reason": "Brand name affix (Pro) under individual developer license",
+      "note": "Requests camera and location without enterprise MDM certificate.",
+      "whois_info": null,
+      "developer": "DevApex Studio",
+      "package_name": "id.drp.pro.fake",
+      "market_distribution_json": "{\"Playstore\": 0, \"Appstore\": 85, \"ApkDl\": 10, \"Apkgp\": 5, \"Androidappsapk\": 0, \"Total\": 100}",
+      "factors_json": "[{\"factor\": \"Affix Pro with Developer DevApex Studio\", \"score\": 30}, {\"factor\": \"Missing corporate privacy agreement\", \"score\": 20}, {\"factor\": \"Identical app title prefix\", \"score\": 18}]",
+      "dns_records_json": null,
+      "logo_similarity": 71,
+      "is_official": 0,
+      "detected_date": "7 hours ago",
+      "updated_date": "7 hours ago",
+      "takedown_notice": "APPLE APP STORE REPORT: Unauthorized listing Digital Risk Protection Pro.",
+      "factors": [
+        {
+          "factor": "Affix Pro with Developer DevApex Studio",
+          "score": 30
+        },
+        {
+          "factor": "Missing corporate privacy agreement",
+          "score": 20
+        },
+        {
+          "factor": "Identical app title prefix",
+          "score": 18
+        }
+      ],
+      "market_distribution": {
+        "Playstore": 0,
+        "Appstore": 85,
+        "ApkDl": 10,
+        "Apkgp": 5,
+        "Androidappsapk": 0,
+        "Total": 100
+      }
+    },
+    "FIND-DRP-05": {
+      "id": "FIND-DRP-05",
+      "brand_name": "Digital Risk Protection Platform",
+      "finding_type": "social",
+      "title": "Facebook",
+      "candidate_name": "Digital Risk Protection Page",
+      "category": "Social Media \u203a Fake Fan Page",
+      "asset": "fb.com/digitalriskprotection.page",
+      "matched_official": "@digitalriskprotection",
+      "risk_score": 42,
+      "risk_level": "Low",
+      "status": "Pending",
+      "confidence_score": 75,
+      "similarity_rate": 42,
+      "detection_source": "Facebook Graph Monitor",
+      "threat_reason": "Unverified Facebook page with no business manager linkage",
+      "note": "Publishes duplicate press announcements without authorization.",
+      "whois_info": null,
+      "developer": null,
+      "package_name": null,
+      "market_distribution_json": null,
+      "factors_json": "[{\"factor\": \"Unverified Fan Page\", \"score\": 22}, {\"factor\": \"No official business verification\", \"score\": 20}]",
+      "dns_records_json": null,
+      "logo_similarity": 80,
+      "is_official": 0,
+      "detected_date": "8 hours ago",
+      "updated_date": "8 hours ago",
+      "takedown_notice": "META REPORT: fb.com/digitalriskprotection.page",
+      "factors": [
+        {
+          "factor": "Unverified Fan Page",
+          "score": 22
+        },
+        {
+          "factor": "No official business verification",
+          "score": 20
+        }
+      ]
+    },
+    "FIND-DRP-06": {
+      "id": "FIND-DRP-06",
+      "brand_name": "Digital Risk Protection Platform",
+      "finding_type": "domain",
+      "title": "Website Domain",
+      "candidate_name": "drp-platform-login-claim.com",
+      "category": "Domain \u203a Credential Harvester",
+      "asset": "drp-platform-login-claim.com",
+      "matched_official": "www.digitalriskprotection.com",
+      "risk_score": 94,
+      "risk_level": "High",
+      "status": "Pending",
+      "confidence_score": 98,
+      "similarity_rate": 94,
+      "detection_source": "Typosquatting DNS Engine",
+      "threat_reason": "Homoglyph / Typosquatting domain targeting users",
+      "note": "Phishing site mimicking corporate single-sign-on portal.",
+      "whois_info": "Registrar: Namecheap Inc. | Privacy Shield: Enabled | Created: 3 days ago",
+      "developer": null,
+      "package_name": null,
+      "market_distribution_json": null,
+      "factors_json": "[{\"factor\": \"Typosquatting Affix (-login-claim.com)\", \"score\": 40}, {\"factor\": \"Newly registered domain (< 7 days old)\", \"score\": 32}, {\"factor\": \"Host on anonymous Russian bulletproof IP\", \"score\": 22}]",
+      "dns_records_json": "{\"A\": \"185.220.***.5 (Host)\", \"NS\": \"ns1.bulletproofdns.org\"}",
+      "logo_similarity": 91,
+      "is_official": 0,
+      "detected_date": "1 hour ago",
+      "updated_date": "1 hour ago",
+      "takedown_notice": "REGISTRAR ABUSE REPORT: Immediate suspension requested for drp-platform-login-claim.com",
+      "factors": [
+        {
+          "factor": "Typosquatting Affix (-login-claim.com)",
+          "score": 40
+        },
+        {
+          "factor": "Newly registered domain (< 7 days old)",
+          "score": 32
+        },
+        {
+          "factor": "Host on anonymous Russian bulletproof IP",
+          "score": 22
+        }
+      ],
+      "dns_records": {
+        "A": "185.220.***.5 (Host)",
+        "NS": "ns1.bulletproofdns.org"
+      }
+    }
+  }
+}

@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { X, Shield, Lock, Mail, User, Key, CheckCircle, AlertCircle, LogOut } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Shield, Lock, Mail, CheckCircle, AlertCircle, LogOut } from 'lucide-react';
 import { 
   loginWithEmail, 
-  registerWithEmail, 
-  loginWithGoogle, 
   logoutUser, 
   getCurrentUserProfile, 
-  getFirebaseConfig, 
-  saveFirebaseConfig,
   type AuthUserProfile 
 } from '../utils/firebase';
+import { 
+  loginWithGoogleAuth, 
+  subscribeToAuthLifecycle 
+} from '../utils/authService';
 
 interface FirebaseAuthModalProps {
   isOpen: boolean;
@@ -18,16 +18,35 @@ interface FirebaseAuthModalProps {
 }
 
 export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, onClose, onAuthChange }) => {
-  const [activeTab, setActiveTab] = useState<'login' | 'register' | 'config' | 'profile'>('profile');
+  const [activeTab, setActiveTab] = useState<'login' | 'profile'>('profile');
   const [user, setUser] = useState<AuthUserProfile>(getCurrentUserProfile());
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [statusMessage, setStatusMessage] = useState<{ text: string; isError: boolean } | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Firebase Config State
-  const [config, setConfig] = useState(getFirebaseConfig());
+  // Decoupled ref for onAuthChange callback to isolate from parent render cycles
+  const onAuthChangeRef = useRef(onAuthChange);
+  useEffect(() => {
+    onAuthChangeRef.current = onAuthChange;
+  }, [onAuthChange]);
+
+  // Subscribe to Firebase Authentication Lifecycle once with clean teardown
+  useEffect(() => {
+    let isMounted = true;
+    const unsubscribe = subscribeToAuthLifecycle((authUser) => {
+      if (!isMounted) return;
+      if (authUser) {
+        setUser((prev) => (prev.uid === authUser.uid && prev.displayName === authUser.displayName ? prev : authUser));
+        onAuthChangeRef.current?.(authUser);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
+  }, []);
 
   if (!isOpen) return null;
 
@@ -48,34 +67,31 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
     }
   };
 
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setStatusMessage(null);
-    try {
-      const newUser = await registerWithEmail(email, password, name);
-      setUser(newUser);
-      onAuthChange(newUser);
-      setStatusMessage({ text: `Account created for ${newUser.displayName}!`, isError: false });
-      setActiveTab('profile');
-    } catch (err: any) {
-      setStatusMessage({ text: err.message || 'Registration failed', isError: true });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleGoogle = async () => {
     setLoading(true);
     setStatusMessage(null);
     try {
-      const gUser = await loginWithGoogle();
-      setUser(gUser);
-      onAuthChange(gUser);
-      setStatusMessage({ text: `Google Sign-In successful for ${gUser.displayName}!`, isError: false });
-      setActiveTab('profile');
+      const result = await loginWithGoogleAuth();
+      if (result.success && result.user) {
+        setUser(result.user);
+        onAuthChange(result.user);
+        setStatusMessage({ 
+          text: `Google Sign-In verified for ${result.user.displayName}! Directing to console...`, 
+          isError: false 
+        });
+        setActiveTab('profile');
+        // Smoothly dismiss modal and direct user into the main tracking interface
+        setTimeout(() => {
+          onClose();
+        }, 650);
+      } else if (result.cancelled) {
+        setStatusMessage({ text: result.error || 'Google Sign-in was cancelled.', isError: false });
+      } else {
+        setStatusMessage({ text: result.error || 'Google Authentication error.', isError: true });
+      }
     } catch (err: any) {
-      setStatusMessage({ text: err.message || 'Google Auth error', isError: true });
+      console.warn('[FirebaseAuthModal] Unexpected error during Google authentication:', err);
+      setStatusMessage({ text: err?.message || 'Authentication error', isError: true });
     } finally {
       setLoading(false);
     }
@@ -87,12 +103,6 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
     setUser(defaultUser);
     onAuthChange(defaultUser);
     setStatusMessage({ text: 'Session reset to default administrator.', isError: false });
-  };
-
-  const handleSaveConfig = (e: React.FormEvent) => {
-    e.preventDefault();
-    saveFirebaseConfig(config);
-    setStatusMessage({ text: 'Firebase Project Credentials saved! Active for all auth sessions.', isError: false });
   };
 
   return (
@@ -134,22 +144,6 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
             }`}
           >
             Sign In
-          </button>
-          <button
-            onClick={() => { setActiveTab('register'); setStatusMessage(null); }}
-            className={`px-3 py-2 rounded-t-lg transition-colors ${
-              activeTab === 'register' ? 'bg-[#111827] text-white border-t-2 border-orange-500' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            Register
-          </button>
-          <button
-            onClick={() => { setActiveTab('config'); setStatusMessage(null); }}
-            className={`px-3 py-2 rounded-t-lg transition-colors ${
-              activeTab === 'config' ? 'bg-[#111827] text-white border-t-2 border-orange-500' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            Firebase Config
           </button>
         </div>
 
@@ -277,110 +271,6 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
                   <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
                 </svg>
                 Sign In with Google
-              </button>
-            </form>
-          )}
-
-          {activeTab === 'register' && (
-            <form onSubmit={handleRegister} className="space-y-4">
-              <div>
-                <label className="text-xs text-gray-300 font-medium block mb-1.5">Full Name</label>
-                <div className="relative">
-                  <User className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Security Admin"
-                    className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-orange-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs text-gray-300 font-medium block mb-1.5">Work Email</label>
-                <div className="relative">
-                  <Mail className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="admin@digitalriskprotection.com"
-                    className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-orange-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs text-gray-300 font-medium block mb-1.5">Set Password</label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-gray-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••••••"
-                    className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-orange-500"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-semibold transition-colors shadow-lg shadow-orange-600/20 flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                {loading ? 'Creating account...' : 'Create Admin Account'}
-              </button>
-            </form>
-          )}
-
-          {activeTab === 'config' && (
-            <form onSubmit={handleSaveConfig} className="space-y-4">
-              <p className="text-xs text-gray-400">
-                You can configure your real Firebase Web App credentials below. If left as default, Digital Risk Protection Platform provides persistent local simulation for enterprise evaluation.
-              </p>
-
-              <div>
-                <label className="text-xs text-gray-300 font-medium block mb-1">API Key</label>
-                <input
-                  type="text"
-                  value={config.apiKey}
-                  onChange={(e) => setConfig({ ...config, apiKey: e.target.value })}
-                  className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white font-mono"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs text-gray-300 font-medium block mb-1">Project ID</label>
-                  <input
-                    type="text"
-                    value={config.projectId}
-                    onChange={(e) => setConfig({ ...config, projectId: e.target.value })}
-                    className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-300 font-medium block mb-1">Auth Domain</label>
-                  <input
-                    type="text"
-                    value={config.authDomain}
-                    onChange={(e) => setConfig({ ...config, authDomain: e.target.value })}
-                    className="w-full bg-[#0b0f19] border border-gray-700 rounded-xl px-3 py-2 text-xs text-white font-mono"
-                  />
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-xs font-semibold transition-colors flex items-center justify-center gap-2"
-              >
-                <Key className="w-4 h-4" />
-                Save Firebase Project Credentials
               </button>
             </form>
           )}

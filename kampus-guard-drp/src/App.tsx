@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { BrandShieldSidebar } from './components/BrandShieldSidebar';
 import { BrandShieldHeader } from './components/BrandShieldHeader';
 import { BrandHeroCard } from './components/BrandHeroCard';
@@ -25,6 +25,7 @@ import {
   updateBrandAPI,
   type Finding, type DashboardSummary, type Brand 
 } from './utils/api';
+import { realtimeDb } from './utils/realtimeDb';
 import { getCurrentUserProfile, type AuthUserProfile } from './utils/firebase';
 import { CheckCircle, RefreshCw, Key, Download } from 'lucide-react';
 import { PageHeader } from './components/ui/PageHeader';
@@ -33,9 +34,15 @@ export function App() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [searchQuery, setSearchQuery] = useState<string>('');
   
-  // Active User via Firebase
+  // Active User via Firebase with State Gating & Memoization
   const [currentUser, setCurrentUser] = useState<AuthUserProfile>(getCurrentUserProfile());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isAuthResolving, setIsAuthResolving] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Toast timer reference to eliminate racing conditions
+  const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const authenticatedUidRef = useRef<string | null>(null);
 
   // Brand and Findings Data
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -47,17 +54,39 @@ export function App() {
   const [isScanningAll, setIsScanningAll] = useState(false);
   const [isScanningSocial, setIsScanningSocial] = useState(false);
   const [isScanningApp, setIsScanningApp] = useState(false);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Modals
   const [selectedFindingForEvidence, setSelectedFindingForEvidence] = useState<Finding | null>(null);
   const [isAddBrandOpen, setIsAddBrandOpen] = useState(false);
   const [isEditBrandOpen, setIsEditBrandOpen] = useState(false);
 
-  const showToast = (msg: string) => {
+  const showToast = useCallback((msg: string) => {
+    if (toastTimeoutRef.current) {
+      clearTimeout(toastTimeoutRef.current);
+    }
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3500);
-  };
+    toastTimeoutRef.current = setTimeout(() => {
+      setToastMessage(null);
+      toastTimeoutRef.current = null;
+    }, 3500);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Stabilized authentication lifecycle handler decoupled from parent render cycles
+  const handleAuthChange = useCallback((user: AuthUserProfile) => {
+    setCurrentUser(user);
+    if (user && user.uid && authenticatedUidRef.current !== user.uid) {
+      authenticatedUidRef.current = user.uid;
+      showToast(`Logged in as ${user.displayName}`);
+    }
+  }, [showToast]);
 
   // Load Data from SQLite backend
   const loadData = async () => {
@@ -83,7 +112,27 @@ export function App() {
   };
 
   useEffect(() => {
+    realtimeDb.setCurrentBrand(currentBrandName);
     loadData();
+
+    // Active real-time database stream listeners
+    const unsubTelemetry = realtimeDb.subscribeToTelemetry((newSummary) => {
+      setSummary(newSummary);
+    });
+
+    const unsubFindings = realtimeDb.subscribeToFindings((newFindings) => {
+      setFindings(newFindings);
+    });
+
+    const unsubBrands = realtimeDb.subscribeToBrands((newBrands) => {
+      setBrands(newBrands);
+    });
+
+    return () => {
+      unsubTelemetry();
+      unsubFindings();
+      unsubBrands();
+    };
   }, [currentBrandName]);
 
   const activeBrandObj = brands.find(b => b.brand_name === currentBrandName) || (brands[0] ?? null);
@@ -160,15 +209,21 @@ export function App() {
     }
   };
 
+  // Decoupled memoization of toast notification badge to prevent rapid DOM flickering
+  const toastNotificationBadge = useMemo(() => {
+    if (isAuthResolving || !toastMessage) return null;
+    return (
+      <div className="fixed bottom-6 right-6 z-50 bg-[#121c32] border border-blue-500/40 text-blue-300 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-xs animate-bounce font-medium">
+        <CheckCircle className="w-4 h-4 text-blue-400 shrink-0" />
+        <span>{toastMessage}</span>
+      </div>
+    );
+  }, [isAuthResolving, toastMessage]);
+
   return (
     <div className="min-h-screen bg-[var(--bg-core)] text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white noise-overlay transition-colors duration-500">
       {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#121c32] border border-blue-500/40 text-blue-300 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-xs animate-bounce font-medium">
-          <CheckCircle className="w-4 h-4 text-blue-400 shrink-0" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
+      {toastNotificationBadge}
 
       {/* Digital Risk Protection Platform Left Navigation Sidebar */}
       <BrandShieldSidebar
@@ -509,10 +564,7 @@ export function App() {
       <FirebaseAuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        onAuthChange={(user) => {
-          setCurrentUser(user);
-          showToast(`Logged in as ${user.displayName}`);
-        }}
+        onAuthChange={handleAuthChange}
       />
     </div>
   );

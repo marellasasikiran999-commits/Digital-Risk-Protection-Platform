@@ -3,6 +3,8 @@
  * with full zero-fail cloud fallback for standalone Vercel deployments.
  */
 
+import { realtimeDb } from './realtimeDb';
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
@@ -283,8 +285,8 @@ const DEFAULT_FINDINGS: Finding[] = [
   }
 ];
 
-// Local state cache for offline/cloud resilience
-function getLocalFindings(): Finding[] {
+// Local state cache helpers for offline/cloud resilience
+export function getLocalFindings(): Finding[] {
   try {
     const raw = localStorage.getItem('drp_platform_findings_v1');
     if (raw) return JSON.parse(raw);
@@ -292,13 +294,13 @@ function getLocalFindings(): Finding[] {
   return DEFAULT_FINDINGS;
 }
 
-function saveLocalFindings(items: Finding[]) {
+export function saveLocalFindings(items: Finding[]) {
   try {
     localStorage.setItem('drp_platform_findings_v1', JSON.stringify(items));
   } catch {}
 }
 
-function getLocalBrands(): Brand[] {
+export function getLocalBrands(): Brand[] {
   try {
     const raw = localStorage.getItem('drp_platform_brands_v1');
     if (raw) return JSON.parse(raw);
@@ -306,7 +308,7 @@ function getLocalBrands(): Brand[] {
   return DEFAULT_BRANDS;
 }
 
-function saveLocalBrands(items: Brand[]) {
+export function saveLocalBrands(items: Brand[]) {
   try {
     localStorage.setItem('drp_platform_brands_v1', JSON.stringify(items));
   } catch {}
@@ -319,11 +321,14 @@ export async function getBrandsAPI(): Promise<Brand[]> {
       const res = await fetch(`${API_BASE_URL}/api/brands`);
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) return data;
+        if (Array.isArray(data) && data.length > 0) {
+          data.forEach(b => realtimeDb.applyNewBrand(b));
+          return data;
+        }
       }
     } catch {}
   }
-  return getLocalBrands();
+  return realtimeDb.getBrands();
 }
 
 // 2. Create Brand (Persistence)
@@ -335,6 +340,14 @@ export async function createBrandAPI(brand: {
   official_handles: string[];
   official_apps: string[];
 }): Promise<any> {
+  const newBrand: Brand = {
+    ...brand,
+    id: Date.now(),
+    created_at: new Date().toISOString()
+  };
+
+  realtimeDb.applyNewBrand(newBrand);
+
   if (API_BASE_URL) {
     try {
       const res = await fetch(`${API_BASE_URL}/api/brands`, {
@@ -346,19 +359,20 @@ export async function createBrandAPI(brand: {
     } catch {}
   }
 
-  const existing = getLocalBrands();
-  const newBrand: Brand = {
-    ...brand,
-    id: Date.now(),
-    created_at: new Date().toISOString()
-  };
-  const updated = [...existing, newBrand];
-  saveLocalBrands(updated);
   return newBrand;
 }
 
 // 2c. Create Custom Finding (Blacklist / Manual Triage)
 export async function createFindingAPI(finding: any): Promise<any> {
+  const newFinding: Finding = {
+    ...finding,
+    id: finding.id || `MANUAL-${Date.now()}`,
+    detected_date: 'Just now',
+    updated_date: 'Just now'
+  };
+
+  realtimeDb.applyNewFinding(newFinding);
+
   if (API_BASE_URL) {
     try {
       const res = await fetch(`${API_BASE_URL}/api/findings/create`, {
@@ -370,14 +384,6 @@ export async function createFindingAPI(finding: any): Promise<any> {
     } catch {}
   }
 
-  const existing = getLocalFindings();
-  const newFinding: Finding = {
-    ...finding,
-    id: finding.id || `MANUAL-${Date.now()}`,
-    detected_date: 'Just now',
-    updated_date: 'Just now'
-  };
-  saveLocalFindings([newFinding, ...existing]);
   return { status: 'created', id: newFinding.id };
 }
 
@@ -414,14 +420,17 @@ export async function getFindingsAPI(params: {
       if (params.search && params.search.trim()) query.set('search', params.search.trim());
 
       const res = await fetch(`${API_BASE_URL}/api/findings?${query.toString()}`);
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          data.forEach(f => realtimeDb.applyNewFinding(f));
+          return data;
+        }
+      }
     } catch {}
   }
 
-  let items = getLocalFindings();
-  if (params.brand && params.brand !== 'all') {
-    items = items.filter(f => f.brand_name.toLowerCase() === params.brand?.toLowerCase());
-  }
+  let items = realtimeDb.getFindingsForBrand(params.brand || 'Digital Risk Protection Platform');
   if (params.finding_type && params.finding_type !== 'all') {
     items = items.filter(f => f.finding_type === params.finding_type);
   }
@@ -444,6 +453,8 @@ export async function getFindingsAPI(params: {
 
 // 4. Update Status (Mark as Legitimate, Takedown, In-progress)
 export async function updateFindingStatusAPI(id: string, status: string): Promise<any> {
+  realtimeDb.applyStatusUpdate(id, status);
+
   if (API_BASE_URL) {
     try {
       const res = await fetch(`${API_BASE_URL}/api/findings/${id}`, {
@@ -455,9 +466,6 @@ export async function updateFindingStatusAPI(id: string, status: string): Promis
     } catch {}
   }
 
-  const items = getLocalFindings();
-  const updated = items.map(f => (f.id === id ? { ...f, status: status as any, updated_date: 'Just now' } : f));
-  saveLocalFindings(updated);
   return { success: true, id, status };
 }
 
@@ -526,6 +534,8 @@ export async function updateBrandAPI(brandId: number, brand: {
   official_handles: string[];
   official_apps: string[];
 }): Promise<any> {
+  realtimeDb.applyBrandUpdate(brandId, brand);
+
   if (API_BASE_URL) {
     try {
       const res = await fetch(`${API_BASE_URL}/api/brands/${brandId}`, {
@@ -537,8 +547,6 @@ export async function updateBrandAPI(brandId: number, brand: {
     } catch {}
   }
 
-  const updated = getLocalBrands().map(b => (b.id === brandId ? { ...b, ...brand } : b));
-  saveLocalBrands(updated);
   return { status: 'updated', id: brandId, brand_name: brand.brand_name };
 }
 
@@ -572,36 +580,19 @@ export async function getDashboardSummaryAPI(brand?: string): Promise<DashboardS
     try {
       const query = brand && brand !== 'all' ? `?brand=${encodeURIComponent(brand)}` : '';
       const res = await fetch(`${API_BASE_URL}/api/dashboard/summary${query}`);
-      if (res.ok) return await res.json();
+      if (res.ok) {
+        const data = await res.json();
+        if (data && typeof data.suspicious_candidates === 'number') {
+          return data;
+        }
+      }
     } catch {}
   }
 
-  const allFindings = getLocalFindings();
-  const filtered = brand && brand !== 'all' ? allFindings.filter(f => f.brand_name === brand) : allFindings;
-
-  return {
-    threat_detection_total: 23,
-    security_events: 1420,
-    system_health: 99.8,
-    security_score: 94.2,
-    all_threats: filtered.length,
-    critical: filtered.filter(f => f.risk_level === 'Critical').length,
-    high: filtered.filter(f => f.risk_level === 'High').length,
-    medium: filtered.filter(f => f.risk_level === 'Medium').length,
-    low: filtered.filter(f => f.risk_level === 'Low').length,
-    suspicious_candidates: filtered.length,
-    social_findings: filtered.filter(f => f.finding_type === 'social').length,
-    app_findings: filtered.filter(f => f.finding_type === 'app').length,
-    domain_findings: filtered.filter(f => f.finding_type === 'domain').length,
-    total_brands: getLocalBrands().length,
-    mean_time_to_detect: '14.2 min',
-    mean_time_to_response: '28.4 min',
-    recent_incidents: [
-      { title: 'Cyrillic homoglyph domain registered (drp-platform-login-claim.com)', server: 'Typosquatting DNS Engine', time: '1 hr ago', level: 'High' },
-      { title: 'Fake Instagram profile impersonating Digital Risk Protection Platform (@drp_support24)', server: 'Social Sentinel', time: '2 hrs ago', level: 'High' },
-      { title: 'Trojanized APK detected on Google Play mirror (DRP Rewards Wallet)', server: 'APK Sandbox', time: '4 hrs ago', level: 'High' }
-    ]
-  };
+  if (brand) {
+    realtimeDb.setCurrentBrand(brand);
+  }
+  return realtimeDb.getSummary();
 }
 
 // 8. CSV Export URL

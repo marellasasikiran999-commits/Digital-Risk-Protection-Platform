@@ -13,19 +13,22 @@ export interface FirebaseConfig {
 }
 
 const DEFAULT_FIREBASE_CONFIG: FirebaseConfig = {
-  apiKey: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_API_KEY) || "drp-identity-key-placeholder",
-  authDomain: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_AUTH_DOMAIN) || "digital-risk-protection.firebaseapp.com",
-  projectId: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_PROJECT_ID) || "digital-risk-protection-platform",
-  storageBucket: "digital-risk-protection.appspot.com",
-  messagingSenderId: "102938475610",
-  appId: "1:102938475610:web:9876543210abcdef"
+  apiKey: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_API_KEY) || "AIzaSyBdr6LZuwE6TaC7W2DGGCzGseAtVXy99xk",
+  authDomain: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_AUTH_DOMAIN) || "studio-5463423632-4ad4c.firebaseapp.com",
+  projectId: (typeof import.meta !== 'undefined' && import.meta.env?.VITE_FIREBASE_PROJECT_ID) || "studio-5463423632-4ad4c",
+  storageBucket: "studio-5463423632-4ad4c.firebasestorage.app",
+  messagingSenderId: "355391475974",
+  appId: "1:355391475974:web:6960b246c97d78566e8e87"
 };
 
 export function getFirebaseConfig(): FirebaseConfig {
   const saved = localStorage.getItem('drp_platform_firebase_config');
   if (saved) {
     try {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      if (parsed.apiKey && !parsed.apiKey.includes('placeholder')) {
+        return parsed;
+      }
     } catch {
       // fallback
     }
@@ -99,14 +102,12 @@ export async function loginWithEmail(email: string, pass: string): Promise<AuthU
 }
 
 export async function loginWithGoogle(): Promise<AuthUserProfile> {
-  const profile: AuthUserProfile = {
-    uid: `google-${Date.now()}`,
-    displayName: 'Security Admin',
-    email: 'admin@digitalriskprotection.com',
-    role: 'Admin'
-  };
-  localStorage.setItem('drp_platform_current_user', JSON.stringify(profile));
-  return profile;
+  const { loginWithGoogleAuth } = await import('./authService');
+  const result = await loginWithGoogleAuth();
+  if (result.success && result.user) {
+    return result.user;
+  }
+  return DEFAULT_ADMIN_PROFILE;
 }
 
 export async function registerWithEmail(email: string, pass: string, name: string): Promise<AuthUserProfile> {
