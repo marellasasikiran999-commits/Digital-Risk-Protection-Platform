@@ -39,7 +39,7 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
     },
     {
       title: 'Suspicious Candidates',
-      count: summary?.suspicious_candidates ? String(summary.suspicious_candidates) : '23',
+      count: summary?.suspicious_candidates !== undefined ? String(summary.suspicious_candidates) : '23',
       growth: '+28%',
       isPositive: false,
       subtitle: 'Social: 16 | Apps: 7',
@@ -61,7 +61,9 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
     },
     {
       title: 'Critical Severity',
-      count: summary?.high ? String(summary.high) : '8',
+      count: (summary?.critical !== undefined && summary.critical > 0)
+        ? String(summary.critical)
+        : (summary?.high !== undefined ? String(summary.high) : '8'),
       growth: 'Needs Action',
       isPositive: false,
       subtitle: 'Immediate takedown required',
@@ -82,7 +84,7 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
     },
     {
       title: 'Social Media Findings',
-      count: summary?.social_findings ? String(summary.social_findings) : '15',
+      count: summary?.social_findings !== undefined ? String(summary.social_findings) : '15',
       growth: '5 Resolved',
       isPositive: true,
       subtitle: 'Homoglyph spoof alerts',
