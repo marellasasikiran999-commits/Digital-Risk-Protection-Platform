@@ -43,7 +43,7 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
   ];
 
   return (
-    <aside className="w-60 bg-[var(--bg-sidebar)]/95 border-r border-[var(--border-color)] flex flex-col justify-between p-3 shrink-0 select-none z-30 min-h-screen backdrop-blur-2xl transition-colors duration-300">
+    <aside className="w-60 bg-[var(--bg-sidebar)] border-r border-[var(--border-color)] flex flex-col justify-between p-3 shrink-0 select-none z-30 min-h-screen backdrop-blur-2xl transition-colors duration-300 shadow-[4px_0_24px_rgba(0,0,0,0.35)]">
       <div className="space-y-5">
         {/* Logo Header */}
         <div className="flex items-center gap-3 px-2 pt-2 pb-1">
@@ -64,7 +64,7 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
         </div>
 
         {/* Security Mesh badge */}
-        <div className="mx-1 px-3 py-2 rounded-xl bg-[var(--bg-input)] border border-[var(--border-color)] flex items-center gap-2 transition-colors">
+        <div className="mx-1 px-3 py-2 rounded-xl glass-subcard flex items-center gap-2 transition-colors">
           <ShieldCheck className="w-3.5 h-3.5 theme-accent-text shrink-0" />
           <div>
             <span className="text-[9px] font-bold text-white block font-mono uppercase tracking-wider">Enterprise SOC Edition</span>
@@ -116,10 +116,10 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
       </div>
 
       {/* Bottom Status Card */}
-      <div className="p-3 rounded-2xl bg-gradient-to-b from-[#0d1829] to-[#090f1d] border border-blue-900/25 relative overflow-hidden shadow-xl mt-4">
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent" />
+      <div className="p-3.5 rounded-2xl glass-subcard relative overflow-hidden shadow-xl mt-4">
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
         <div className="flex items-center justify-between mb-2">
-          <div className="w-7 h-7 rounded-lg bg-blue-500/12 border border-blue-500/20 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-lg bg-blue-500/15 border border-blue-400/30 flex items-center justify-center shadow-[0_0_10px_rgba(59,130,246,0.25)]">
             <Shield className="w-3.5 h-3.5 text-cyan-400" />
           </div>
           <span className="text-[9px] font-mono text-emerald-400 flex items-center gap-1 font-bold">
@@ -128,7 +128,7 @@ export const BrandShieldSidebar: React.FC<BrandShieldSidebarProps> = ({
           </span>
         </div>
         <h4 className="text-[11px] font-bold text-white leading-tight">Perimeter Surveillance</h4>
-        <p className="text-[10px] text-slate-500 mt-1 leading-snug font-sans">Continuous monitoring across all registered brand surfaces.</p>
+        <p className="text-[10px] text-slate-400 mt-1 leading-snug font-sans">Continuous monitoring across all registered brand surfaces.</p>
       </div>
     </aside>
   );

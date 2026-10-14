@@ -52,7 +52,7 @@ export const BottomAnalyticsRow: React.FC<BottomAnalyticsRowProps> = ({ summary,
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* 1. Risk Distribution Donut Chart */}
         <ScrollReveal direction="up" delay={0} distance={20} duration={650}>
-          <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3 group glass-panel-hover h-full flex flex-col justify-between">
+          <div className="glass-panel rounded-2xl p-5 shadow-2xl space-y-3 group glass-panel-hover h-full flex flex-col justify-between card-glow-top">
             <h3 className="text-sm font-bold text-white group-hover:translate-x-1 transition-transform">
               Risk Distribution
             </h3>
@@ -60,33 +60,33 @@ export const BottomAnalyticsRow: React.FC<BottomAnalyticsRowProps> = ({ summary,
             <div className="flex items-center gap-4 pt-1">
               <div className="relative w-28 h-28 shrink-0">
                 <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="38" stroke="#1e293b" strokeWidth="12" fill="transparent" />
-                  <circle cx="50" cy="50" r="38" stroke="#f43f5e" strokeWidth="12" fill="transparent" strokeDasharray={`${(critPercent / 100) * 238} 238`} strokeDashoffset="0" />
-                  <circle cx="50" cy="50" r="38" stroke="#f97316" strokeWidth="12" fill="transparent" strokeDasharray={`${(highPercent / 100) * 238} 238`} strokeDashoffset={`-${(critPercent / 100) * 238}`} />
-                  <circle cx="50" cy="50" r="38" stroke="#fbbf24" strokeWidth="12" fill="transparent" strokeDasharray={`${(medPercent / 100) * 238} 238`} strokeDashoffset={`-${((critPercent + highPercent) / 100) * 238}`} />
-                  <circle cx="50" cy="50" r="38" stroke="#10b981" strokeWidth="12" fill="transparent" strokeDasharray={`${(lowPercent / 100) * 238} 238`} strokeDashoffset={`-${((critPercent + highPercent + medPercent) / 100) * 238}`} />
+                  <circle cx="50" cy="50" r="38" stroke="rgba(255,255,255,0.06)" strokeWidth="12" fill="transparent" />
+                  <circle cx="50" cy="50" r="38" stroke="#f43f5e" strokeWidth="12" fill="transparent" strokeDasharray={`${(critPercent / 100) * 238} 238`} strokeDashoffset="0" className="chart-glow-rose" />
+                  <circle cx="50" cy="50" r="38" stroke="#f97316" strokeWidth="12" fill="transparent" strokeDasharray={`${(highPercent / 100) * 238} 238`} strokeDashoffset={`-${(critPercent / 100) * 238}`} className="chart-glow-amber" />
+                  <circle cx="50" cy="50" r="38" stroke="#fbbf24" strokeWidth="12" fill="transparent" strokeDasharray={`${(medPercent / 100) * 238} 238`} strokeDashoffset={`-${((critPercent + highPercent) / 100) * 238}`} className="chart-glow-amber" />
+                  <circle cx="50" cy="50" r="38" stroke="#10b981" strokeWidth="12" fill="transparent" strokeDasharray={`${(lowPercent / 100) * 238} 238`} strokeDashoffset={`-${((critPercent + highPercent + medPercent) / 100) * 238}`} className="chart-glow-emerald" />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-xl font-black text-white font-cyber">{totalFindings}</span>
+                  <span className="text-xl font-black text-white font-cyber metric-glow">{totalFindings}</span>
                   <span className="text-[9px] text-slate-400 font-mono">Findings</span>
                 </div>
               </div>
 
               <div className="space-y-1 text-[11px] font-mono flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" /> Critical</span>
+                  <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse shadow-[0_0_8px_rgba(244,63,94,0.6)]" /> Critical</span>
                   <strong className="text-white">{criticalCount} ({critPercent}%)</strong>
                 </div>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-orange-500" /> High</span>
+                  <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]" /> High</span>
                   <strong className="text-white">{highCount} ({highPercent}%)</strong>
                 </div>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-amber-400" /> Medium</span>
+                  <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]" /> Medium</span>
                   <strong className="text-white">{mediumCount} ({medPercent}%)</strong>
                 </div>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Low</span>
+                  <span className="flex items-center gap-1.5 text-slate-300"><span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.6)]" /> Low</span>
                   <strong className="text-white">{lowCount} ({lowPercent}%)</strong>
                 </div>
               </div>
@@ -96,16 +96,16 @@ export const BottomAnalyticsRow: React.FC<BottomAnalyticsRowProps> = ({ summary,
 
         {/* 2. Top Risk Candidates */}
         <ScrollReveal direction="up" delay={60} distance={20} duration={650}>
-          <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3 group glass-panel-hover h-full">
+          <div className="glass-panel rounded-2xl p-5 shadow-2xl space-y-3 group glass-panel-hover h-full card-glow-top">
             <h3 className="text-sm font-bold text-white group-hover:translate-x-1 transition-transform">
               Top Risk Candidates
             </h3>
 
             <div className="space-y-2 text-xs">
               {topRiskItems.map((item) => (
-                <div key={item.rank} className="flex items-center justify-between p-1.5 rounded-lg bg-[#141e33] border border-slate-800/80 hover:border-slate-700 transition-colors">
+                <div key={item.rank} className="flex items-center justify-between p-2 rounded-xl glass-subcard hover:border-cyan-400/40 transition-colors">
                   <div className="flex items-center gap-2 truncate">
-                    <span className="w-4 h-4 rounded-full bg-slate-800 text-slate-400 font-mono text-[10px] flex items-center justify-center shrink-0">
+                    <span className="w-4 h-4 rounded-full bg-blue-500/15 border border-blue-400/30 text-blue-300 font-mono text-[10px] flex items-center justify-center shrink-0">
                       {item.rank}
                     </span>
                     <span className="text-white font-semibold truncate text-[11px]">{item.name}</span>
@@ -121,7 +121,7 @@ export const BottomAnalyticsRow: React.FC<BottomAnalyticsRowProps> = ({ summary,
 
         {/* 3. Recent Activity Feed */}
         <ScrollReveal direction="up" delay={120} distance={20} duration={650}>
-          <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3 group glass-panel-hover h-full">
+          <div className="glass-panel rounded-2xl p-5 shadow-2xl space-y-3 group glass-panel-hover h-full card-glow-top">
             <h3 className="text-sm font-bold text-white group-hover:translate-x-1 transition-transform">
               Recent Activity
             </h3>
@@ -135,11 +135,11 @@ export const BottomAnalyticsRow: React.FC<BottomAnalyticsRowProps> = ({ summary,
               ].map((act, i) => {
                 const Icon = act.icon;
                 return (
-                  <div key={i} className="flex items-start gap-2.5 p-1.5 rounded-lg bg-[#141e33]/60 hover:bg-[#141e33] transition-colors">
+                  <div key={i} className="flex items-start gap-2.5 p-2 rounded-xl glass-subcard hover:border-purple-400/40 transition-colors">
                     <Icon className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${act.color}`} />
                     <div className="min-w-0">
-                      <span className="text-slate-200 block truncate text-[11px]">{act.text}</span>
-                      <span className="text-[10px] text-slate-500 font-mono block">{act.time}</span>
+                      <span className="text-slate-200 block truncate text-[11px] font-medium">{act.text}</span>
+                      <span className="text-[10px] text-slate-400 font-mono block">{act.time}</span>
                     </div>
                   </div>
                 );
@@ -150,10 +150,10 @@ export const BottomAnalyticsRow: React.FC<BottomAnalyticsRowProps> = ({ summary,
 
         {/* 4. Pro Tip Card */}
         <ScrollReveal direction="up" delay={180} distance={20} duration={650}>
-          <div className="bg-gradient-to-br from-[#121c33] via-[#0f172a] to-[#0a0f1d] border border-blue-500/30 rounded-2xl p-5 shadow-xl flex flex-col justify-between space-y-3 group glass-panel-hover h-full card-glow-top">
+          <div className="glass-panel rounded-2xl p-5 shadow-2xl flex flex-col justify-between space-y-3 group glass-panel-hover h-full card-glow-top bg-gradient-to-br from-indigo-950/40 via-[var(--bg-card)] to-purple-950/40 border-indigo-500/30">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-xl bg-blue-500/20 border border-blue-500/40 flex items-center justify-center">
-                <Shield className="w-4 h-4 text-blue-400" />
+              <div className="w-8 h-8 rounded-xl bg-blue-500/20 border border-blue-400/40 flex items-center justify-center shadow-[0_0_12px_rgba(59,130,246,0.3)]">
+                <Shield className="w-4 h-4 text-cyan-400" />
               </div>
               <span className="text-xs font-bold text-blue-300 font-mono">PRO TIP // DEFENSE</span>
             </div>

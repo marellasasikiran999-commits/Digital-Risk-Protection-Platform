@@ -112,8 +112,8 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
   ];
 
   const initials = currentUser.displayName 
-    ? currentUser.displayName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() 
-    : 'SA';
+    ? currentUser.displayName.trim().split(/\s+/).map(n => n[0]).join('').slice(0, 2).toUpperCase() 
+    : (currentUser.email ? currentUser.email.slice(0, 2).toUpperCase() : 'SA');
 
   return (
     <header className="h-16 bg-[var(--bg-header)]/90 border-b border-[var(--border-color)] px-6 flex items-center justify-between gap-4 sticky top-0 z-40 backdrop-blur-2xl transition-colors duration-300">
@@ -149,7 +149,7 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
         <div className="relative" ref={themeMenuRef}>
           <button
             onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
-            className="p-2.5 text-slate-300 hover:text-white rounded-xl bg-[var(--bg-input)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-color)] hover:border-[var(--border-highlight)] transition-all shadow-sm flex items-center gap-2 text-xs font-mono"
+            className="p-2.5 text-slate-300 hover:text-white rounded-xl glass-btn border border-[var(--border-color)] hover:border-[var(--border-highlight)] transition-all shadow-sm flex items-center gap-2 text-xs font-mono"
             title="Theme Palette Presets"
           >
             <Palette className="w-4 h-4 text-cyan-400" />
@@ -157,7 +157,7 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
           </button>
 
           {isThemeMenuOpen && (
-            <div className="absolute right-0 mt-2 w-56 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-xl shadow-2xl p-2 z-50 space-y-1 font-sans backdrop-blur-2xl">
+            <div className="absolute right-0 mt-2 w-56 glass-panel border border-white/10 rounded-xl shadow-2xl p-2 z-50 space-y-1 font-sans backdrop-blur-2xl">
               <span className="text-[10px] font-mono text-slate-400 px-2 py-1 block uppercase tracking-wider">
                 Cyber Defense Themes
               </span>
@@ -192,7 +192,7 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
         <div className="relative" ref={notifMenuRef}>
           <button 
             onClick={() => setIsNotifMenuOpen(!isNotifMenuOpen)}
-            className="p-2.5 text-slate-400 hover:text-white rounded-xl bg-[var(--bg-input)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-color)] hover:border-slate-700 transition-all shadow-sm relative"
+            className="p-2.5 text-slate-400 hover:text-white rounded-xl glass-btn border border-[var(--border-color)] hover:border-slate-700 transition-all shadow-sm relative"
             title="Active Intelligence Alerts"
           >
             <Bell className="w-4 h-4" />
@@ -204,7 +204,7 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
           </button>
 
           {isNotifMenuOpen && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-2xl font-sans">
+            <div className="absolute right-0 mt-2 w-80 sm:w-96 glass-panel border border-white/10 rounded-2xl shadow-2xl z-50 overflow-hidden backdrop-blur-2xl font-sans">
               <div className="p-3.5 border-b border-[var(--border-color)] flex items-center justify-between bg-white/[0.02]">
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-4 h-4 theme-accent-text" />
@@ -281,13 +281,22 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
         {/* User Profile Card */}
         <button
           onClick={onOpenAuthModal}
-          className="flex items-center gap-3 p-1.5 pr-3 rounded-xl bg-[var(--bg-input)] hover:bg-[var(--bg-card-hover)] border border-[var(--border-color)] hover:border-[var(--border-highlight)] transition-all text-left shadow-sm group"
+          className="flex items-center gap-3 p-1.5 pr-3 rounded-xl glass-btn border border-[var(--border-color)] hover:border-[var(--border-highlight)] transition-all text-left shadow-sm group"
           title="Firebase Account & Team Role"
         >
           <div className="relative">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-500 p-[1.5px] shadow-md shadow-blue-500/20">
-              <div className="w-full h-full bg-[#0d1527] rounded-[6px] flex items-center justify-center font-black text-xs text-blue-300 font-cyber">
-                {initials}
+              <div className="w-full h-full bg-[#0d1527] rounded-[6px] flex items-center justify-center font-black text-xs text-blue-300 font-cyber overflow-hidden relative">
+                <span className="select-none">{initials}</span>
+                {currentUser.photoURL && (
+                  <img 
+                    src={currentUser.photoURL} 
+                    alt="" 
+                    referrerPolicy="no-referrer"
+                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    className="absolute inset-0 w-full h-full object-cover rounded-[5px]" 
+                  />
+                )}
               </div>
             </div>
             <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-[#080d1a]"></span>
@@ -295,7 +304,7 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
 
           <div className="hidden sm:block">
             <span className="text-xs font-bold text-white block leading-tight group-hover:text-blue-300 transition-colors">
-              {currentUser.displayName || 'Security Admin'}
+              {currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Security Admin')}
             </span>
             <span className="text-[10px] text-slate-400 block leading-tight font-cyber">
               {currentUser.role || 'Admin'} • <span className="text-emerald-400">Online</span>

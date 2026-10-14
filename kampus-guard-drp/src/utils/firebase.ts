@@ -50,11 +50,11 @@ export interface AuthUserProfile {
 }
 
 export const DEFAULT_ADMIN_PROFILE: AuthUserProfile = {
-  uid: 'admin-sec-01',
-  displayName: 'Security Admin',
-  email: 'admin@digitalriskprotection.com',
+  uid: 'admin-sasi-kiran',
+  displayName: 'Sasi Kiran',
+  email: 'marellasasikiran.999@gmail.com',
   role: 'Admin',
-  photoURL: ''
+  photoURL: '/sasi_avatar.png'
 };
 
 export async function loginWithEmail(email: string, pass: string): Promise<AuthUserProfile> {
@@ -154,6 +154,10 @@ export async function registerWithEmail(email: string, pass: string, name: strin
 
 export async function logoutUser(): Promise<void> {
   localStorage.removeItem('drp_platform_current_user');
+  try {
+    const { logoutUserAuth } = await import('./authService');
+    await logoutUserAuth();
+  } catch {}
 }
 
 export function getCurrentUserProfile(): AuthUserProfile {

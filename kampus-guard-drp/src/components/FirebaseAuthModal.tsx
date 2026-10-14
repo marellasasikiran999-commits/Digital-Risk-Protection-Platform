@@ -31,6 +31,12 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
     onAuthChangeRef.current = onAuthChange;
   }, [onAuthChange]);
 
+  useEffect(() => {
+    if (isOpen) {
+      setUser(getCurrentUserProfile());
+    }
+  }, [isOpen]);
+
   // Subscribe to Firebase Authentication Lifecycle once with clean teardown
   useEffect(() => {
     let isMounted = true;
@@ -106,10 +112,10 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-[#111827] border border-gray-800 rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md animate-fadeIn">
+      <div className="glass-panel card-glow-top border border-white/15 rounded-2xl w-full max-w-lg overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)] flex flex-col">
         {/* Header */}
-        <div className="p-5 border-b border-gray-800 flex items-center justify-between bg-[#0b0f19]">
+        <div className="p-5 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400">
               <Shield className="w-5 h-5" />
@@ -121,18 +127,18 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-white glass-btn transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex border-b border-gray-800 bg-[#0d1322] px-3 pt-2 gap-1 text-xs font-semibold">
+        <div className="flex border-b border-white/10 bg-black/20 px-3 pt-2 gap-1 text-xs font-semibold">
           <button
             onClick={() => { setActiveTab('profile'); setStatusMessage(null); }}
             className={`px-3 py-2 rounded-t-lg transition-colors ${
-              activeTab === 'profile' ? 'bg-[#111827] text-white border-t-2 border-orange-500' : 'text-gray-400 hover:text-gray-200'
+              activeTab === 'profile' ? 'bg-white/[0.08] text-white border-t-2 border-orange-500' : 'text-gray-400 hover:text-gray-200'
             }`}
           >
             Current Profile
@@ -140,7 +146,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
           <button
             onClick={() => { setActiveTab('login'); setStatusMessage(null); }}
             className={`px-3 py-2 rounded-t-lg transition-colors ${
-              activeTab === 'login' ? 'bg-[#111827] text-white border-t-2 border-orange-500' : 'text-gray-400 hover:text-gray-200'
+              activeTab === 'login' ? 'bg-white/[0.08] text-white border-t-2 border-orange-500' : 'text-gray-400 hover:text-gray-200'
             }`}
           >
             Sign In
@@ -163,13 +169,31 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({ isOpen, on
         <div className="p-6 overflow-y-auto max-h-[70vh]">
           {activeTab === 'profile' && (
             <div className="space-y-5">
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-[#0b0f19] border border-gray-800">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-orange-500/20">
-                  {user.displayName.split(' ').map(n => n[0]).join('') || 'RP'}
+              <div className="flex items-center gap-4 p-4 rounded-xl glass-subcard">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-orange-500/20 overflow-hidden relative">
+                  <span className="select-none font-bold">
+                    {(user.displayName || user.email || 'SK')
+                      .trim()
+                      .split(/\s+/)
+                      .filter(Boolean)
+                      .map(n => n[0])
+                      .join('')
+                      .slice(0, 2)
+                      .toUpperCase() || 'SK'}
+                  </span>
+                  {user.photoURL && (
+                    <img 
+                      src={user.photoURL} 
+                      alt="" 
+                      referrerPolicy="no-referrer"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      className="absolute inset-0 w-full h-full object-cover" 
+                    />
+                  )}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="text-base font-bold text-white">{user.displayName}</h4>
+                    <h4 className="text-base font-bold text-white">{user.displayName || (user.email ? user.email.split('@')[0] : 'User')}</h4>
                     <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                       {user.role || 'Admin'}
                     </span>

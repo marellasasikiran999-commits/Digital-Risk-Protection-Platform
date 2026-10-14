@@ -27,6 +27,8 @@ import {
 } from './utils/api';
 import { realtimeDb } from './utils/realtimeDb';
 import { getCurrentUserProfile, type AuthUserProfile } from './utils/firebase';
+import { subscribeToAuthLifecycle, initGoogleOneTap } from './utils/authService';
+import { GoogleOneTapPrompt } from './components/GoogleOneTapPrompt';
 import { CheckCircle, RefreshCw, Key, Download } from 'lucide-react';
 import { PageHeader } from './components/ui/PageHeader';
 
@@ -37,6 +39,7 @@ export function App() {
   // Active User via Firebase with State Gating & Memoization
   const [currentUser, setCurrentUser] = useState<AuthUserProfile>(getCurrentUserProfile());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isOneTapPromptOpen, setIsOneTapPromptOpen] = useState(true);
   const [isAuthResolving] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -87,6 +90,31 @@ export function App() {
       showToast(`Logged in as ${user.displayName}`);
     }
   }, [showToast]);
+
+  // Synchronize with authentic Firebase Auth stream at root level
+  useEffect(() => {
+    let isMounted = true;
+    const unsub = subscribeToAuthLifecycle((user) => {
+      if (!isMounted) return;
+      if (user) {
+        handleAuthChange(user);
+      }
+    });
+    return () => {
+      isMounted = false;
+      unsub();
+    };
+  }, [handleAuthChange]);
+
+  // Trigger Google One Tap prompt when entering the website
+  useEffect(() => {
+    const cancelOneTap = initGoogleOneTap((user) => {
+      handleAuthChange(user);
+    });
+    return () => {
+      cancelOneTap();
+    };
+  }, [handleAuthChange]);
 
   // Load Data from SQLite backend
   const loadData = async () => {
@@ -221,7 +249,15 @@ export function App() {
   }, [isAuthResolving, toastMessage]);
 
   return (
-    <div className="min-h-screen bg-[var(--bg-core)] text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white noise-overlay transition-colors duration-500">
+    <div className="min-h-screen bg-[var(--bg-core)] text-slate-100 flex font-sans selection:bg-blue-600 selection:text-white noise-overlay transition-colors duration-500 relative overflow-x-hidden">
+      {/* Ambient Glassmorphic Background Aura Blobs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute -top-[12%] left-[22%] w-[700px] h-[700px] rounded-full bg-blue-600/18 blur-[140px] pointer-events-none" />
+        <div className="absolute top-[25%] -right-[8%] w-[600px] h-[600px] rounded-full bg-cyan-500/14 blur-[130px] pointer-events-none" />
+        <div className="absolute bottom-[6%] left-[6%] w-[650px] h-[650px] rounded-full bg-purple-600/16 blur-[150px] pointer-events-none" />
+        <div className="absolute top-[65%] right-[28%] w-[520px] h-[520px] rounded-full bg-emerald-500/12 blur-[130px] pointer-events-none" />
+      </div>
+
       {/* Toast Notification */}
       {toastNotificationBadge}
 
@@ -565,6 +601,17 @@ export function App() {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
         onAuthChange={handleAuthChange}
+      />
+
+      {/* Google One Tap Sign-In Prompt on entering website */}
+      <GoogleOneTapPrompt
+        isOpen={isOneTapPromptOpen}
+        onClose={() => setIsOneTapPromptOpen(false)}
+        onSelectUser={(user) => {
+          handleAuthChange(user);
+          showToast(`Signed in as ${user.displayName}`);
+        }}
+        currentUser={currentUser}
       />
     </div>
   );

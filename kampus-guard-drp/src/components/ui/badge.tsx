@@ -8,19 +8,19 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "border-blue-500/30 bg-blue-500/10 text-blue-300 hover:bg-blue-500/20",
+          "border-blue-400/30 bg-blue-500/15 text-blue-300 backdrop-blur-md shadow-[0_0_12px_rgba(59,130,246,0.2)] hover:bg-blue-500/25",
         secondary:
-          "border-slate-700 bg-slate-800/80 text-slate-300 hover:bg-slate-800",
+          "border-white/10 bg-white/[0.06] text-slate-300 backdrop-blur-md shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:bg-white/[0.1]",
         destructive:
-          "border-rose-500/40 bg-rose-500/15 text-rose-300 hover:bg-rose-500/25",
+          "border-rose-400/30 bg-rose-500/15 text-rose-300 backdrop-blur-md shadow-[0_0_12px_rgba(244,63,94,0.25)] hover:bg-rose-500/25",
         outline:
-          "border-slate-700 text-slate-300",
+          "border-white/15 text-slate-300 backdrop-blur-md hover:bg-white/5",
         success:
-          "border-emerald-500/40 bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25",
+          "border-emerald-400/30 bg-emerald-500/15 text-emerald-300 backdrop-blur-md shadow-[0_0_12px_rgba(16,185,129,0.25)] hover:bg-emerald-500/25",
         warning:
-          "border-amber-500/40 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25",
+          "border-amber-400/30 bg-amber-500/15 text-amber-300 backdrop-blur-md shadow-[0_0_12px_rgba(245,158,11,0.25)] hover:bg-amber-500/25",
         cyber:
-          "border-cyan-500/40 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-cyan-200 shadow-sm shadow-cyan-500/20",
+          "border-cyan-400/30 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 text-cyan-200 backdrop-blur-md shadow-[0_0_12px_rgba(6,182,212,0.25)]",
       },
     },
     defaultVariants: {

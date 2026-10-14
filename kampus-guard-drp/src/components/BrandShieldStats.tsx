@@ -154,7 +154,7 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
           return (
             <ScrollReveal key={idx} delay={idx * 60} direction="up" distance={20} duration={650}>
               <Card
-                className="p-5 hover:border-slate-700/80 transition-all duration-300 space-y-3 relative overflow-hidden group glass-panel-hover hud-bracket"
+                className="p-5 card-glow-top transition-all duration-300 space-y-3 relative overflow-hidden group glass-panel-hover hud-bracket"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider font-cyber">
@@ -166,7 +166,7 @@ export const BrandShieldStats: React.FC<BrandShieldStatsProps> = ({ summary }) =
                 </div>
 
                 <div className="flex items-baseline justify-between pt-1">
-                  <span className="text-3xl lg:text-4xl font-black text-white tracking-tight font-display group-hover:translate-x-0.5 transition-transform">
+                  <span className="text-3xl lg:text-4xl font-black text-white tracking-tight font-display metric-glow group-hover:translate-x-0.5 transition-transform">
                     {card.count}
                   </span>
                   <Badge variant={card.badgeVariant} className="text-[10px] py-0.5 px-2 font-mono">

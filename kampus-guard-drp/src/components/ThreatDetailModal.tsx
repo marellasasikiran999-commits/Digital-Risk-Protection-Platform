@@ -60,10 +60,10 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandAsset.brandNa
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-4xl shadow-2xl overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+      <div className="glass-panel card-glow-top border border-white/15 rounded-2xl w-full max-w-4xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden my-8">
         {/* Header */}
-        <div className="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div className="bg-white/[0.03] px-6 py-4 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <ShieldAlert className="w-5 h-5 text-rose-400" />
             <h3 className="text-base font-bold text-white">
@@ -72,7 +72,7 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandAsset.brandNa
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-all"
+            className="p-1.5 text-slate-400 hover:text-white glass-btn rounded-lg transition-all"
           >
             <X className="w-5 h-5" />
           </button>
@@ -82,7 +82,7 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandAsset.brandNa
           {/* Side-by-Side Asset Comparison */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Official Asset Box */}
-            <div className="bg-slate-950 border border-emerald-800/60 rounded-xl p-5 space-y-3">
+            <div className="glass-subcard border-emerald-500/40 rounded-xl p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="px-2.5 py-0.5 rounded text-[10px] uppercase font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">
                   Official Registered Asset
@@ -107,7 +107,7 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandAsset.brandNa
             </div>
 
             {/* Flagged Impersonator Asset Box */}
-            <div className="bg-slate-950 border border-rose-800/60 rounded-xl p-5 space-y-3">
+            <div className="glass-subcard border-rose-500/40 rounded-xl p-5 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="px-2.5 py-0.5 rounded text-[10px] uppercase font-bold bg-rose-950 text-rose-300 border border-rose-800">
                   Flagged Impersonator Asset
@@ -133,22 +133,22 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandAsset.brandNa
           </div>
 
           {/* Risk Metrics Breakdown */}
-          <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3">
+          <div className="glass-subcard rounded-xl p-4 space-y-3">
             <span className="text-xs font-semibold text-slate-300">Risk Assessment Trigger Breakdown</span>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-              <div className="bg-slate-900 p-2.5 rounded border border-slate-800">
+              <div className="bg-black/30 p-2.5 rounded-lg border border-white/10">
                 <span className="text-[10px] text-slate-500 block">Overall Risk Score</span>
                 <span className="text-sm font-bold text-rose-400">{threat.riskScore}/100 ({threat.riskLevel})</span>
               </div>
-              <div className="bg-slate-900 p-2.5 rounded border border-slate-800">
+              <div className="bg-black/30 p-2.5 rounded-lg border border-white/10">
                 <span className="text-[10px] text-slate-500 block">Name Similarity</span>
                 <span className="text-sm font-bold text-cyan-400">{threat.nameSimilarityScore}%</span>
               </div>
-              <div className="bg-slate-900 p-2.5 rounded border border-slate-800">
+              <div className="bg-black/30 p-2.5 rounded-lg border border-white/10">
                 <span className="text-[10px] text-slate-500 block">Logo Hash Match</span>
                 <span className="text-sm font-bold text-purple-400">{threat.logoSimilarityScore}%</span>
               </div>
-              <div className="bg-slate-900 p-2.5 rounded border border-slate-800">
+              <div className="bg-black/30 p-2.5 rounded-lg border border-white/10">
                 <span className="text-[10px] text-slate-500 block">Triage Status</span>
                 <span className="text-xs font-bold text-amber-300 uppercase">{threat.status}</span>
               </div>
@@ -156,21 +156,21 @@ Submitted via Digital Risk Protection Platform on behalf of ${brandAsset.brandNa
           </div>
 
           {/* DMCA Takedown Notice Generator Box */}
-          <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 space-y-3">
+          <div className="glass-subcard rounded-xl p-5 space-y-3">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-bold text-white flex items-center gap-2">
                 <FileText className="w-4 h-4 text-cyan-400" /> Automated Legal DMCA / Platform Abuse Takedown Generator
               </h4>
               <button
                 onClick={handleCopyNotice}
-                className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-1.5 rounded text-xs font-bold flex items-center gap-1.5 transition-all"
+                className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all shadow-md"
               >
                 <Copy className="w-3.5 h-3.5" />
                 {copied ? 'Copied to Clipboard!' : 'Copy DMCA Notice'}
               </button>
             </div>
 
-            <pre className="bg-slate-900 text-slate-300 text-[11px] font-mono p-4 rounded-lg overflow-x-auto border border-slate-800 whitespace-pre-wrap">
+            <pre className="bg-black/40 text-slate-300 text-[11px] font-mono p-4 rounded-lg overflow-x-auto border border-white/10 whitespace-pre-wrap">
               {takedownNoticeText}
             </pre>
           </div>

@@ -47,16 +47,16 @@ export const EvidenceModal: React.FC<EvidenceModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
-      <div className="bg-[#101622] border border-slate-800 rounded-3xl max-w-5xl w-full shadow-2xl overflow-hidden flex flex-col my-auto max-h-[90vh]">
+      <div className="glass-panel card-glow-top border border-white/15 rounded-3xl max-w-5xl w-full shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col my-auto max-h-[90vh]">
         {/* Top Header Bar */}
-        <div className="bg-[#141b2a] border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+        <div className="bg-white/[0.03] border-b border-white/10 px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-xs uppercase font-mono tracking-wider text-orange-400 font-bold bg-orange-950/80 border border-orange-800/80 px-2.5 py-1 rounded-lg">
               Forensic Evidence Dossier
             </span>
             <span className="text-xs text-slate-400 font-mono">ID: {finding.id}</span>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800">
+          <button onClick={onClose} className="text-slate-400 hover:text-white p-1 rounded-lg glass-btn">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -64,8 +64,8 @@ export const EvidenceModal: React.FC<EvidenceModalProps> = ({
         {/* Modal Body - Two Column Layout matching Image 2 & 3 */}
         <div className="grid grid-cols-1 lg:grid-cols-12 flex-1 overflow-y-auto">
           {/* Left Column: Related Findings List (matching Image 2 left panel) */}
-          <div className="lg:col-span-4 bg-[#0d131d] border-r border-slate-800 p-4 space-y-3 overflow-y-auto max-h-[600px] hidden sm:block">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-xs text-slate-400 font-bold">
+          <div className="lg:col-span-4 bg-black/20 border-r border-white/10 p-4 space-y-3 overflow-y-auto max-h-[600px] hidden sm:block">
+            <div className="flex items-center justify-between pb-2 border-b border-white/10 text-xs text-slate-400 font-bold">
               <span>Related Threats ({allFindings.length || 1})</span>
               <span className="text-[10px] text-orange-400 bg-orange-950/60 px-2 py-0.5 rounded font-mono">Active Monitoring</span>
             </div>
@@ -81,8 +81,8 @@ export const EvidenceModal: React.FC<EvidenceModalProps> = ({
                     onClick={() => onSelectFinding && onSelectFinding(item)}
                     className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 ${
                       isSelected 
-                        ? 'bg-[#151d2d] border-orange-500/80 shadow-lg' 
-                        : 'bg-[#101622]/60 border-slate-800/80 hover:border-slate-700'
+                        ? 'bg-blue-600/20 border-orange-500/80 shadow-lg' 
+                        : 'glass-subcard hover:border-slate-500'
                     }`}
                   >
                     <span className={`w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center shrink-0 ${badgeColor}`}>
@@ -100,7 +100,7 @@ export const EvidenceModal: React.FC<EvidenceModalProps> = ({
           </div>
 
           {/* Right Column: Deep Forensic Evidence Sheet (matching Image 2 & 3 right card) */}
-          <div className="lg:col-span-8 p-6 space-y-6 overflow-y-auto bg-[#101622]">
+          <div className="lg:col-span-8 p-6 space-y-6 overflow-y-auto bg-transparent">
             {/* Header info */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
               <div>
