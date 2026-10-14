@@ -225,10 +225,48 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
       setSearchQuery('');
       setActionNotice(`Live audit complete: "${data.app_name}" (${data.package_name}) flagged with ${data.risk_score}/100 Risk!`);
       setTimeout(() => setActionNotice(null), 5000);
+
+      // Register finding in global reactive telemetry
+      realtimeDb.applyNewFinding({
+        id: newThreat.id,
+        brand_name: 'Digital Risk Protection Platform',
+        finding_type: 'app',
+        title: newThreat.appName,
+        category: 'App Store › Rogue Repository',
+        candidate_name: newThreat.appName,
+        asset: newThreat.appId,
+        risk_score: newThreat.riskScore,
+        risk_level: (newThreat.riskLevel === 'CRITICAL' ? 'Critical' : (newThreat.riskLevel === 'HIGH' ? 'High' : 'Medium')) as any,
+        status: 'Pending',
+        confidence_score: 94,
+        similarity_rate: 89,
+        detection_source: newThreat.store === 'apple_app_store' ? 'Apple App Store' : 'Google Play & Mirrors',
+        developer: newThreat.publisherName,
+        package_name: newThreat.appId,
+        note: newThreat.descriptionSnippet,
+        factors: [
+          { factor: 'Publisher Mismatch', score: 35 },
+          { factor: 'Dangerous Android permissions', score: 30 }
+        ],
+        is_official: false,
+        detected_date: 'Just now',
+        updated_date: 'Just now'
+      });
     } catch {
       setActionNotice(`Live crawler finished inspection for "${cleanPkg}".`);
     } finally {
       setAuditingPackage(false);
+    }
+  };
+
+  // Live Scan Hook: captures package ID from input bounds and triggers repository crawler
+  const handleLiveScanClick = async () => {
+    const cleanPkg = searchQuery.trim();
+    if (cleanPkg) {
+      await handleAuditCustomPackage(cleanPkg);
+    }
+    if (onRunAppScan) {
+      onRunAppScan();
     }
   };
 
@@ -314,12 +352,12 @@ export const AppStoreMonitoring: React.FC<AppStoreMonitoringProps> = ({
           {onRunAppScan && (
             <Button
               variant="cyber"
-              onClick={onRunAppScan}
-              disabled={isScanningApp}
+              onClick={handleLiveScanClick}
+              disabled={isScanningApp || auditingPackage}
               className="shrink-0"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isScanningApp ? 'animate-spin' : ''}`} />
-              <span>{isScanningApp ? 'Querying App Repositories...' : 'Run Live App Store Scan'}</span>
+              <RefreshCw className={`w-3.5 h-3.5 ${isScanningApp || auditingPackage ? 'animate-spin' : ''}`} />
+              <span>{isScanningApp || auditingPackage ? 'Querying App Repositories...' : 'Run Live App Store Scan'}</span>
             </Button>
           )}
         </div>

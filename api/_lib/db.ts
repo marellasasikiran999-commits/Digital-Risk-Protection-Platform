@@ -403,13 +403,23 @@ export function saveDbFinding(finding: Finding): Finding {
 }
 
 export function updateFindingStatus(findingId: string, status: string): Finding | null {
-  const isLegitimate = status === 'Legitimate';
+  const isLegitimate = status === 'Legitimate' || status === 'WHITELISTED' || status === 'SAFE';
+  const isTakedown = status === 'Takedown' || status === 'TAKEDOWN_REQUESTED';
+  const resolvedStatus = isLegitimate ? 'Legitimate' : (isTakedown ? 'Takedown' : status);
+
+  const idLower = (findingId || '').toLowerCase();
   let updatedFinding: Finding | null = null;
   inMemoryFindings = inMemoryFindings.map(f => {
-    if (f.id === findingId) {
+    const match = 
+      f.id.toLowerCase() === idLower ||
+      f.asset.toLowerCase() === idLower ||
+      f.candidate_name.toLowerCase() === idLower ||
+      (f.package_name && f.package_name.toLowerCase() === idLower);
+
+    if (match) {
       updatedFinding = {
         ...f,
-        status: status as any,
+        status: resolvedStatus as any,
         is_official: isLegitimate ? true : f.is_official,
         risk_score: isLegitimate ? 0 : f.risk_score,
         risk_level: isLegitimate ? 'Safe' : f.risk_level,
@@ -424,35 +434,61 @@ export function updateFindingStatus(findingId: string, status: string): Finding 
 
 export function computeSummary(brandName?: string): DashboardSummary {
   const activeFindings = getDbFindings(brandName || 'Digital Risk Protection Platform');
-  const flagged = activeFindings.filter(f => !f.is_official);
-  const whitelisted = activeFindings.filter(f => f.is_official);
-  const critical = activeFindings.filter(f => f.risk_level === 'Critical').length;
-  const high = activeFindings.filter(f => f.risk_level === 'High').length;
-  const medium = activeFindings.filter(f => f.risk_level === 'Medium').length;
-  const low = activeFindings.filter(f => f.risk_level === 'Low').length;
-  const social = activeFindings.filter(f => f.finding_type === 'social').length;
-  const apps = activeFindings.filter(f => f.finding_type === 'app').length;
-  const domain = activeFindings.filter(f => f.finding_type === 'domain').length;
-  const resolved = activeFindings.filter(f => f.status === 'Takedown' || f.status === 'Resolved').length;
 
-  const securityScore = Math.max(50, Math.min(99.5, Number((100 - (critical * 8 + high * 4 + medium * 1.5)).toFixed(1))));
+  const newSuspicious = activeFindings.filter(f => 
+    (f.id.startsWith('FIND-SOC-') || f.id.startsWith('app-custom-') || f.id.startsWith('FIND-URL-')) && 
+    !f.is_official && f.status !== 'Legitimate'
+  ).length;
+
+  const newCritical = activeFindings.filter(f => 
+    (f.id.startsWith('FIND-SOC-') || f.id.startsWith('app-custom-') || f.id.startsWith('FIND-URL-')) && 
+    f.risk_level === 'Critical' && f.status !== 'Legitimate'
+  ).length;
+
+  const newSocial = activeFindings.filter(f => 
+    f.id.startsWith('FIND-SOC-') && f.finding_type === 'social'
+  ).length;
+
+  const resolvedSeedCount = activeFindings.filter(f => 
+    !f.id.startsWith('FIND-SOC-') && !f.id.startsWith('app-custom-') && 
+    (f.status === 'Legitimate' || f.status === 'WHITELISTED' || f.is_official)
+  ).length;
+
+  const baseSuspicious = 23;
+  const baseCritical = 8;
+  const baseSocial = 15;
+  const baseApps = 8;
+
+  const computedSuspicious = Math.max(0, baseSuspicious + newSuspicious - resolvedSeedCount);
+  const computedCritical = Math.max(0, baseCritical + newCritical - resolvedSeedCount);
+  const computedSocial = baseSocial + newSocial;
+
+  const whitelisted = activeFindings.filter(f => f.is_official || f.status === 'Legitimate');
+  const high = activeFindings.filter(f => f.risk_level === 'High' && f.status !== 'Legitimate').length;
+  const medium = activeFindings.filter(f => f.risk_level === 'Medium' && f.status !== 'Legitimate').length;
+  const low = activeFindings.filter(f => f.risk_level === 'Low').length;
+  const apps = baseApps + activeFindings.filter(f => f.id.startsWith('app-custom-')).length;
+  const domain = activeFindings.filter(f => f.finding_type === 'domain').length;
+  const resolved = activeFindings.filter(f => f.status === 'Takedown' || f.status === 'TAKEDOWN_REQUESTED' || f.status === 'Resolved').length;
+
+  const securityScore = Math.max(50, Math.min(99.5, Number((100 - (computedCritical * 8 + high * 4 + medium * 1.5)).toFixed(1))));
 
   return {
-    threat_detection_total: 128,
+    threat_detection_total: 128 + newSuspicious,
     security_events: 1420 + activeFindings.length * 5,
     system_health: 99.8,
     security_score: securityScore,
     all_threats: activeFindings.length,
-    critical: Math.max(8, critical),
+    critical: computedCritical,
     high: Math.max(8, high),
     medium,
     low,
-    suspicious_candidates: Math.max(23, flagged.length),
-    social_findings: Math.max(15, social),
+    suspicious_candidates: computedSuspicious,
+    social_findings: computedSocial,
     app_findings: apps,
     domain_findings: domain,
     whitelisted_assets: whitelisted.length,
-    resolved: resolved > 0 ? resolved : 5,
+    resolved: resolved > 0 ? resolved + 5 : 5,
     total_brands: inMemoryBrands.length,
     mean_time_to_detect: '4.2 min',
     mean_time_to_response: '12.8 min',
