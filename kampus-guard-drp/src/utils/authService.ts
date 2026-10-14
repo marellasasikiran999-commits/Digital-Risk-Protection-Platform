@@ -464,26 +464,25 @@ export async function handleGoogleOneTapCredential(idToken: string): Promise<Aut
 }
 
 /**
- * Initializes and triggers Google One Tap prompt on entering the website.
+ * Initializes and triggers real Google Identity Services (One Tap) prompt on entering the website.
+ * Uses official Google Identity Services library: https://accounts.google.com/gsi/client
  */
 export function initGoogleOneTap(onSuccess?: (user: AuthUserProfile) => void): () => void {
-  // If running on localhost/127.0.0.1, we avoid calling google.accounts.id.prompt directly
-  // to prevent Google's 'Error 400: origin_mismatch' popup when localhost is unwhitelisted in GCP.
-  // The app-level GoogleOneTapPrompt component provides the seamless UI experience!
-  if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-    return () => {};
-  }
-
   let isCleanedUp = false;
+  let pollInterval: ReturnType<typeof setInterval> | null = null;
 
   const triggerPrompt = () => {
     if (isCleanedUp) return true;
-    if (typeof window === 'undefined' || !(window as any).google?.accounts?.id) {
+    if (typeof window === 'undefined') return false;
+
+    // Check if official Google Identity Services script has loaded
+    const googleAccounts = (window as any).google?.accounts?.id;
+    if (!googleAccounts) {
       return false;
     }
 
     try {
-      (window as any).google.accounts.id.initialize({
+      googleAccounts.initialize({
         client_id: GOOGLE_OAUTH_CLIENT_ID,
         callback: async (response: any) => {
           if (response?.credential) {
@@ -494,10 +493,14 @@ export function initGoogleOneTap(onSuccess?: (user: AuthUserProfile) => void): (
           }
         },
         auto_select: false,
-        cancel_on_tap_outside: false
+        cancel_on_tap_outside: true,
       });
 
-      (window as any).google.accounts.id.prompt();
+      googleAccounts.prompt((notification: any) => {
+        if (notification?.isNotDisplayed && notification.isNotDisplayed()) {
+          console.info('[GoogleOneTap] Real prompt suppressed or not displayed:', notification.getNotDisplayedReason?.());
+        }
+      });
       return true;
     } catch (e) {
       console.warn('[GoogleOneTap] Initialization notice:', e);
@@ -505,10 +508,20 @@ export function initGoogleOneTap(onSuccess?: (user: AuthUserProfile) => void): (
     }
   };
 
-  triggerPrompt();
+  if (!triggerPrompt()) {
+    // Retry polling until Google script is ready (up to 3 seconds)
+    let attempts = 0;
+    pollInterval = setInterval(() => {
+      attempts++;
+      if (triggerPrompt() || attempts > 12) {
+        if (pollInterval) clearInterval(pollInterval);
+      }
+    }, 250);
+  }
 
   return () => {
     isCleanedUp = true;
+    if (pollInterval) clearInterval(pollInterval);
     try {
       (window as any).google?.accounts?.id?.cancel();
     } catch {}

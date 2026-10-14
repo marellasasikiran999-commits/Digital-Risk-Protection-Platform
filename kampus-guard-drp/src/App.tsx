@@ -28,7 +28,7 @@ import {
 import { realtimeDb } from './utils/realtimeDb';
 import { getCurrentUserProfile, type AuthUserProfile } from './utils/firebase';
 import { subscribeToAuthLifecycle, initGoogleOneTap } from './utils/authService';
-import { GoogleOneTapPrompt } from './components/GoogleOneTapPrompt';
+import { PlatformIntroLoader } from './components/PlatformIntroLoader';
 import { CheckCircle, RefreshCw, Key, Download } from 'lucide-react';
 import { PageHeader } from './components/ui/PageHeader';
 
@@ -39,9 +39,16 @@ export function App() {
   // Active User via Firebase with State Gating & Memoization
   const [currentUser, setCurrentUser] = useState<AuthUserProfile>(getCurrentUserProfile());
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isOneTapPromptOpen, setIsOneTapPromptOpen] = useState(true);
   const [isAuthResolving] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Cinematic Platform Intro Overlay State (session isolated)
+  const [isIntroActive, setIsIntroActive] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('drp_intro_seen') !== 'true';
+    }
+    return true;
+  });
 
   // Toast timer reference to eliminate racing conditions
   const toastTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -606,16 +613,17 @@ export function App() {
         onAuthChange={handleAuthChange}
       />
 
-      {/* Google One Tap Sign-In Prompt on entering website */}
-      <GoogleOneTapPrompt
-        isOpen={isOneTapPromptOpen}
-        onClose={() => setIsOneTapPromptOpen(false)}
-        onSelectUser={(user) => {
-          handleAuthChange(user);
-          showToast(`Signed in as ${user.displayName}`);
-        }}
-        currentUser={currentUser}
-      />
+      {/* Cinematic Platform Intro Boot Loader */}
+      {isIntroActive && (
+        <PlatformIntroLoader
+          onComplete={() => {
+            setIsIntroActive(false);
+            try {
+              sessionStorage.setItem('drp_intro_seen', 'true');
+            } catch {}
+          }}
+        />
+      )}
     </div>
   );
 }
