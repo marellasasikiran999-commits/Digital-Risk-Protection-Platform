@@ -90,11 +90,11 @@ export const PlatformIntroLoader: React.FC<PlatformIntroLoaderProps> = ({ onComp
     const sphereMesh = new THREE.LineSegments(sphereWire, sphereMat);
     rootGroup.add(sphereMesh);
 
-    // 2. Nested 3D Icosahedron Core (Deep Purple)
+    // 2. Nested 3D Icosahedron Core (Deep Steel Blue)
     const icosaGeom = new THREE.IcosahedronGeometry(20, 1);
     const icosaWire = new THREE.WireframeGeometry(icosaGeom);
     const icosaMat = new THREE.LineBasicMaterial({
-      color: 0xa855f7, // Deep Purple
+      color: 0x3b82f6, // Electric Blue
       transparent: true,
       opacity: 0.65,
     });
@@ -262,11 +262,11 @@ export const PlatformIntroLoader: React.FC<PlatformIntroLoaderProps> = ({ onComp
       <div className="relative flex items-center justify-center w-[360px] h-[360px] my-auto">
         {/* Soft Ambient Radiating Glow Pulses */}
         <div className="absolute w-72 h-72 rounded-full bg-cyan-500/15 blur-3xl animate-pulse pointer-events-none" />
-        <div className="absolute w-60 h-60 rounded-full bg-purple-600/15 blur-2xl animate-pulse pointer-events-none delay-500" />
+        <div className="absolute w-60 h-60 rounded-full bg-blue-600/15 blur-2xl animate-pulse pointer-events-none delay-500" />
 
         {/* Outer Radiating Concentric Pulse Rings */}
         <div className="absolute w-80 h-80 rounded-full border border-cyan-500/15 animate-ping pointer-events-none" style={{ animationDuration: '3.5s' }} />
-        <div className="absolute w-96 h-96 rounded-full border border-purple-500/10 animate-ping pointer-events-none" style={{ animationDuration: '5s' }} />
+        <div className="absolute w-96 h-96 rounded-full border border-blue-500/10 animate-ping pointer-events-none" style={{ animationDuration: '5s' }} />
 
         {/* Three.js 3D Wireframe Canvas Mount */}
         <div ref={canvasMountRef} className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none" />

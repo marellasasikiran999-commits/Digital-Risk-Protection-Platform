@@ -273,15 +273,15 @@ https://${officialDomain}`;
   return (
     <div className="space-y-6">
       {/* Header banner */}
-      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-purple-950/30 via-[#0a1020] to-[#070b16] border-purple-500/20 card-glow-top">
+      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-slate-900/80 via-[#0a1020] to-[#070b16] border-blue-500/20 card-glow-top">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
           <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 shrink-0">
+            <div className="w-11 h-11 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 shrink-0">
               <Globe className="w-5 h-5" />
             </div>
             <div>
-              <div className="inline-flex items-center gap-2 text-xs font-mono text-purple-400 font-bold tracking-widest uppercase mb-1">
-                <span className="w-6 h-px bg-purple-400" />
+              <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold tracking-widest uppercase mb-1">
+                <span className="w-6 h-px bg-cyan-400" />
                 <span>07 // REGISTRAR &amp; DNS AUDITOR</span>
               </div>
               <div className="flex items-center gap-2.5 flex-wrap">

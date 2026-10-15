@@ -379,11 +379,11 @@ Action Demanded: Immediate removal, certificate revocation, and global hash blac
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-purple-950/40 via-[#0a1020] to-[#070b16] border-purple-500/20 card-glow-top">
+      <Card className="p-6 relative overflow-hidden backdrop-blur-2xl bg-gradient-to-r from-slate-900/80 via-[#0a1020] to-[#070b16] border-blue-500/20 card-glow-top">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
           <div>
-            <div className="inline-flex items-center gap-2 text-xs font-mono text-purple-400 font-bold tracking-widest uppercase mb-1">
-              <span className="w-6 h-px bg-purple-400" />
+            <div className="inline-flex items-center gap-2 text-xs font-mono text-cyan-400 font-bold tracking-widest uppercase mb-1">
+              <span className="w-6 h-px bg-cyan-400" />
               <span>06 // STATIC BINARY DISSECTION</span>
               <Badge variant="cyber" className="ml-2 font-mono text-[10px]">Active Sandbox</Badge>
             </div>
@@ -391,7 +391,7 @@ Action Demanded: Immediate removal, certificate revocation, and global hash blac
               Android APK Malware &amp; Reverse Engineering Sandbox
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-              Inspect Android bytecode, decompile <span className="font-cyber text-purple-300 font-bold">AndroidManifest.xml</span>, verify publisher certificate signatures, and analyze trojan permission abuse.
+              Inspect Android bytecode, decompile <span className="font-cyber text-cyan-300 font-bold">AndroidManifest.xml</span>, verify publisher certificate signatures, and analyze trojan permission abuse.
             </p>
           </div>
 

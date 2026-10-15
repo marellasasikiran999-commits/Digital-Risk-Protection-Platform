@@ -1,15 +1,15 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en" class="dark scroll-smooth">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="AI-powered external digital risk protection, brand impersonation detection, rogue mobile application surveillance, and phishing reconnaissance." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Digital Risk Protection Platform | Enterprise Threat Defense</title>
-    <!-- Google Fonts: Space Grotesk, Outfit, Plus Jakarta Sans & JetBrains Mono -->
+    <title>Digital Risk Protection Platform — Command Intelligence</title>
+    <!-- Google Fonts: Instrument Serif (italic) & Barlow (300, 400, 500, 600) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <!-- Google Identity Services (One Tap) -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,34 +18,15 @@
         theme: {
           extend: {
             fontFamily: {
-              sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'Inter', 'sans-serif'],
-              display: ['"Space Grotesk"', '"Outfit"', 'sans-serif'],
-              outfit: ['"Outfit"', 'sans-serif'],
-              mono: ['"JetBrains Mono"', 'monospace'],
-              cyber: ['"JetBrains Mono"', 'monospace']
-            },
-            colors: {
-              cyber: {
-                950: '#060a14',
-                900: '#0a1020',
-                850: '#0f172a',
-                800: '#15213b',
-                700: '#1e3052'
-              }
-            },
-            boxShadow: {
-              'glow-blue': '0 0 25px -4px rgba(59, 130, 246, 0.35)',
-              'glow-cyan': '0 0 25px -4px rgba(6, 182, 212, 0.35)',
-              'glow-emerald': '0 0 25px -4px rgba(16, 185, 129, 0.35)',
-              'glow-rose': '0 0 25px -4px rgba(244, 63, 94, 0.35)',
-              'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)'
+              heading: ["'Instrument Serif'", 'serif'],
+              body: ["'Barlow'", 'sans-serif'],
             }
           }
         }
       }
     </script>
   </head>
-  <body class="bg-[#060a14] text-slate-100 font-sans antialiased selection:bg-blue-500 selection:text-white min-h-screen overflow-x-hidden">
+  <body class="bg-black text-white font-body antialiased overflow-x-hidden selection:bg-white selection:text-black">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
