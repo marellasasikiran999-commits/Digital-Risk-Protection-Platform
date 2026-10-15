@@ -281,8 +281,8 @@ export const BrandShieldHeader: React.FC<BrandShieldHeaderProps> = ({
         {/* User Profile Card */}
         <button
           onClick={onOpenAuthModal}
-          className="flex items-center gap-3 p-1.5 pr-3 rounded-xl glass-btn border border-[var(--border-color)] hover:border-[var(--border-highlight)] transition-all text-left shadow-sm group"
-          title="Firebase Account & Team Role"
+          className="flex items-center gap-3 p-1.5 pr-3 rounded-xl glass-btn border border-[var(--border-color)] hover:border-[var(--border-highlight)] transition-all text-left shadow-sm group cursor-pointer"
+          title="Sign in with Google / Security Account"
         >
           <div className="relative">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-500 p-[1.5px] shadow-md shadow-blue-500/20">

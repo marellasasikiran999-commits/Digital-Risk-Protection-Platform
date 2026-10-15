@@ -19,6 +19,7 @@ import { EvidenceModal } from './components/EvidenceModal';
 import { AddBrandModal } from './components/AddBrandModal';
 import { EditBrandModal } from './components/EditBrandModal';
 import { FirebaseAuthModal } from './components/FirebaseAuthModal';
+import { GoogleOneTapPrompt } from './components/GoogleOneTapPrompt';
 import { LiquidGlassBackground3D } from './components/LiquidGlassBackground3D';
 import { 
   getBrandsAPI, getFindingsAPI, getDashboardSummaryAPI, 
@@ -28,7 +29,7 @@ import {
 } from './utils/api';
 import { realtimeDb } from './utils/realtimeDb';
 import { getCurrentUserProfile, type AuthUserProfile } from './utils/firebase';
-import { subscribeToAuthLifecycle, initGoogleOneTap } from './utils/authService';
+import { subscribeToAuthLifecycle } from './utils/authService';
 import { PlatformIntroLoader } from './components/PlatformIntroLoader';
 import { CheckCircle, RefreshCw, Key, Download } from 'lucide-react';
 import { PageHeader } from './components/ui/PageHeader';
@@ -109,15 +110,7 @@ export function App() {
     };
   }, [handleAuthChange]);
 
-  // Trigger Google One Tap prompt when entering the website
-  useEffect(() => {
-    const cancelOneTap = initGoogleOneTap((user) => {
-      handleAuthChange(user);
-    });
-    return () => {
-      cancelOneTap();
-    };
-  }, [handleAuthChange]);
+
 
   // Load Data from SQLite backend
   const loadData = async () => {
@@ -269,6 +262,9 @@ export function App() {
 
       {/* Toast Notification */}
       {toastNotificationBadge}
+
+      {/* Real Google One Tap Prompt: Triggers on site reload / from start */}
+      <GoogleOneTapPrompt onSuccess={handleAuthChange} />
 
       {/* High-Priority Relative z-10 Stacking Layer enclosing entire active dashboard UI */}
       <div className="relative z-10 flex min-h-screen w-full">
